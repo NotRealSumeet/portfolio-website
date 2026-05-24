@@ -77,9 +77,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
               <div className="flex items-center justify-between border-b border-[#111111] pb-2 text-xs">
                 <span className="font-mono text-[#555555]">EMAIL</span>
                 <a
-                  href="https://mail.google.com/mail/u/0/#inbox?compose=DmwnWsLSDhLPMhhXLSTlMgGwfTLhSvGSppwFdSmVnqkpDfTDpKQPlHzDGwWfsDDzLWRNHrcxLKJV"
-                  target="_blank"
-                  rel="noreferrer"
+                  href="mailto:sumeetshah24@gmail.com"
                   className="font-sans font-semibold text-white hover:text-[#742DE1] transition-colors flex items-center gap-1 py-1"
                 >
                   sumeetshah24@gmail.com <ArrowUpRight size={10} className="text-[#742DE1]" />

@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MediaItem } from '../types';
@@ -93,15 +94,17 @@ export default function Lightbox({
 
   const activeMedia = mediaList[activeIndex];
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && activeMedia && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="fixed inset-0 bg-black/90 backdrop-blur-md z-99 flex items-center justify-center select-none"
+          transition={{ duration: 0.35, ease: 'easeInOut' }}
+          className="fixed inset-0 bg-black/95 backdrop-blur-lg z-[9999] flex items-center justify-center select-none"
         >
           {/* Subtle Click-to-close Backdrop zone */}
           <div className="absolute inset-0 z-10" onClick={onClose} />
@@ -121,14 +124,14 @@ export default function Lightbox({
           </div>
 
           {/* MAIN MEDIA FRAME AND SWIPE ZONE */}
-          <div className="relative w-full max-w-[95vw] sm:max-w-4xl md:max-w-5xl h-[70vh] sm:h-[80vh] flex items-center justify-center z-15">
+          <div className="relative w-full h-full flex items-center justify-center z-15 pointer-events-none">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeIndex}
-                initial={{ opacity: 0, scale: 0.97 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.97 }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.5}
@@ -140,7 +143,7 @@ export default function Lightbox({
                     handlePrev();
                   }
                 }}
-                className="absolute inset-0 flex items-center justify-center cursor-grab active:cursor-grabbing"
+                className="absolute inset-0 flex items-center justify-center cursor-grab active:cursor-grabbing pointer-events-auto"
               >
                 {activeMedia.type === 'video' ? (
                   <video
@@ -149,13 +152,13 @@ export default function Lightbox({
                     loop
                     muted
                     playsInline
-                    className="max-w-full max-h-full object-contain pointer-events-none"
+                    className="max-w-[90vw] max-h-[90vh] object-contain pointer-events-none shadow-2xl"
                   />
                 ) : (
                   <img
                     src={activeMedia.url}
                     alt=""
-                    className="max-w-full max-h-full object-contain pointer-events-none shadow-2xl"
+                    className="max-w-[90vw] max-h-[90vh] object-contain pointer-events-none shadow-2xl"
                     referrerPolicy="no-referrer"
                   />
                 )}
@@ -191,6 +194,7 @@ export default function Lightbox({
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

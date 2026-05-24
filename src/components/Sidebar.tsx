@@ -28,10 +28,10 @@ export default function Sidebar({
   const d = new Date(currentLocalTime);
   const istDate = new Date(d.getTime() + (5.5 * 60 * 60 * 1000));
   const formattedTime = istDate.toLocaleTimeString('en-US', {
-    hour: '2-digit',
+    hour: 'numeric',
     minute: '2-digit',
     second: '2-digit',
-    hour12: false,
+    hour12: true,
     timeZone: 'UTC'
   });
 
@@ -151,9 +151,7 @@ export default function Sidebar({
                 </span>
                 <div className="grid grid-cols-2 gap-3">
                   <a
-                    href="https://mail.google.com/mail/u/0/#inbox?compose=DmwnWsLSDhLPMhhXLSTlMgGwfTLhSvGSppwFdSmVnqkpDfTDpKQPlHzDGwWfsDDzLWRNHrcxLKJV"
-                    target="_blank"
-                    rel="noreferrer"
+                    href="mailto:sumeetshah24@gmail.com"
                     className="flex items-center justify-center text-center py-3.5 bg-[#050505] border border-[#111111] font-mono text-xs text-zinc-400 active:text-white active:bg-zinc-950 hover:text-white transition-all select-none"
                     style={{ minHeight: '44px' }}
                   >
@@ -302,9 +300,7 @@ export default function Sidebar({
 
             <div className="flex flex-col space-y-2">
               <a
-                href="https://mail.google.com/mail/u/0/#inbox?compose=DmwnWsLSDhLPMhhXLSTlMgGwfTLhSvGSppwFdSmVnqkpDfTDpKQPlHzDGwWfsDDzLWRNHrcxLKJV"
-                target="_blank"
-                rel="noreferrer"
+                href="mailto:sumeetshah24@gmail.com"
                 className="group flex items-center justify-between font-mono text-[10px] text-[#666666] hover:text-white transition-colors py-1"
               >
                 <span className="flex items-center gap-1.5">

@@ -46,10 +46,6 @@ export default function MasonryGrid({ projects, onSelectProject }: MasonryGridPr
             );
           })}
         </div>
-        
-        <div className="hidden lg:block font-mono text-[10px] text-[#444444] uppercase">
-          STARK CONTRAST VISUAL JOURNAL
-        </div>
       </div>
 
       {/* RHYTHMIC ASYMMETRIC GRID: Tighter 3-column editorial layout */}

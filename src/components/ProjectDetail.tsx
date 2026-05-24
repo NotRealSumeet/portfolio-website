@@ -84,73 +84,62 @@ export default function ProjectDetail({
         </div>
       </div>
 
-      {/* 2. MAIN HERO/COVER IMAGE BELOW IT */}
-      <div 
-        onClick={() => setLightboxIndex(0)}
-        className="w-full overflow-hidden bg-[#0d0d0d] border border-[#111111] aspect-video relative cursor-zoom-in"
-      >
-        <img
-          src={project.thumbnailUrl}
-          alt={project.title}
-          className="w-full h-full object-cover grayscale transition-all duration-750 hover:grayscale-0 hover:scale-102"
-          referrerPolicy="no-referrer"
-        />
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 sm:p-6">
-          <span className="font-mono text-[9px] sm:text-xs text-white tracking-widest uppercase border border-white/20 px-2 py-0.5 bg-black/60">
-            {project.category}
-          </span>
+      {/* 2. PROJECT IMAGES FLOW (HERO + GALLERY STREAM) */}
+      <div className="w-full flex flex-col pt-2">
+        {/* HERO IMAGE */}
+        <div 
+          onClick={() => setLightboxIndex(0)}
+          className="w-full overflow-hidden cursor-zoom-in relative"
+        >
+          <img
+            src={project.thumbnailUrl}
+            alt={project.title}
+            className="w-full h-auto block"
+            referrerPolicy="no-referrer"
+          />
         </div>
-      </div>
 
-      {/* 3. PROJECT MEDIA GALLERY: PINTEREST MASONRY LAYOUT */}
-      <div className="space-y-4 sm:space-y-6 pt-4 sm:pt-6">
-        <h3 className="font-mono text-[9px] sm:text-xs text-[#555555] tracking-[0.2em] uppercase">
-          DOCUMENTATION CAPTURES
-        </h3>
+        {/* GALLERY IMAGES */}
+        {project.media.slice(1).map((item, idx) => (
+          <div 
+            key={item.id} 
+            onClick={() => setLightboxIndex(idx + 1)}
+            className="w-full relative cursor-zoom-in overflow-hidden"
+          >
+            <div className="w-full text-left">
+              {item.type === 'image' && (
+                <img
+                  src={item.url}
+                  alt=""
+                  className="w-full h-auto block"
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                />
+              )}
 
-        {/* Improved gallery flow to prevent crampiness on mobile */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-          {project.media.map((item, idx) => (
-            <div 
-              key={item.id} 
-              onClick={() => setLightboxIndex(idx)}
-              className="overflow-hidden w-full group relative cursor-zoom-in bg-[#080808] border border-[#111111]"
-            >
-              <div className="overflow-hidden w-full h-full text-left">
-                {item.type === 'image' && (
-                  <img
-                    src={item.url}
-                    alt=""
-                    className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    referrerPolicy="no-referrer"
-                    loading="lazy"
-                  />
-                )}
+              {item.type === 'video' && (
+                <video
+                  src={item.url}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-auto block"
+                />
+              )}
 
-                {item.type === 'video' && (
-                  <video
-                    src={item.url}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
-                )}
-
-                {item.type === 'gif' && (
-                  <img
-                    src={item.url}
-                    alt=""
-                    className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    referrerPolicy="no-referrer"
-                    loading="lazy"
-                  />
-                )}
-              </div>
+              {item.type === 'gif' && (
+                <img
+                  src={item.url}
+                  alt=""
+                  className="w-full h-auto block"
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                />
+              )}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
       {/* FOOTER NAV CONTROLS FOR DIRECT CATALOG EXPLORING */}
