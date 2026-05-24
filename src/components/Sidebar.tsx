@@ -12,7 +12,7 @@ interface SidebarProps {
   projects: Project[];
   activeProjectId: string | null;
   onSelectProject: (id: string | null) => void;
-  currentLocalTime: string;
+  currentLocalTime: Date;
 }
 
 export default function Sidebar({
@@ -24,15 +24,13 @@ export default function Sidebar({
   const [hoveredProjectId, setHoveredProjectId] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Parse time format safely as Indian Standard Time (UTC + 5:30)
-  const d = new Date(currentLocalTime);
-  const istDate = new Date(d.getTime() + (5.5 * 60 * 60 * 1000));
-  const formattedTime = istDate.toLocaleTimeString('en-US', {
+  // Format as Indian Standard Time (Asia/Kolkata timezone)
+  const formattedTime = currentLocalTime.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     second: '2-digit',
     hour12: true,
-    timeZone: 'UTC'
+    timeZone: 'Asia/Kolkata'
   });
 
   return (

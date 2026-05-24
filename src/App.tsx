@@ -16,15 +16,11 @@ export default function App() {
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
   
   // Real-time UTC/IST clock ticker
-  const [currentLocalTime, setCurrentLocalTime] = useState<string>('2026-05-22T12:08:52Z');
+  const [currentLocalTime, setCurrentLocalTime] = useState<Date>(new Date());
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentLocalTime((prev) => {
-        const d = new Date(prev);
-        d.setSeconds(d.getSeconds() + 1);
-        return d.toISOString();
-      });
+      setCurrentLocalTime(new Date());
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -121,20 +117,35 @@ export default function App() {
         </div>
 
         {/* BOTTOM DECORATIVE STAMP: Minimal Evolving Design Archive Coming Soon */}
-        <div className="w-full max-w-7xl mx-auto border-t border-[#111111] mt-32 pt-20 pb-10 flex flex-col items-center justify-center text-center relative z-10">
-          <div className="space-y-3 max-w-md">
-            <span className="font-mono text-[9px] tracking-[0.35em] text-zinc-600 block uppercase select-none">
-              — More Projects
-            </span>
-            <h2 className="font-sans font-extrabold text-3xl sm:text-4xl tracking-tighter text-zinc-800 select-none uppercase hover:text-white transition-colors duration-700">
-              Coming Soon
-            </h2>
-            <div className="h-[1px] w-8 bg-zinc-900 mx-auto my-4" />
-            <p className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest max-w-xs mx-auto leading-relaxed select-none">
-              This visual journal is a constantly evolving chromatic file archive. Updates committed build-by-build.
-            </p>
+        {activeProjectId === null && (
+          <div className="w-full max-w-7xl mx-auto border-t border-[#111111] mt-32 pt-20 pb-10 flex flex-col items-center justify-center text-center relative z-10">
+            <div className="space-y-3 max-w-md">
+              <span className="font-mono text-[9px] tracking-[0.35em] text-zinc-600 block uppercase select-none">
+                — More Projects
+              </span>
+              <h2 className="font-sans font-extrabold text-3xl sm:text-4xl tracking-tighter text-white select-none uppercase hover:text-[#742DE1] transition-colors duration-700">
+                Coming Soon
+              </h2>
+              <div className="h-[1px] w-8 bg-zinc-900 mx-auto my-4" />
+              <p className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest max-w-xs mx-auto leading-relaxed select-none">
+                This visual journal is a constantly evolving chromatic file archive. Updates committed build-by-build.
+              </p>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* BACK TO TOP BUTTON: Centered inline in page flow */}
+        {activeProjectId !== 'about' && (
+          <div className="w-full max-w-7xl mx-auto mt-20 flex justify-center items-center relative z-10">
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="group font-mono text-[#666666] hover:text-[#742DE1] cursor-pointer flex flex-col items-center gap-1 transition-colors duration-500 uppercase select-none"
+            >
+              <span className="text-xl font-light transform group-hover:-translate-y-1 transition-transform duration-300">↑</span>
+              <span className="text-[9px] tracking-[0.25em] font-light">Back to Top</span>
+            </button>
+          </div>
+        )}
 
       </main>
 

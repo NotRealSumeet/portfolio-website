@@ -71,6 +71,28 @@ export default function AmbientBackground() {
               transform: translate3d(-8%, 3%, 0) scale(0.95);
             }
           }
+          @keyframes auroraFlowPrimaryMobile {
+            0% {
+              transform: translate3d(-5%, 2%, 0);
+            }
+            50% {
+              transform: translate3d(5%, -2%, 0);
+            }
+            100% {
+              transform: translate3d(-5%, 2%, 0);
+            }
+          }
+          @keyframes auroraFlowCoreMobile {
+            0% {
+              transform: translate3d(-4%, 0, 0);
+            }
+            50% {
+              transform: translate3d(4%, 0, 0);
+            }
+            100% {
+              transform: translate3d(-4%, 0, 0);
+            }
+          }
           .aurora-layer {
             position: absolute;
             width: 155%;
@@ -138,26 +160,26 @@ export default function AmbientBackground() {
             will-change: transform;
           }
           
-          /* RESPONSIVE OPTIMIZATION FOR MOBILE PORTPORTS: Ensure 60FPS scrolling */
+          /* RESPONSIVE OPTIMIZATION FOR MOBILE DEVICES: Ensure 60FPS scrolling & stability */
           @media (max-width: 768px) {
             .aurora-blur-container {
-              filter: blur(60px);
+              filter: blur(40px); /* Reduced blur to ease GPU pixel-shading load */
             }
-            /* Hide multi-layered blend blends to reduce browser overdraw repaints */
+            /* Hide multi-layered blend modes to reduce browser overdraw repaints */
             .aurora-layer-2, .aurora-layer-3 {
               display: none !important;
             }
             .aurora-layer-1 {
               height: 25vh;
               bottom: -5vh;
-              opacity: 0.7;
-              animation-duration: 15s;
+              opacity: 0.6;
+              animation: auroraFlowPrimaryMobile 25s infinite ease-in-out; /* Simpler translation only */
             }
             .aurora-layer-core {
               height: 10vh;
               bottom: 0px;
-              opacity: 0.75;
-              animation-duration: 12s;
+              opacity: 0.7;
+              animation: auroraFlowCoreMobile 20s infinite ease-in-out; /* Simpler translation only */
             }
           }
         ` }} />
