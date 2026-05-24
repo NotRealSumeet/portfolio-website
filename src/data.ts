@@ -37,9 +37,9 @@ export const PROJECTS_DATA: Project[] = [
       'Visual Direction'
     ],
 
-    summary: 'Description coming soon.',
+    summary: 'A gothic streetwear brand blending Indian heritage, mythology, and modern rebellion through bold visual storytelling.',
 
-    about: 'Description coming soon.',
+    about: 'Nosfera is a Pune-based streetwear label inspired by dark mythology and Indian culture. This project explored the brand’s Wukong-themed drop through packaging, posters, fashion edits, and branding visuals designed with a cinematic gothic aesthetic.',
 
     thumbnailUrl: thumb,
 
