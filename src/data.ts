@@ -21,7 +21,7 @@ export const PROJECTS_DATA: Project[] = [
 
     title: 'WUKONG T SHIRT',
 
-    subtitle: 'INDIAN STREETWEAR BRANDING',
+    subtitle: 'INDIAN STREETWEAR CAMPAIGN',
 
     category: 'Fashion Design',
 
@@ -37,9 +37,9 @@ export const PROJECTS_DATA: Project[] = [
       'Visual Direction'
     ],
 
-    summary: 'A gothic streetwear brand blending Indian heritage, mythology, and modern rebellion through bold visual storytelling.',
+    summary: 'A Wukong-inspired streetwear project combining apparel graphics, campaign visuals, packaging, and editorial fashion direction.',
 
-    about: 'Nosfera is a Pune-based streetwear label inspired by dark mythology and Indian culture. This project explored the brand’s Wukong-themed drop through packaging, posters, fashion edits, and branding visuals designed with a cinematic gothic aesthetic.',
+    about: 'Designed for Nosfera, this project explored mythological storytelling through gothic streetwear aesthetics. The project included apparel design, posters, packaging, fashion edits, and social-ready campaign visuals built around a dark editorial identity.',
 
     thumbnailUrl: thumb,
 
