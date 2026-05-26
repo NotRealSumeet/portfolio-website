@@ -100,18 +100,18 @@ export default function Sidebar({
                           onSelectProject(proj.id);
                           setMobileMenuOpen(false);
                         }}
-                        className={`w-full text-left font-sans text-lg font-bold tracking-tight uppercase flex items-center justify-between py-4 border-b border-[#111111] transition-colors ${
+                        className={`w-full text-left font-sans text-lg font-bold tracking-tight uppercase flex items-start justify-between py-4 border-b border-[#111111] transition-colors ${
                           isActive ? 'text-[#742DE1]' : 'text-[#666666] active:text-white'
                         }`}
                         style={{ minHeight: '48px' }}
                       >
-                        <span className="flex items-center gap-3">
-                          <span className="font-mono text-[10px] text-[#444444]">
+                        <span className="flex items-start gap-3 min-w-0">
+                          <span className="font-mono text-[10px] text-[#444444] mt-[5px] shrink-0">
                             {(idx + 1).toString().padStart(2, '0')}
                           </span>
-                          <span className="truncate max-w-[200px]">{proj.title}</span>
+                          <span className="whitespace-normal break-words text-balance leading-tight">{proj.title}</span>
                         </span>
-                        <span className="text-[10px] font-mono text-[#555555]">
+                        <span className="text-[10px] font-mono text-[#555555] mt-[5px] shrink-0 ml-4">
                           {proj.year}
                         </span>
                       </button>
@@ -250,24 +250,24 @@ export default function Sidebar({
                     {/* Left padding offset for thumbnails on desktop */}
                     <button
                       onClick={() => onSelectProject(proj.id)}
-                      className={`group w-full text-left font-sans text-sm xl:text-base font-bold tracking-tight uppercase py-2 flex items-center justify-between transition-all duration-300 relative ${
+                      className={`group w-full text-left font-sans text-sm xl:text-base font-bold tracking-tight uppercase py-2 flex items-start justify-between transition-all duration-300 relative ${
                         isActive
                           ? 'text-[#742DE1] pl-0 xl:pl-2'
                           : 'text-[#666666] hover:text-[#742DE1] hover:pl-2'
                       }`}
                     >
-                      <span className="flex items-center gap-2">
-                        <span className="font-mono text-[10px] text-[#444444] group-hover:text-[#666666] transition-colors">
+                      <span className="flex items-start gap-2 min-w-0">
+                        <span className="font-mono text-[10px] text-[#444444] group-hover:text-[#666666] transition-colors mt-[3px] xl:mt-[4px] shrink-0">
                           {(idx + 1).toString().padStart(2, '0')}
                         </span>
-                        <span className="truncate">{proj.title}</span>
+                        <span className="whitespace-normal break-words text-balance leading-tight">{proj.title}</span>
                       </span>
 
                       {/* Accent marker for active status */}
                       {isActive && (
                         <motion.div
                           layoutId="activeIndicator"
-                          className="w-[5px] h-[5px] bg-[#742DE1] rounded-full ml-2"
+                          className="w-[5px] h-[5px] bg-[#742DE1] rounded-full ml-2 mt-[6px] xl:mt-[8px] shrink-0"
                         />
                       )}
                     </button>
