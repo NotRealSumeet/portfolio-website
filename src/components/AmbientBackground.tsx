@@ -7,7 +7,12 @@ export default function AmbientBackground() {
   return (
     <div 
       className="fixed top-0 bottom-0 right-0 left-0 md:left-[25%] lg:left-[20%] pointer-events-none overflow-hidden select-none bg-transparent"
-      style={{ zIndex: -1 }}
+      style={{ 
+        zIndex: -1,
+        transform: 'translate3d(0,0,0)',
+        willChange: 'transform',
+        contain: 'strict'
+      }}
     >
       {/* 
         HIGH PERFORMANCE GPU BLUR COMPOSITOR:

@@ -131,19 +131,19 @@ export default function ProjectDetail({
           </div>
 
           {/* 2-COLUMN MASONRY GRID (Pinterest style) */}
-          <div className="columns-1 md:columns-2 gap-4 lg:gap-6 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 w-full items-start">
             {project.media.slice(1, visibleCount).map((item, idx) => (
               <div 
                 key={item.id} 
                 onClick={() => setLightboxIndex(idx + 1)}
-                className="break-inside-avoid mb-4 lg:mb-6 overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-all duration-300 hover:border-[#333] aspect-video"
+                className="overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-[border-color] duration-300 hover:border-[#333] aspect-video"
               >
                 <div className="w-full h-full text-left">
                   {item.type === 'image' && (
                     <img
                       src={item.url}
                       alt=""
-                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500"
+                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
                       referrerPolicy="no-referrer"
                       loading="lazy"
                       decoding="async"
@@ -157,7 +157,7 @@ export default function ProjectDetail({
                       loop
                       muted
                       playsInline
-                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500"
+                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
                     />
                   )}
 
@@ -165,7 +165,7 @@ export default function ProjectDetail({
                     <img
                       src={item.url}
                       alt=""
-                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500"
+                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
                       referrerPolicy="no-referrer"
                       loading="lazy"
                       decoding="async"

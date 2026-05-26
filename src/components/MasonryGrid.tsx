@@ -67,13 +67,13 @@ export default function MasonryGrid({ projects, onSelectProject }: MasonryGridPr
                 <motion.img
                   src={proj.thumbnailUrl}
                   alt={proj.title}
-                  className="w-full h-full object-cover grayscale-0 group-hover:grayscale transition-all duration-700 ease-out group-hover:scale-105"
+                  className="w-full h-full object-cover grayscale-0 group-hover:grayscale transition-[transform,filter] duration-700 ease-out group-hover:scale-105 will-change-[transform,filter]"
                   referrerPolicy="no-referrer"
                   loading="lazy"
                 />
                 
                 {/* Modern Editorial Hover Overlay: Title and [Category] at top-left */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/95 via-black/45 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-between p-5">
+                <div className="absolute inset-0 bg-gradient-to-b from-black/95 via-black/45 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-5">
                   <div className="space-y-1.5 text-left">
                     <h4 className="font-sans font-bold text-white text-base lg:text-lg tracking-tight uppercase leading-none">
                       {proj.title}
