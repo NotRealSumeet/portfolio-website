@@ -85,62 +85,125 @@ export default function ProjectDetail({
       </div>
 
       {/* 2. PROJECT IMAGES FLOW (HERO + GALLERY STREAM) */}
-      <div className="w-full flex flex-col pt-2">
-        {/* HERO IMAGE */}
-        <div 
-          onClick={() => setLightboxIndex(0)}
-          className="w-full overflow-hidden cursor-zoom-in relative"
-        >
-          <img
-            src={project.thumbnailUrl}
-            alt={project.title}
-            className="w-full h-auto block"
-            referrerPolicy="no-referrer"
-          />
-        </div>
-
-        {/* GALLERY IMAGES */}
-        {project.media.slice(1).map((item, idx) => (
+      {project.id === 'thumbnail-project' ? (
+        /* SPECIAL PINTEREST-STYLE SHOWCASE FOR THUMBNAIL ARCHIVE */
+        <div className="w-full flex flex-col pt-2">
+          {/* HERO IMAGE: Cinematic showcase style */}
           <div 
-            key={item.id} 
-            onClick={() => setLightboxIndex(idx + 1)}
-            className="w-full relative cursor-zoom-in overflow-hidden"
+            onClick={() => setLightboxIndex(0)}
+            className="w-full overflow-hidden cursor-zoom-in relative border border-[#1a1a1a] bg-[#0d0d0d] mb-4 lg:mb-6"
           >
-            <div className="w-full text-left">
-              {item.type === 'image' && (
-                <img
-                  src={item.url}
-                  alt=""
-                  className="w-full h-auto block"
-                  referrerPolicy="no-referrer"
-                  loading="lazy"
-                />
-              )}
-
-              {item.type === 'video' && (
-                <video
-                  src={item.url}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-auto block"
-                />
-              )}
-
-              {item.type === 'gif' && (
-                <img
-                  src={item.url}
-                  alt=""
-                  className="w-full h-auto block"
-                  referrerPolicy="no-referrer"
-                  loading="lazy"
-                />
-              )}
-            </div>
+            <img
+              src={project.thumbnailUrl}
+              alt={project.title}
+              className="w-full h-auto block transform hover:scale-[1.005] transition-transform duration-700"
+              referrerPolicy="no-referrer"
+            />
           </div>
-        ))}
-      </div>
+
+          {/* 2-COLUMN MASONRY GRID (Pinterest style) */}
+          <div className="columns-1 md:columns-2 gap-4 lg:gap-6 w-full">
+            {project.media.slice(1).map((item, idx) => (
+              <div 
+                key={item.id} 
+                onClick={() => setLightboxIndex(idx + 1)}
+                className="break-inside-avoid mb-4 lg:mb-6 overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-all duration-300 hover:border-[#333]"
+              >
+                <div className="w-full text-left">
+                  {item.type === 'image' && (
+                    <img
+                      src={item.url}
+                      alt=""
+                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500"
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                    />
+                  )}
+
+                  {item.type === 'video' && (
+                    <video
+                      src={item.url}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500"
+                    />
+                  )}
+
+                  {item.type === 'gif' && (
+                    <img
+                      src={item.url}
+                      alt=""
+                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500"
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        /* DEFAULT BEHANCE-STYLE SEAMLESS STACKED GALLERY */
+        <div className="w-full flex flex-col pt-2">
+          {/* HERO IMAGE */}
+          <div 
+            onClick={() => setLightboxIndex(0)}
+            className="w-full overflow-hidden cursor-zoom-in relative"
+          >
+            <img
+              src={project.thumbnailUrl}
+              alt={project.title}
+              className="w-full h-auto block"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+
+          {/* GALLERY IMAGES */}
+          {project.media.slice(1).map((item, idx) => (
+            <div 
+              key={item.id} 
+              onClick={() => setLightboxIndex(idx + 1)}
+              className="w-full relative cursor-zoom-in overflow-hidden"
+            >
+              <div className="w-full text-left">
+                {item.type === 'image' && (
+                  <img
+                    src={item.url}
+                    alt=""
+                    className="w-full h-auto block"
+                    referrerPolicy="no-referrer"
+                    loading="lazy"
+                  />
+                )}
+
+                {item.type === 'video' && (
+                  <video
+                    src={item.url}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-auto block"
+                  />
+                )}
+
+                {item.type === 'gif' && (
+                  <img
+                    src={item.url}
+                    alt=""
+                    className="w-full h-auto block"
+                    referrerPolicy="no-referrer"
+                    loading="lazy"
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* FOOTER NAV CONTROLS FOR DIRECT CATALOG EXPLORING */}
       <div className="h-[1px] bg-[#111111] w-full pt-1" />

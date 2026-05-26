@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// LOGO UNC
+
 import { Project } from './types';
 
 import project2thumb from './assets/projects/chickenlogo/SLIDE 1.jpg';
@@ -13,7 +15,7 @@ import project2image3 from './assets/projects/chickenlogo/SLIDE 4.jpg';
 import project2image4 from './assets/projects/chickenlogo/SLIDE 5.jpg';
 import project2image5 from './assets/projects/chickenlogo/SLIDE 6.jpg';
 
-
+// WUKONG 
 import thumb from './assets/projects/wukongtshirt/1-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
 
 import image1 from './assets/projects/wukongtshirt/1-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
@@ -24,11 +26,79 @@ import image5 from './assets/projects/wukongtshirt/33-indian-streetwear-branding
 import image6 from './assets/projects/wukongtshirt/41-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
 import image7 from './assets/projects/wukongtshirt/49-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
 
+// THUMBNAIL
 
+import thumbProjectThumb from './assets/projects/thumbnailproject/THUMB (1).jpg';
+
+const getBaseFilename = (url: string) => {
+  const decoded = decodeURIComponent(url);
+  const filename = decoded.split('/').pop() || '';
+  return filename.replace(/-[a-zA-Z0-9]{8,}\./, '.');
+};
+
+const thumbnailProjectImages = (Object.values(
+  import.meta.glob('./assets/projects/thumbnailproject/*.{jpg,jpeg,png,webp}', {
+    eager: true,
+    import: 'default',
+  })
+) as string[]).sort((a, b) => {
+  const matchA = a.match(/\((\d+)\)/);
+  const matchB = b.match(/\((\d+)\)/);
+  const numA = matchA ? parseInt(matchA[1], 10) : 0;
+  const numB = matchB ? parseInt(matchB[1], 10) : 0;
+  return numA - numB;
+});
 
 
 
 export const PROJECTS_DATA: Project[] = [
+
+  // THUMBNAIL PROJECT
+  {
+    id: 'thumbnail-project',
+
+    title: 'THUMBNAIL ARCHIVE',
+
+    subtitle: 'YOUTUBE THUMBNAIL COLLECTION',
+
+    category: 'Thumbnail Design',
+
+    year: '2025-2026',
+
+    client: 'Various',
+
+    role: 'Graphic Designer',
+
+    services: [
+      'Thumbnail Design',
+      'YouTube Packaging'
+    ],
+
+    summary: 'Collection of cinematic and high-retention thumbnail designs.',
+
+    about: 'A collection of high-impact thumbnail designs created across multiple content niches including crypto, education, gaming, entertainment, and informational media. The project focused on building attention-grabbing visuals optimized for click-through performance through strong composition, bold typography, expressive imagery, and platform-driven visual storytelling.',
+
+    thumbnailUrl: thumbProjectThumb,
+
+    aspectRatio: 'aspect-square',
+
+    media: [
+      {
+        id: 'thumb-hero',
+        type: 'image' as const,
+        url: thumbProjectThumb,
+        caption: '',
+      },
+      ...thumbnailProjectImages
+        .filter((img) => getBaseFilename(img) !== getBaseFilename(thumbProjectThumb))
+        .map((img, index) => ({
+          id: `thumb-${index}`,
+          type: 'image' as const,
+          url: img,
+          caption: '',
+        })),
+    ],
+  },
 
   // Unc's Fried chicken project
 
@@ -62,6 +132,12 @@ export const PROJECTS_DATA: Project[] = [
     aspectRatio: 'aspect-square',
 
     media: [
+      {
+        id: 'p-hero',
+        type: 'image' as const,
+        url: project2thumb,
+        caption: ''
+      },
       {
         id: 'p-1',
         type: 'image',
