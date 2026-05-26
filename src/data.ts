@@ -33,7 +33,8 @@ import thumbProjectThumb from './assets/projects/thumbnailproject/THUMB (1).jpg'
 const getBaseFilename = (url: string) => {
   const decoded = decodeURIComponent(url);
   const filename = decoded.split('/').pop() || '';
-  return filename.replace(/-[a-zA-Z0-9]{8,}\./, '.');
+  // Support Vite hashes with underscores/hyphens (e.g., -D31_TP0I.jpg) and ignore casing
+  return filename.replace(/-[a-zA-Z0-9_-]{7,}\.([a-zA-Z0-9]+)$/, '.$1').toLowerCase();
 };
 
 const thumbnailProjectImages = (Object.values(

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { Project } from '../types';
@@ -23,6 +23,35 @@ export default function ProjectDetail({
   onPrevProject
 }: ProjectDetailProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [visibleCount, setVisibleCount] = useState(13);
+
+  // Progressive infinite scroll loading for Thumbnail Archive project
+  useEffect(() => {
+    if (project.id !== 'thumbnail-project') return;
+    
+    // Reset visible count when project changes
+    setVisibleCount(13);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => Math.min(prev + 12, project.media.length));
+        }
+      },
+      { rootMargin: '400px' }
+    );
+
+    const target = document.getElementById('infinite-scroll-trigger');
+    if (target) {
+      observer.observe(target);
+    }
+
+    return () => {
+      if (target) {
+        observer.unobserve(target);
+      }
+    };
+  }, [project.id, project.media.length]);
 
   return (
     <motion.div
@@ -103,20 +132,21 @@ export default function ProjectDetail({
 
           {/* 2-COLUMN MASONRY GRID (Pinterest style) */}
           <div className="columns-1 md:columns-2 gap-4 lg:gap-6 w-full">
-            {project.media.slice(1).map((item, idx) => (
+            {project.media.slice(1, visibleCount).map((item, idx) => (
               <div 
                 key={item.id} 
                 onClick={() => setLightboxIndex(idx + 1)}
-                className="break-inside-avoid mb-4 lg:mb-6 overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-all duration-300 hover:border-[#333]"
+                className="break-inside-avoid mb-4 lg:mb-6 overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-all duration-300 hover:border-[#333] aspect-video"
               >
-                <div className="w-full text-left">
+                <div className="w-full h-full text-left">
                   {item.type === 'image' && (
                     <img
                       src={item.url}
                       alt=""
-                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500"
+                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500"
                       referrerPolicy="no-referrer"
                       loading="lazy"
+                      decoding="async"
                     />
                   )}
 
@@ -127,7 +157,7 @@ export default function ProjectDetail({
                       loop
                       muted
                       playsInline
-                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500"
+                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500"
                     />
                   )}
 
@@ -135,15 +165,23 @@ export default function ProjectDetail({
                     <img
                       src={item.url}
                       alt=""
-                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500"
+                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500"
                       referrerPolicy="no-referrer"
                       loading="lazy"
+                      decoding="async"
                     />
                   )}
                 </div>
               </div>
             ))}
           </div>
+
+          {/* Scroll trigger for infinite scroll loading */}
+          {visibleCount < project.media.length && (
+            <div id="infinite-scroll-trigger" className="h-16 w-full flex items-center justify-center font-mono text-[9px] text-[#444444] uppercase tracking-[0.25em] py-12">
+              [ LOADING ARCHIVE SEGMENTS... ]
+            </div>
+          )}
         </div>
       ) : (
         /* DEFAULT BEHANCE-STYLE SEAMLESS STACKED GALLERY */
