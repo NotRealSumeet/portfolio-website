@@ -63,11 +63,11 @@ export default function MasonryGrid({ projects, onSelectProject }: MasonryGridPr
               className="group cursor-pointer flex flex-col justify-between"
             >
               {/* Image Frame with different aspect ratios for rhythm */}
-              <div className={`overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative w-full ${proj.aspectRatio}`}>
+              <div className={`cinematic-container bg-[#0d0d0d] border border-[#1a1a1a] relative w-full ${proj.aspectRatio}`}>
                 <motion.img
                   src={proj.thumbnailUrl}
                   alt={proj.title}
-                  className="w-full h-full object-cover grayscale-0 group-hover:grayscale transition-[transform,filter] duration-700 ease-out group-hover:scale-105 will-change-[transform,filter]"
+                  className="cinematic-image"
                   referrerPolicy="no-referrer"
                   loading="lazy"
                 />
