@@ -50,9 +50,90 @@ const thumbnailProjectImages = (Object.values(
   return numA - numB;
 });
 
+// POSTER PROJECT
+const posterProjectMediaFiles = (Object.values(
+  import.meta.glob('./assets/projects/posterproject/*.{jpg,jpeg,png,webp,webm}', {
+    eager: true,
+    import: 'default',
+  })
+) as string[]);
 
+const posterProjectThumb = posterProjectMediaFiles.find(
+  (file) => getBaseFilename(file) === 'poster (1).jpg'
+) || '';
+
+const posterProjectWebm = posterProjectMediaFiles.find(
+  (file) => getBaseFilename(file) === 'animation.webm'
+) || '';
+
+const posterProjectRemaining = posterProjectMediaFiles
+  .filter((file) => {
+    const filename = getBaseFilename(file);
+    return filename !== 'poster (1).jpg' && filename !== 'animation.webm';
+  })
+  .sort((a, b) => {
+    const matchA = a.match(/\((\d+)\)/);
+    const matchB = b.match(/\((\d+)\)/);
+    const numA = matchA ? parseInt(matchA[1], 10) : 0;
+    const numB = matchB ? parseInt(matchB[1], 10) : 0;
+    return numA - numB;
+  });
 
 export const PROJECTS_DATA: Project[] = [
+
+  // POSTER PROJECT
+  {
+    id: 'experimental-poster-design',
+
+    title: 'VISUAL EXPERIMENTS',
+
+    subtitle: 'POSTER DESIGN ARCHIVE',
+
+    category: 'Poster Design',
+
+    year: '2025',
+
+    client: 'Self Initiated',
+
+    role: 'Graphic Designer',
+
+    services: [
+      'Poster Design',
+      'Art Direction',
+      'Visual Experimentation'
+    ],
+
+    summary:
+      'A collection of grunge, collage work, and visual design experiments exploring different moods, aesthetics, and storytelling styles.',
+
+    about:
+      'An ongoing archive of experimental poster designs created across music, film, gaming, internet culture, and conceptual themes. The project explores typography, color treatment, mixed media collage, cinematic compositions, and alternative visual storytelling through a wide range of graphic styles and digital art directions.',
+
+    thumbnailUrl: posterProjectThumb,
+
+    aspectRatio: 'aspect-square',
+
+    media: [
+      {
+        id: 'poster-video',
+        type: 'video' as const,
+        url: posterProjectWebm,
+        caption: '',
+      },
+      {
+        id: 'poster-1',
+        type: 'image' as const,
+        url: posterProjectThumb,
+        caption: '',
+      },
+      ...posterProjectRemaining.map((img, index) => ({
+        id: `poster-${index + 2}`,
+        type: 'image' as const,
+        url: img,
+        caption: '',
+      })),
+    ],
+  },
 
   // THUMBNAIL PROJECT
   {

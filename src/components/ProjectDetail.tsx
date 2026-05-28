@@ -25,9 +25,9 @@ export default function ProjectDetail({
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(13);
 
-  // Progressive infinite scroll loading for Thumbnail Archive project
+  // Progressive infinite scroll loading for Thumbnail Archive and Poster Design projects
   useEffect(() => {
-    if (project.id !== 'thumbnail-project') return;
+    if (project.id !== 'thumbnail-project' && project.id !== 'experimental-poster-design') return;
     
     // Reset visible count when project changes
     setVisibleCount(13);
@@ -166,6 +166,88 @@ export default function ProjectDetail({
                       src={item.url}
                       alt=""
                       className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Scroll trigger for infinite scroll loading */}
+          {visibleCount < project.media.length && (
+            <div id="infinite-scroll-trigger" className="h-16 w-full flex items-center justify-center font-mono text-[9px] text-[#444444] uppercase tracking-[0.25em] py-12">
+              [ LOADING ARCHIVE SEGMENTS... ]
+            </div>
+          )}
+        </div>
+      ) : project.id === 'experimental-poster-design' ? (
+        /* SPECIAL MIXED-MEDIA MASONRY LAYOUT FOR EXPERIMENTAL POSTER DESIGN */
+        <div className="w-full flex flex-col pt-2">
+          {/* HERO VIDEO: Cinematic motion opener */}
+          {project.media[0] && (
+            <div 
+              onClick={() => setLightboxIndex(0)}
+              className="w-full overflow-hidden cursor-zoom-in relative border border-[#1a1a1a] bg-[#0d0d0d] mb-4 lg:mb-6"
+            >
+              {project.media[0].type === 'video' ? (
+                <video
+                  src={project.media[0].url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-auto block transform hover:scale-[1.005] transition-transform duration-700"
+                />
+              ) : (
+                <img
+                  src={project.media[0].url}
+                  alt={project.title}
+                  className="w-full h-auto block transform hover:scale-[1.005] transition-transform duration-700"
+                  referrerPolicy="no-referrer"
+                />
+              )}
+            </div>
+          )}
+
+          {/* 2-COLUMN MASONRY GRID (Pinterest style using native columns for natural aspects) */}
+          <div className="masonry-gallery w-full">
+            {project.media.slice(1, visibleCount).map((item, idx) => (
+              <div 
+                key={item.id} 
+                onClick={() => setLightboxIndex(idx + 1)}
+                className="masonry-gallery-item overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-[border-color] duration-300 hover:border-[#333]"
+              >
+                <div className="w-full text-left">
+                  {item.type === 'image' && (
+                    <img
+                      src={item.url}
+                      alt=""
+                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+
+                  {item.type === 'video' && (
+                    <video
+                      src={item.url}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
+                    />
+                  )}
+
+                  {item.type === 'gif' && (
+                    <img
+                      src={item.url}
+                      alt=""
+                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
                       referrerPolicy="no-referrer"
                       loading="lazy"
                       decoding="async"
