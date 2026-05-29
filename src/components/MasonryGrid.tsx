@@ -63,7 +63,9 @@ export default function MasonryGrid({ projects, onSelectProject }: MasonryGridPr
                 alt={proj.title}
                 className="cinematic-image"
                 referrerPolicy="no-referrer"
-                loading="lazy"
+                loading={idx < 2 ? "eager" : "lazy"}
+                decoding={idx < 2 ? "sync" : "async"}
+                {...({ fetchPriority: idx < 2 ? "high" : undefined } as any)}
               />
               
               {/* Modern Editorial Hover Overlay: Title and [Category] at top-left */}

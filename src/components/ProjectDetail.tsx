@@ -3,11 +3,199 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { Project } from '../types';
 import Lightbox from './Lightbox';
+
+// Hook to track the active columns count responsively (mimicking media queries)
+function useColumnCount() {
+  const [columns, setColumns] = useState(1);
+
+  useEffect(() => {
+    const updateColumns = () => {
+      if (window.innerWidth >= 1024) {
+        setColumns(3);
+      } else if (window.innerWidth >= 640) {
+        setColumns(2);
+      } else {
+        setColumns(1);
+      }
+    };
+    updateColumns();
+    window.addEventListener('resize', updateColumns);
+    return () => window.removeEventListener('resize', updateColumns);
+  }, []);
+
+  return columns;
+}
+
+interface LazyMediaProps {
+  url: string;
+  type: 'image' | 'gif';
+  aspectRatioNumber?: number;
+  alt?: string;
+  className?: string;
+  onClick?: () => void;
+  priority?: boolean;
+}
+
+function LazyMedia({ url, type, aspectRatioNumber, alt = '', className = '', onClick, priority = false }: LazyMediaProps) {
+  const [isIntersected, setIsIntersected] = useState(priority);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (priority) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsIntersected(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '600px' } // Preload images 600px before they scroll into view
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [priority]);
+
+  const style: React.CSSProperties = aspectRatioNumber
+    ? { aspectRatio: String(aspectRatioNumber) }
+    : {};
+
+  return (
+    <div
+      ref={ref}
+      style={style}
+      onClick={onClick}
+      className={`w-full bg-[#0a0a0a] relative overflow-hidden transition-colors duration-300 ${className}`}
+    >
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-900/50 to-zinc-950 bg-[length:200%_100%] animate-pulse" />
+      )}
+      {isIntersected && (
+        <img
+          src={url}
+          alt={alt}
+          onLoad={() => setIsLoaded(true)}
+          decoding="async"
+          className={`w-full h-auto block transition-all duration-700 ease-out ${
+            isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-[0.99] blur-[2px]'
+          }`}
+          referrerPolicy="no-referrer"
+        />
+      )}
+    </div>
+  );
+}
+
+interface LazyVideoProps {
+  url: string;
+  aspectRatioNumber?: number;
+  className?: string;
+  onClick?: () => void;
+  autoPlay?: boolean;
+  priority?: boolean;
+}
+
+function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClick, autoPlay = true, priority = false }: LazyVideoProps) {
+  const [isIntersected, setIsIntersected] = useState(priority);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Defer mounting of video until close to viewport
+  useEffect(() => {
+    if (priority) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsIntersected(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '400px' }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [priority]);
+
+  // Viewport observer to play when visible, pause when offscreen
+  useEffect(() => {
+    if (!autoPlay || !isIntersected) return;
+
+    const playbackObserver = new IntersectionObserver(
+      (entries) => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (entries[0].isIntersecting) {
+          video.play().catch((err) => {
+            console.log('Autoplay play interrupted or blocked:', err.message);
+          });
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    const currentContainer = containerRef.current;
+    if (currentContainer) {
+      playbackObserver.observe(currentContainer);
+    }
+
+    return () => {
+      if (currentContainer) {
+        playbackObserver.unobserve(currentContainer);
+      }
+    };
+  }, [isIntersected, autoPlay]);
+
+  const style: React.CSSProperties = {
+    aspectRatio: String(aspectRatioNumber),
+    contain: 'paint' // Isolate video layout and painting
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      style={style}
+      onClick={onClick}
+      className={`w-full bg-[#0a0a0a] relative overflow-hidden transition-colors duration-300 ${className}`}
+    >
+      {isIntersected && (
+        <video
+          ref={videoRef}
+          src={url}
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover block"
+          style={{
+            transform: 'translate3d(0, 0, 0)', // Promotion to GPU layer
+            backfaceVisibility: 'hidden',
+          }}
+        />
+      )}
+    </div>
+  );
+}
 
 interface ProjectDetailProps {
   project: Project;
@@ -24,6 +212,7 @@ export default function ProjectDetail({
 }: ProjectDetailProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(13);
+  const columnCount = useColumnCount();
 
   // Progressive infinite scroll loading for Thumbnail Archive and Poster Design projects
   useEffect(() => {
@@ -52,6 +241,16 @@ export default function ProjectDetail({
       }
     };
   }, [project.id, project.media.length]);
+
+  // Distribute items round-robin for the masonry view
+  const slicedMedia = project.media.slice(1, visibleCount).map((item, idx) => ({
+    item,
+    originalIdx: idx + 1
+  }));
+  const cols = Array.from({ length: columnCount }, () => [] as typeof slicedMedia);
+  slicedMedia.forEach((val, idx) => {
+    cols[idx % columnCount].push(val);
+  });
 
   return (
     <motion.div
@@ -122,11 +321,13 @@ export default function ProjectDetail({
             onClick={() => setLightboxIndex(0)}
             className="w-full overflow-hidden cursor-zoom-in relative border border-[#1a1a1a] bg-[#0d0d0d] mb-4 lg:mb-6"
           >
-            <img
-              src={project.thumbnailUrl}
+            <LazyMedia
+              url={project.thumbnailUrl}
+              type="image"
+              aspectRatioNumber={project.media[0]?.aspectRatioNumber}
               alt={project.title}
               className="w-full h-auto block transform hover:scale-[1.005] transition-transform duration-700"
-              referrerPolicy="no-referrer"
+              priority={true}
             />
           </div>
 
@@ -136,39 +337,23 @@ export default function ProjectDetail({
               <div 
                 key={item.id} 
                 onClick={() => setLightboxIndex(idx + 1)}
-                className="overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-[border-color] duration-300 hover:border-[#333] aspect-video"
+                className="overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-[border-color] duration-300 hover:border-[#333]"
               >
-                <div className="w-full h-full text-left">
-                  {item.type === 'image' && (
-                    <img
-                      src={item.url}
-                      alt=""
-                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                      decoding="async"
+                <div className="w-full text-left">
+                  {(item.type === 'image' || item.type === 'gif') && (
+                    <LazyMedia
+                      url={item.url}
+                      type={item.type}
+                      aspectRatioNumber={item.aspectRatioNumber}
+                      className="transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
                     />
                   )}
 
                   {item.type === 'video' && (
-                    <video
-                      src={item.url}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
-                    />
-                  )}
-
-                  {item.type === 'gif' && (
-                    <img
-                      src={item.url}
-                      alt=""
-                      className="w-full h-full object-cover transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                      decoding="async"
+                    <LazyVideo
+                      url={item.url}
+                      aspectRatioNumber={item.aspectRatioNumber}
+                      className="transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
                     />
                   )}
                 </div>
@@ -193,67 +378,60 @@ export default function ProjectDetail({
               className="w-full overflow-hidden cursor-zoom-in relative border border-[#1a1a1a] bg-[#0d0d0d] mb-4 lg:mb-6"
             >
               {project.media[0].type === 'video' ? (
-                <video
-                  src={project.media[0].url}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  className="w-full h-auto block transform hover:scale-[1.005] transition-transform duration-700"
+                <LazyVideo
+                  url={project.media[0].url}
+                  aspectRatioNumber={project.media[0].aspectRatioNumber}
+                  className="transform hover:scale-[1.005] transition-transform duration-700"
+                  priority={true}
                 />
               ) : (
-                <img
-                  src={project.media[0].url}
+                <LazyMedia
+                  url={project.media[0].url}
+                  type="image"
+                  aspectRatioNumber={project.media[0].aspectRatioNumber}
                   alt={project.title}
-                  className="w-full h-auto block transform hover:scale-[1.005] transition-transform duration-700"
-                  referrerPolicy="no-referrer"
+                  className="transform hover:scale-[1.005] transition-transform duration-700"
+                  priority={true}
                 />
               )}
             </div>
           )}
 
-          {/* 2-COLUMN MASONRY GRID (Pinterest style using native columns for natural aspects) */}
-          <div className="masonry-gallery w-full">
-            {project.media.slice(1, visibleCount).map((item, idx) => (
-              <div 
-                key={item.id} 
-                onClick={() => setLightboxIndex(idx + 1)}
-                className="masonry-gallery-item overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-[border-color] duration-300 hover:border-[#333]"
-              >
-                <div className="w-full text-left">
-                  {item.type === 'image' && (
-                    <img
-                      src={item.url}
-                      alt=""
-                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  )}
+          {/* Stable responsive CSS grid utilizing react-controlled flex columns */}
+          <div 
+            className="grid gap-6 lg:gap-8 items-start w-full"
+            style={{
+              gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`
+            }}
+          >
+            {cols.map((colItems, colIdx) => (
+              <div key={colIdx} className="flex flex-col gap-6 lg:gap-8">
+                {colItems.map(({ item, originalIdx }) => (
+                  <div 
+                    key={item.id} 
+                    onClick={() => setLightboxIndex(originalIdx)}
+                    className="overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-[border-color] duration-300 hover:border-[#333]"
+                  >
+                    <div className="w-full text-left">
+                      {(item.type === 'image' || item.type === 'gif') && (
+                        <LazyMedia
+                          url={item.url}
+                          type={item.type}
+                          aspectRatioNumber={item.aspectRatioNumber}
+                          className="transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
+                        />
+                      )}
 
-                  {item.type === 'video' && (
-                    <video
-                      src={item.url}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
-                    />
-                  )}
-
-                  {item.type === 'gif' && (
-                    <img
-                      src={item.url}
-                      alt=""
-                      className="w-full h-auto block transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  )}
-                </div>
+                      {item.type === 'video' && (
+                        <LazyVideo
+                          url={item.url}
+                          aspectRatioNumber={item.aspectRatioNumber}
+                          className="transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
@@ -267,17 +445,19 @@ export default function ProjectDetail({
         </div>
       ) : (
         /* DEFAULT BEHANCE-STYLE SEAMLESS STACKED GALLERY */
-        <div className="w-full flex flex-col pt-2">
+        <div className="w-full flex flex-col pt-2 gap-4 sm:gap-6 lg:gap-8">
           {/* HERO IMAGE */}
           <div 
             onClick={() => setLightboxIndex(0)}
-            className="w-full overflow-hidden cursor-zoom-in relative"
+            className="w-full overflow-hidden cursor-zoom-in relative border border-[#1a1a1a] bg-[#0d0d0d]"
           >
-            <img
-              src={project.thumbnailUrl}
+            <LazyMedia
+              url={project.thumbnailUrl}
+              type="image"
+              aspectRatioNumber={project.media[0]?.aspectRatioNumber}
               alt={project.title}
               className="w-full h-auto block"
-              referrerPolicy="no-referrer"
+              priority={true}
             />
           </div>
 
@@ -286,37 +466,23 @@ export default function ProjectDetail({
             <div 
               key={item.id} 
               onClick={() => setLightboxIndex(idx + 1)}
-              className="w-full relative cursor-zoom-in overflow-hidden"
+              className="w-full relative cursor-zoom-in overflow-hidden border border-[#1a1a1a] bg-[#0d0d0d]"
             >
               <div className="w-full text-left">
-                {item.type === 'image' && (
-                  <img
-                    src={item.url}
-                    alt=""
+                {(item.type === 'image' || item.type === 'gif') && (
+                  <LazyMedia
+                    url={item.url}
+                    type={item.type}
+                    aspectRatioNumber={item.aspectRatioNumber}
                     className="w-full h-auto block"
-                    referrerPolicy="no-referrer"
-                    loading="lazy"
                   />
                 )}
 
                 {item.type === 'video' && (
-                  <video
-                    src={item.url}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
+                  <LazyVideo
+                    url={item.url}
+                    aspectRatioNumber={item.aspectRatioNumber}
                     className="w-full h-auto block"
-                  />
-                )}
-
-                {item.type === 'gif' && (
-                  <img
-                    src={item.url}
-                    alt=""
-                    className="w-full h-auto block"
-                    referrerPolicy="no-referrer"
-                    loading="lazy"
                   />
                 )}
               </div>

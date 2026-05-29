@@ -11,6 +11,9 @@ export interface MediaItem {
   url: string;
   caption: string;
   aspectRatio?: string; // Optional custom grid size overrides, e.g., '16:9', '1:1', '4:5'
+  width?: number;
+  height?: number;
+  aspectRatioNumber?: number;
 }
 
 export interface Project {

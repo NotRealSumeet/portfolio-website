@@ -1,0 +1,580 @@
+{
+  "chickenlogo": {
+    "slide 1.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "slide 2.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "slide 3.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "slide 4.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "slide 5.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "slide 6.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    }
+  },
+  "posterproject": {
+    "poster (1).jpg": {
+      "width": 2000,
+      "height": 2500,
+      "aspectRatio": 0.8
+    },
+    "poster (10).jpg": {
+      "width": 1080,
+      "height": 1350,
+      "aspectRatio": 0.8
+    },
+    "poster (11).jpg": {
+      "width": 2000,
+      "height": 2500,
+      "aspectRatio": 0.8
+    },
+    "poster (12).jpg": {
+      "width": 2550,
+      "height": 3300,
+      "aspectRatio": 0.7727272727272727
+    },
+    "poster (13).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (14).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (15).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (16).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (17).jpg": {
+      "width": 1780,
+      "height": 2225,
+      "aspectRatio": 0.8
+    },
+    "poster (18).jpg": {
+      "width": 2000,
+      "height": 2500,
+      "aspectRatio": 0.8
+    },
+    "poster (19).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (2).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (20).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (21).jpg": {
+      "width": 2160,
+      "height": 2700,
+      "aspectRatio": 0.8
+    },
+    "poster (22).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (23).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (24).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (25).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (26).jpg": {
+      "width": 3276,
+      "height": 4096,
+      "aspectRatio": 0.7998046875
+    },
+    "poster (27).jpg": {
+      "width": 2160,
+      "height": 2700,
+      "aspectRatio": 0.8
+    },
+    "poster (28).jpg": {
+      "width": 3276,
+      "height": 4096,
+      "aspectRatio": 0.7998046875
+    },
+    "poster (3).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (4).jpg": {
+      "width": 3276,
+      "height": 4096,
+      "aspectRatio": 0.7998046875
+    },
+    "poster (5).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (6).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (7).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    },
+    "poster (8).jpg": {
+      "width": 2000,
+      "height": 2500,
+      "aspectRatio": 0.8
+    },
+    "poster (9).jpg": {
+      "width": 1728,
+      "height": 2160,
+      "aspectRatio": 0.8
+    }
+  },
+  "thumbnailproject": {
+    "thumb (1).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (10).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (11).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (12).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (13).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (14).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (15).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (16).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (17).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (18).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (19).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (2).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (20).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (21).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (22).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (23).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (24).jpg": {
+      "width": 3840,
+      "height": 2160,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (25).jpg": {
+      "width": 3840,
+      "height": 2160,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (26).jpg": {
+      "width": 3840,
+      "height": 2160,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (27).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (28).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (29).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (3).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (30).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (31).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (32).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (33).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (34).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (35).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (36).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (37).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (38).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (39).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (4).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (40).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (41).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (42).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (43).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (44).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (45).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (46).jpg": {
+      "width": 3840,
+      "height": 2160,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (47).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (48).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (49).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (5).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (50).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (51).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (52).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (53).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (54).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (55).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (56).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (57).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (58).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (59).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (6).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (60).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (61).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (63).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (64).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (65).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (66).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (67).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (68).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (69).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (7).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (70).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (71).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (72).jpg": {
+      "width": 1280,
+      "height": 720,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (74).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (75).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (8).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "thumb (9).jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    }
+  },
+  "wukongtshirt": {
+    "1-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "17-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "25-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "33-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "41-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg": {
+      "width": 1920,
+      "height": 1059,
+      "aspectRatio": 1.8130311614730878
+    },
+    "49-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg": {
+      "width": 1920,
+      "height": 1101,
+      "aspectRatio": 1.7438692098092643
+    },
+    "9-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    }
+  }
+}

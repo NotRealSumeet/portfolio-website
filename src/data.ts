@@ -6,6 +6,7 @@
 // LOGO UNC
 
 import { Project } from './types';
+import dimensions from './assets/dimensions.json';
 
 import project2thumb from './assets/projects/chickenlogo/SLIDE 1.jpg';
 
@@ -35,6 +36,28 @@ const getBaseFilename = (url: string) => {
   const filename = decoded.split('/').pop() || '';
   // Support Vite hashes with underscores/hyphens (e.g., -D31_TP0I.jpg) and ignore casing
   return filename.replace(/-[a-zA-Z0-9_-]{7,}\.([a-zA-Z0-9]+)$/, '.$1').toLowerCase();
+};
+
+const lookupDimensions = (folder: keyof typeof dimensions, url: string) => {
+  const filename = getBaseFilename(url);
+  const projectDims = dimensions[folder] as Record<string, { width: number; height: number; aspectRatio: number }>;
+  const dim = projectDims?.[filename];
+  if (dim) {
+    return {
+      width: dim.width,
+      height: dim.height,
+      aspectRatioNumber: dim.aspectRatio,
+    };
+  }
+  // Webm video fallback (not computed by node get_dimensions script)
+  if (filename === 'animation.webm') {
+    return {
+      width: 1920,
+      height: 1080,
+      aspectRatioNumber: 1.77777778,
+    };
+  }
+  return {};
 };
 
 const thumbnailProjectImages = (Object.values(
@@ -119,18 +142,21 @@ export const PROJECTS_DATA: Project[] = [
         type: 'video' as const,
         url: posterProjectWebm,
         caption: '',
+        ...lookupDimensions('posterproject', posterProjectWebm),
       },
       {
         id: 'poster-1',
         type: 'image' as const,
         url: posterProjectThumb,
         caption: '',
+        ...lookupDimensions('posterproject', posterProjectThumb),
       },
       ...posterProjectRemaining.map((img, index) => ({
         id: `poster-${index + 2}`,
         type: 'image' as const,
         url: img,
         caption: '',
+        ...lookupDimensions('posterproject', img),
       })),
     ],
   },
@@ -170,6 +196,7 @@ export const PROJECTS_DATA: Project[] = [
         type: 'image' as const,
         url: thumbProjectThumb,
         caption: '',
+        ...lookupDimensions('thumbnailproject', thumbProjectThumb),
       },
       ...thumbnailProjectImages
         .filter((img) => getBaseFilename(img) !== getBaseFilename(thumbProjectThumb))
@@ -178,6 +205,7 @@ export const PROJECTS_DATA: Project[] = [
           type: 'image' as const,
           url: img,
           caption: '',
+          ...lookupDimensions('thumbnailproject', img),
         })),
     ],
   },
@@ -218,37 +246,43 @@ export const PROJECTS_DATA: Project[] = [
         id: 'p-hero',
         type: 'image' as const,
         url: project2thumb,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('chickenlogo', project2thumb)
       },
       {
         id: 'p-1',
         type: 'image',
         url: project2image1,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('chickenlogo', project2image1)
       },
       {
         id: 'p-2',
         type: 'image',
         url: project2image2,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('chickenlogo', project2image2)
       },
       {
         id: 'p-3',
         type: 'image',
         url: project2image3,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('chickenlogo', project2image3)
       },
       {
         id: 'p-4',
         type: 'image',
         url: project2image4,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('chickenlogo', project2image4)
       },
       {
         id: 'p-5',
         type: 'image',
         url: project2image5,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('chickenlogo', project2image5)
       }
     ]
   },
@@ -289,43 +323,50 @@ export const PROJECTS_DATA: Project[] = [
         id: 'p-1',
         type: 'image',
         url: image1,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('wukongtshirt', image1)
       },
       {
         id: 'p-2',
         type: 'image',
         url: image2,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('wukongtshirt', image2)
       },
       {
         id: 'p-3',
         type: 'image',
         url: image3,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('wukongtshirt', image3)
       },
       {
         id: 'p-4',
         type: 'image',
         url: image4,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('wukongtshirt', image4)
       },
       {
         id: 'p-5',
         type: 'image',
         url: image5,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('wukongtshirt', image5)
       },
       {
         id: 'p-6',
         type: 'image',
         url: image6,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('wukongtshirt', image6)
       },
       {
         id: 'p-7',
         type: 'image',
         url: image7,
-        caption: ''
+        caption: '',
+        ...lookupDimensions('wukongtshirt', image7)
       }
     ]
   }
