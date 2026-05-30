@@ -102,7 +102,7 @@ const posterProjectRemaining = posterProjectMediaFiles
     return numA - numB;
   });
 
-export const PROJECTS_DATA: Project[] = [
+const RAW_PROJECTS_DATA: Project[] = [
 
   // POSTER PROJECT
   {
@@ -371,3 +371,23 @@ export const PROJECTS_DATA: Project[] = [
     ]
   }
 ];
+
+const parseYear = (yearStr: string) => {
+  const matches = yearStr.match(/\d+/g);
+  if (!matches || matches.length === 0) return { min: 0, max: 0 };
+  const nums = matches.map(Number);
+  return {
+    min: Math.min(...nums),
+    max: Math.max(...nums)
+  };
+};
+
+export const PROJECTS_DATA: Project[] = [...RAW_PROJECTS_DATA].sort((a, b) => {
+  const yearA = parseYear(a.year);
+  const yearB = parseYear(b.year);
+  
+  if (yearB.max !== yearA.max) {
+    return yearB.max - yearA.max;
+  }
+  return yearB.min - yearA.min;
+});
