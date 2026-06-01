@@ -68,7 +68,8 @@ function LazyMedia({ url, type, aspectRatioNumber, alt = '', className = '', onC
     };
   }, [priority]);
 
-  const style: React.CSSProperties = aspectRatioNumber
+  // Remove aspectRatio style once image is loaded to collapse any subpixel rendering discrepancies
+  const style: React.CSSProperties = aspectRatioNumber && !isLoaded
     ? { aspectRatio: String(aspectRatioNumber) }
     : {};
 
@@ -77,19 +78,24 @@ function LazyMedia({ url, type, aspectRatioNumber, alt = '', className = '', onC
       ref={ref}
       style={style}
       onClick={onClick}
-      className={`w-full bg-[#0a0a0a] relative overflow-hidden transition-colors duration-300 ${className}`}
+      className={`w-full relative overflow-hidden ${className}`}
     >
-      {!isLoaded && (
-        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-900/50 to-zinc-950 bg-[length:200%_100%] animate-pulse" />
-      )}
+      {/* Subtle dark skeleton placeholder that cross-fades */}
+      <div
+        className={`absolute inset-0 bg-[#070707] transition-opacity duration-700 ease-in-out pointer-events-none z-10 ${
+          isLoaded ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-zinc-800/10 to-transparent bg-[length:200%_100%] animate-pulse" />
+      </div>
       {isIntersected && (
         <img
           src={url}
           alt={alt}
           onLoad={() => setIsLoaded(true)}
           decoding="async"
-          className={`w-full h-auto block transition-all duration-700 ease-out ${
-            isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-[0.99] blur-[2px]'
+          className={`w-full h-auto block transition-opacity duration-700 ease-in-out ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           referrerPolicy="no-referrer"
         />
@@ -109,6 +115,7 @@ interface LazyVideoProps {
 
 function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClick, autoPlay = true, priority = false }: LazyVideoProps) {
   const [isIntersected, setIsIntersected] = useState(priority);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -177,8 +184,16 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
       ref={containerRef}
       style={style}
       onClick={onClick}
-      className={`w-full bg-[#0a0a0a] relative overflow-hidden transition-colors duration-300 ${className}`}
+      className={`w-full relative overflow-hidden ${className}`}
     >
+      {/* Subtle dark skeleton placeholder that cross-fades */}
+      <div
+        className={`absolute inset-0 bg-[#070707] transition-opacity duration-700 ease-in-out pointer-events-none z-10 ${
+          isVideoLoaded ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-zinc-800/10 to-transparent bg-[length:200%_100%] animate-pulse" />
+      </div>
       {isIntersected && (
         <video
           ref={videoRef}
@@ -186,7 +201,11 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
           loop
           muted
           playsInline
-          className="w-full h-full object-cover block"
+          onLoadedData={() => setIsVideoLoaded(true)}
+          onCanPlay={() => setIsVideoLoaded(true)}
+          className={`w-full h-full object-cover block transition-opacity duration-700 ease-in-out ${
+            isVideoLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
           style={{
             transform: 'translate3d(0, 0, 0)', // Promotion to GPU layer
             backfaceVisibility: 'hidden',
@@ -445,11 +464,11 @@ export default function ProjectDetail({
         </div>
       ) : (
         /* DEFAULT BEHANCE-STYLE SEAMLESS STACKED GALLERY */
-        <div className="w-full flex flex-col pt-2 gap-4 sm:gap-6 lg:gap-8">
+        <div className="w-full flex flex-col pt-2 gap-0">
           {/* HERO IMAGE */}
           <div 
             onClick={() => setLightboxIndex(0)}
-            className="w-full overflow-hidden cursor-zoom-in relative border border-[#1a1a1a] bg-[#0d0d0d]"
+            className="w-full overflow-hidden cursor-zoom-in relative"
           >
             <LazyMedia
               url={project.thumbnailUrl}
@@ -466,7 +485,7 @@ export default function ProjectDetail({
             <div 
               key={item.id} 
               onClick={() => setLightboxIndex(idx + 1)}
-              className="w-full relative cursor-zoom-in overflow-hidden border border-[#1a1a1a] bg-[#0d0d0d]"
+              className="w-full relative cursor-zoom-in overflow-hidden"
             >
               <div className="w-full text-left">
                 {(item.type === 'image' || item.type === 'gif') && (
