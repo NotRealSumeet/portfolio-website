@@ -2,7 +2,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-
+import { Analytics } from "@vercel/analytics/next"
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -77,7 +77,7 @@ function PortfolioView() {
 
   return (
     <div id="portfolio-root" className="min-h-screen bg-black text-zinc-100 flex flex-col md:flex-row selection:bg-[#742DE1] selection:text-white antialiased">
-      
+
       {/* LEFT COLUMN: Fixed Sticky Sidebar */}
       <Sidebar
         projects={PROJECTS_DATA}
@@ -88,13 +88,13 @@ function PortfolioView() {
 
       {/* RIGHT COLUMN: Asymmetric Responsive Page Content */}
       <main className="relative z-10 overflow-hidden w-full md:ml-[25%] lg:ml-[20%] md:w-[75%] lg:w-[80%] min-h-screen pt-20 md:pt-10 pb-20 px-6 sm:px-8 lg:px-12 xl:px-16 flex flex-col justify-between">
-        
+
         {/* Animated Cinematic Ambient Background Background ONLY behind projects */}
         <AmbientBackground />
 
         {/* UPPER ANCHOR: Interactive Container */}
         <div className="w-full max-w-7xl mx-auto space-y-10 relative z-10">
-          
+
           <AnimatePresence mode="wait">
             {activeProjectId === 'about' ? (
               /* ABOUT PROFILE VIEW */
@@ -117,10 +117,10 @@ function PortfolioView() {
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
                 <ProjectDetail
-                   project={activeProject}
-                   onBack={() => selectProject(null)}
-                   onNextProject={selectNextProject}
-                   onPrevProject={selectPrevProject}
+                  project={activeProject}
+                  onBack={() => selectProject(null)}
+                  onNextProject={selectNextProject}
+                  onPrevProject={selectPrevProject}
                 />
               </motion.div>
             ) : (
