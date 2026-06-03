@@ -102,7 +102,73 @@ const posterProjectRemaining = posterProjectMediaFiles
     return numA - numB;
   });
 
+// MUSIC COVER ART
+const rajAlbumArtMediaFiles = (Object.values(
+  import.meta.glob('./assets/projects/raj_albumart/*.{jpg,jpeg,png,webp,webm}', {
+    eager: true,
+    import: 'default',
+  })
+) as string[]);
+
+const rajAlbumArtThumb = rajAlbumArtMediaFiles.find(
+  (file) => getBaseFilename(file) === 'thumb.jpg'
+) || '';
+
+const rajAlbumArtRemaining = rajAlbumArtMediaFiles
+  .filter((file) => getBaseFilename(file) !== 'thumb.jpg')
+  .sort((a, b) => {
+    const matchA = a.match(/\((\d+)\)/);
+    const matchB = b.match(/\((\d+)\)/);
+    const numA = matchA ? parseInt(matchA[1], 10) : 0;
+    const numB = matchB ? parseInt(matchB[1], 10) : 0;
+    return numA - numB;
+  });
+
 const RAW_PROJECTS_DATA: Project[] = [
+
+  // MUSIC COVER ART
+  {
+    id: 'music-cover-art',
+
+    title: 'JHUTH - COVER ART',
+
+    subtitle: 'MUSIC DIGITAL ART',
+
+    category: 'Cover Art Design',
+
+    year: '2026',
+
+    client: 'Raj Ranjan',
+
+    role: 'Graphic Designer',
+
+    services: [
+      'Cover Art Design',
+      'Photo Manipulation',
+      'Visual Direction'
+    ],
+
+    summary:
+      'A dark cinematic cover artwork designed for Raj Ranjan’s single “JHUTH”, blending emotional tension with surreal visual storytelling.',
+
+    about:
+      'Created for artist Raj Ranjan, the artwork for “JHUTH” explores themes of deception, emotional conflict, and fractured identity through minimalist staging and atmospheric lighting. The visual direction combines surreal character styling, cinematic composition, and moody color grading to create a striking music cover inspired by modern alternative and experimental album aesthetics.',
+
+    thumbnailUrl: rajAlbumArtThumb,
+
+    aspectRatio: 'aspect-square',
+
+    media: rajAlbumArtRemaining.map((img, index) => {
+      const isVideo = getBaseFilename(img).endsWith('.webm');
+      return {
+        id: `raj-albumart-${index}`,
+        type: isVideo ? 'video' : 'image',
+        url: img,
+        caption: '',
+        ...lookupDimensions('raj_albumart', img),
+      };
+    }),
+  },
 
   // POSTER PROJECT
   {
@@ -385,7 +451,7 @@ const parseYear = (yearStr: string) => {
 export const PROJECTS_DATA: Project[] = [...RAW_PROJECTS_DATA].sort((a, b) => {
   const yearA = parseYear(a.year);
   const yearB = parseYear(b.year);
-  
+
   if (yearB.max !== yearA.max) {
     return yearB.max - yearA.max;
   }

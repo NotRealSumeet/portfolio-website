@@ -462,6 +462,38 @@ export default function ProjectDetail({
             </div>
           )}
         </div>
+      ) : project.id === 'music-cover-art' ? (
+        /* SPECIAL SEAMLESS BEHANCE-STYLE STACKED GALLERY FOR MUSIC COVER ART (excludes THUMB, renders all media continuously) */
+        <div className="w-full flex flex-col pt-2 gap-0">
+          {project.media.map((item, idx) => (
+            <div 
+              key={item.id} 
+              onClick={() => setLightboxIndex(idx)}
+              className="w-full relative cursor-zoom-in overflow-hidden"
+            >
+              <div className="w-full text-left">
+                {(item.type === 'image' || item.type === 'gif') && (
+                  <LazyMedia
+                    url={item.url}
+                    type={item.type}
+                    aspectRatioNumber={item.aspectRatioNumber}
+                    className="w-full h-auto block"
+                    priority={idx === 0}
+                  />
+                )}
+
+                {item.type === 'video' && (
+                  <LazyVideo
+                    url={item.url}
+                    aspectRatioNumber={item.aspectRatioNumber}
+                    className="w-full h-auto block"
+                    priority={idx === 0}
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         /* DEFAULT BEHANCE-STYLE SEAMLESS STACKED GALLERY */
         <div className="w-full flex flex-col pt-2 gap-0">
