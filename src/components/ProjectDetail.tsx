@@ -146,17 +146,40 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
   useEffect(() => {
     if (!autoPlay || !isIntersected) return;
 
+    let rAFId: number;
+
+    const checkLoop = () => {
+      const video = videoRef.current;
+      if (video && video.duration && !isNaN(video.duration)) {
+        // Seek to 0 just slightly before the video ends (e.g. 0.08 seconds)
+        // to prevent the browser from stalling or unloading the buffer.
+        if (video.currentTime >= video.duration - 0.08) {
+          video.currentTime = 0;
+          video.play().catch((err) => {
+            console.log('rAF loop playback failed:', err.message);
+          });
+        }
+      }
+      rAFId = requestAnimationFrame(checkLoop);
+    };
+
     const playbackObserver = new IntersectionObserver(
       (entries) => {
         const video = videoRef.current;
         if (!video) return;
 
         if (entries[0].isIntersecting) {
-          video.play().catch((err) => {
-            console.log('Autoplay play interrupted or blocked:', err.message);
-          });
+          video.play()
+            .then(() => {
+              cancelAnimationFrame(rAFId);
+              rAFId = requestAnimationFrame(checkLoop);
+            })
+            .catch((err) => {
+              console.log('Autoplay play interrupted or blocked:', err.message);
+            });
         } else {
           video.pause();
+          cancelAnimationFrame(rAFId);
         }
       },
       { threshold: 0.05 }
@@ -171,6 +194,7 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
       if (currentContainer) {
         playbackObserver.unobserve(currentContainer);
       }
+      cancelAnimationFrame(rAFId);
     };
   }, [isIntersected, autoPlay]);
 
@@ -198,11 +222,21 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
         <video
           ref={videoRef}
           src={url}
-          loop
+          autoPlay
+          preload="auto"
           muted
           playsInline
           onLoadedData={() => setIsVideoLoaded(true)}
           onCanPlay={() => setIsVideoLoaded(true)}
+          onEnded={() => {
+            const video = videoRef.current;
+            if (video) {
+              video.currentTime = 0;
+              video.play().catch((err) => {
+                console.log('onEnded loop play failed:', err.message);
+              });
+            }
+          }}
           className={`w-full h-full object-cover block transition-opacity duration-700 ease-in-out ${
             isVideoLoaded ? 'opacity-100' : 'opacity-0'
           }`}
