@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { PROJECTS_DATA } from './data';
 import Sidebar from './components/Sidebar';
 import MasonryGrid from './components/MasonryGrid';
@@ -12,9 +13,11 @@ import ProjectDetail from './components/ProjectDetail';
 import AboutPage from './components/AboutPage';
 import AmbientBackground from './components/AmbientBackground';
 
-export default function App() {
-  const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
-  
+function PortfolioView() {
+  const { projectId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   // Real-time UTC/IST clock ticker
   const [currentLocalTime, setCurrentLocalTime] = useState<Date>(new Date());
 
@@ -25,12 +28,33 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // Determine active project id based on params and path
+  let activeProjectId: string | null = null;
+  if (location.pathname === '/about') {
+    activeProjectId = 'about';
+  } else if (projectId) {
+    activeProjectId = projectId;
+  }
+
   // Retrieve active project details
   const activeProject = PROJECTS_DATA.find((p) => p.id === activeProjectId) || null;
 
+  // Redirect to home if path doesn't match any project or page
+  useEffect(() => {
+    if (activeProjectId && activeProjectId !== 'about' && !activeProject) {
+      navigate('/', { replace: true });
+    }
+  }, [activeProjectId, activeProject, navigate]);
+
   // Handle page scrolling reset when navigating
   const selectProject = (id: string | null) => {
-    setActiveProjectId(id);
+    if (id === null) {
+      navigate('/');
+    } else if (id === 'about') {
+      navigate('/about');
+    } else {
+      navigate(`/${id}`);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -38,6 +62,7 @@ export default function App() {
   const selectNextProject = () => {
     if (!activeProjectId || activeProjectId === 'about') return;
     const currentIndex = PROJECTS_DATA.findIndex((p) => p.id === activeProjectId);
+    if (currentIndex === -1) return;
     const nextIndex = (currentIndex + 1) % PROJECTS_DATA.length;
     selectProject(PROJECTS_DATA[nextIndex].id);
   };
@@ -45,6 +70,7 @@ export default function App() {
   const selectPrevProject = () => {
     if (!activeProjectId || activeProjectId === 'about') return;
     const currentIndex = PROJECTS_DATA.findIndex((p) => p.id === activeProjectId);
+    if (currentIndex === -1) return;
     const prevIndex = (currentIndex - 1 + PROJECTS_DATA.length) % PROJECTS_DATA.length;
     selectProject(PROJECTS_DATA[prevIndex].id);
   };
@@ -150,5 +176,16 @@ export default function App() {
       </main>
 
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<PortfolioView />} />
+      <Route path="/projects" element={<PortfolioView />} />
+      <Route path="/about" element={<PortfolioView />} />
+      <Route path="/:projectId" element={<PortfolioView />} />
+    </Routes>
   );
 }
