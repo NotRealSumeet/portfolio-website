@@ -12,14 +12,27 @@ import MasonryGrid from './components/MasonryGrid';
 import ProjectDetail from './components/ProjectDetail';
 import AboutPage from './components/AboutPage';
 import AmbientBackground from './components/AmbientBackground';
+import BlackMarketPage from './components/BlackMarketPage';
+import BlackMarketDetail from './components/BlackMarketDetail';
+import { BLACK_MARKET_SERVICES } from './blackMarketData';
 
 function PortfolioView() {
-  const { projectId } = useParams();
+  const { projectId, serviceId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
   // Real-time UTC/IST clock ticker
   const [currentLocalTime, setCurrentLocalTime] = useState<Date>(new Date());
+
+  // State for currency (USD vs INR)
+  const [currency, setCurrency] = useState<'USD' | 'INR'>(() => {
+    return (sessionStorage.getItem('currency') as 'USD' | 'INR') || 'USD';
+  });
+
+  const handleCurrencyChange = (newCurrency: 'USD' | 'INR') => {
+    setCurrency(newCurrency);
+    sessionStorage.setItem('currency', newCurrency);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,19 +45,32 @@ function PortfolioView() {
   let activeProjectId: string | null = null;
   if (location.pathname === '/about') {
     activeProjectId = 'about';
+  } else if (location.pathname === '/black-market' || location.pathname.startsWith('/black-market/')) {
+    activeProjectId = 'black-market';
   } else if (projectId) {
     activeProjectId = projectId;
   }
+
+  const isBlackMarketIndex = location.pathname === '/black-market';
+  const isBlackMarketDetail = !!serviceId && location.pathname.startsWith('/black-market/');
+  const activeService = BLACK_MARKET_SERVICES.find((s) => s.id === serviceId) || null;
 
   // Retrieve active project details
   const activeProject = PROJECTS_DATA.find((p) => p.id === activeProjectId) || null;
 
   // Redirect to home if path doesn't match any project or page
   useEffect(() => {
-    if (activeProjectId && activeProjectId !== 'about' && !activeProject) {
+    if (activeProjectId && activeProjectId !== 'about' && activeProjectId !== 'black-market' && !activeProject) {
       navigate('/', { replace: true });
     }
   }, [activeProjectId, activeProject, navigate]);
+
+  // Redirect invalid service subpaths to main black market list
+  useEffect(() => {
+    if (isBlackMarketDetail && !activeService) {
+      navigate('/black-market', { replace: true });
+    }
+  }, [isBlackMarketDetail, activeService, navigate]);
 
   // Handle page scrolling reset when navigating
   const selectProject = (id: string | null) => {
@@ -52,6 +78,8 @@ function PortfolioView() {
       navigate('/');
     } else if (id === 'about') {
       navigate('/about');
+    } else if (id === 'black-market') {
+      navigate('/black-market');
     } else {
       navigate(`/${id}`);
     }
@@ -106,6 +134,40 @@ function PortfolioView() {
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
                 <AboutPage onBack={() => selectProject(null)} />
+              </motion.div>
+            ) : isBlackMarketDetail && activeService ? (
+              /* BLACK MARKET DETAIL VIEW */
+              <motion.div
+                key={`service-${activeService.id}`}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <BlackMarketDetail
+                  service={activeService}
+                  currency={currency}
+                  onCurrencyChange={handleCurrencyChange}
+                  onBack={() => selectProject('black-market')}
+                />
+              </motion.div>
+            ) : isBlackMarketIndex ? (
+              /* BLACK MARKET INDEX VIEW */
+              <motion.div
+                key="black-market-index"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <BlackMarketPage
+                  currency={currency}
+                  onCurrencyChange={handleCurrencyChange}
+                  onSelectService={(id) => {
+                    navigate(`/black-market/${id}`);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                />
               </motion.div>
             ) : activeProject ? (
               /* DETAILED STATE VIEW */
@@ -185,6 +247,8 @@ export default function App() {
       <Route path="/" element={<PortfolioView />} />
       <Route path="/projects" element={<PortfolioView />} />
       <Route path="/about" element={<PortfolioView />} />
+      <Route path="/black-market" element={<PortfolioView />} />
+      <Route path="/black-market/:serviceId" element={<PortfolioView />} />
       <Route path="/:projectId" element={<PortfolioView />} />
     </Routes>
   );

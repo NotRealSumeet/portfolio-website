@@ -128,6 +128,28 @@ export default function Sidebar({
                     );
                   })}
 
+                  {/* Black Market Page trigger */}
+                  <button
+                    onClick={() => {
+                      onSelectProject('black-market');
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`w-full text-left font-sans text-lg font-bold tracking-tight uppercase flex items-center justify-between py-4 border-b border-[#111111] transition-colors ${
+                      activeProjectId === 'black-market' ? 'text-[#742DE1]' : 'text-[#666666] active:text-white'
+                    }`}
+                    style={{ minHeight: '48px' }}
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="font-mono text-[10px] text-[#444444]">
+                        —
+                      </span>
+                      <span>BLACK MARKET</span>
+                    </span>
+                    <span className="text-[10px] font-mono text-[#555555]">
+                      MARKET
+                    </span>
+                  </button>
+
                   {/* Integrated About Page trigger as part of the primary menu list */}
                   <button
                     onClick={() => {
@@ -143,10 +165,10 @@ export default function Sidebar({
                       <span className="font-mono text-[10px] text-[#444444]">
                         —
                       </span>
-                      <span>PROFILE BIO</span>
+                      <span>PLAYER INFO</span>
                     </span>
                     <span className="text-[10px] font-mono text-[#555555]">
-                      ABOUT
+                      INFO
                     </span>
                   </button>
                 </nav>
@@ -293,17 +315,32 @@ export default function Sidebar({
           <div className="h-[1px] bg-[#1a1a1a] w-full" />
           
           <div className="space-y-4">
-            <div>
-              <button
-                onClick={() => onSelectProject('about')}
-                className={`w-full py-2.5 px-4 font-mono text-[10px] uppercase tracking-widest text-center border cursor-pointer transition-all ${
-                  activeProjectId === 'about'
-                    ? 'bg-white text-black border-white'
-                    : 'bg-black text-[#666666] border-[#1a1a1a] hover:border-white hover:text-[#742DE1] hover:bg-[#070707]'
-                }`}
-              >
-                [ ABOUT ME ]
-              </button>
+            <div className="space-y-3">
+              <div>
+                <button
+                  onClick={() => onSelectProject('black-market')}
+                  className={`w-full py-2.5 px-4 font-mono text-[10px] uppercase tracking-widest text-center border cursor-pointer transition-all ${
+                    activeProjectId === 'black-market'
+                      ? 'bg-white text-black border-white'
+                      : 'bg-black text-[#666666] border-[#1a1a1a] hover:border-white hover:text-[#742DE1] hover:bg-[#070707]'
+                  }`}
+                >
+                  [ BLACK MARKET ]
+                </button>
+              </div>
+
+              <div>
+                <button
+                  onClick={() => onSelectProject('about')}
+                  className={`w-full py-2.5 px-4 font-mono text-[10px] uppercase tracking-widest text-center border cursor-pointer transition-all ${
+                    activeProjectId === 'about'
+                      ? 'bg-white text-black border-white'
+                      : 'bg-black text-[#666666] border-[#1a1a1a] hover:border-white hover:text-[#742DE1] hover:bg-[#070707]'
+                  }`}
+                >
+                  [ PLAYER INFO ]
+                </button>
+              </div>
             </div>
 
             <div className="flex flex-col space-y-2">

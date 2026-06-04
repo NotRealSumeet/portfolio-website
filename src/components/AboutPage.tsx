@@ -37,10 +37,10 @@ export default function AboutPage({ onBack }: AboutPageProps) {
          <div className="lg:col-span-2 space-y-10">
           <div className="space-y-4">
             <span className="font-mono text-xs text-[#666666] uppercase tracking-widest block">
-              01 // BIOGRAPHY
+              01 // PLAYER DOSSIER
             </span>
             <h2 className="font-sans font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tighter text-white uppercase leading-none">
-              About
+              PLAYER INFO
             </h2>
           </div>
 
