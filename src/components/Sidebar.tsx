@@ -220,7 +220,7 @@ export default function Sidebar({
               onClick={() => onSelectProject(null)}
               className="group text-left block cursor-pointer"
             >
-              <h1 className="font-neue font-bold text-3xl lg:text-4xl tracking-tighter text-white uppercase leading-none transition-colors group-hover:text-[#742DE1]">
+              <h1 className="font-neue font-bold text-[32px] lg:text-[38px] tracking-tighter text-white uppercase leading-none transition-colors group-hover:text-[#742DE1]">
                 SUMIT<br/>SHAH
               </h1>
               <p className="font-mono text-[10px] text-[#666666] mt-2 tracking-[0.2em] uppercase group-hover:text-white transition-colors">
@@ -282,14 +282,14 @@ export default function Sidebar({
                     {/* Left padding offset for thumbnails on desktop */}
                     <button
                       onClick={() => onSelectProject(proj.id)}
-                      className={`group w-full text-left font-sans text-sm xl:text-base font-bold tracking-tight uppercase py-2 flex items-start justify-between transition-all duration-300 relative ${
+                      className={`group w-full text-left font-sans text-xs xl:text-sm font-bold tracking-tight uppercase py-2 flex items-start justify-between transition-all duration-300 relative ${
                         isActive
                           ? 'text-[#742DE1] pl-0 xl:pl-2'
                           : 'text-[#666666] hover:text-[#742DE1] hover:pl-2'
                       }`}
                     >
                       <span className="flex items-start gap-2 min-w-0">
-                        <span className="font-mono text-[10px] text-[#444444] group-hover:text-[#666666] transition-colors mt-[3px] xl:mt-[4px] shrink-0">
+                        <span className="font-mono text-[10px] text-[#444444] group-hover:text-[#666666] transition-colors mt-[2px] xl:mt-[3px] shrink-0">
                           {(idx + 1).toString().padStart(2, '0')}
                         </span>
                         <span className="whitespace-normal break-words text-balance leading-tight">{proj.title}</span>
@@ -319,10 +319,10 @@ export default function Sidebar({
               <div>
                 <button
                   onClick={() => onSelectProject('black-market')}
-                  className={`w-full py-2.5 px-4 font-mono text-[10px] uppercase tracking-widest text-center border cursor-pointer transition-all ${
+                  className={`w-full py-2.5 px-4 font-mono text-[12px] uppercase tracking-widest text-center cursor-pointer transition-all ${
                     activeProjectId === 'black-market'
-                      ? 'bg-white text-black border-white'
-                      : 'bg-black text-[#666666] border-[#1a1a1a] hover:border-white hover:text-[#742DE1] hover:bg-[#070707]'
+                      ? 'bg-white text-black border border-white'
+                      : 'premium-glow-button text-zinc-300 hover:text-white'
                   }`}
                 >
                   [ BLACK MARKET ]
@@ -332,10 +332,10 @@ export default function Sidebar({
               <div>
                 <button
                   onClick={() => onSelectProject('about')}
-                  className={`w-full py-2.5 px-4 font-mono text-[10px] uppercase tracking-widest text-center border cursor-pointer transition-all ${
+                  className={`w-full py-2.5 px-4 font-mono text-[12px] uppercase tracking-widest text-center border cursor-pointer transition-all ${
                     activeProjectId === 'about'
                       ? 'bg-white text-black border-white'
-                      : 'bg-black text-[#666666] border-[#1a1a1a] hover:border-white hover:text-[#742DE1] hover:bg-[#070707]'
+                      : 'bg-black text-[#888888] border-[#1a1a1a] hover:border-white hover:text-[#742DE1] hover:bg-[#070707]'
                   }`}
                 >
                   [ PLAYER INFO ]
@@ -366,14 +366,6 @@ export default function Sidebar({
                 <ArrowUpRight size={10} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
               </a>
             </div>
-          </div>
-
-          {/* Absolute time track and branding stamp */}
-          <div className="flex items-center justify-between font-mono text-[9px] text-[#444444]">
-            <span>© 2026 // NAVI MUMBAI</span>
-            <span className="flex items-center gap-1 text-[9px] uppercase tabular-nums">
-              <Clock size={9} /> Indian Time {formattedTime}
-            </span>
           </div>
         </div>
       </aside>

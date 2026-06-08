@@ -197,6 +197,7 @@ function PortfolioView() {
                 <MasonryGrid
                   projects={PROJECTS_DATA}
                   onSelectProject={(id) => selectProject(id)}
+                  currentLocalTime={currentLocalTime}
                 />
               </motion.div>
             )}

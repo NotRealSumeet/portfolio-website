@@ -1,15 +1,25 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Clock } from 'lucide-react';
 import { Project } from '../types';
 
 interface MasonryGridProps {
   projects: Project[];
   onSelectProject: (id: string) => void;
+  currentLocalTime?: Date;
 }
 
-export default function MasonryGrid({ projects, onSelectProject }: MasonryGridProps) {
+export default function MasonryGrid({ projects, onSelectProject, currentLocalTime }: MasonryGridProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+
+  // Format as Indian Standard Time (Asia/Kolkata timezone)
+  const formattedTime = (currentLocalTime || new Date()).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+    timeZone: 'Asia/Kolkata'
+  });
 
   // Extract all unique categories
   const categories = ['ALL', ...Array.from(new Set(projects.map((p) => p.category.toUpperCase())))];
@@ -41,10 +51,18 @@ export default function MasonryGrid({ projects, onSelectProject }: MasonryGridPr
             );
           })}
         </div>
+
+        {/* Metainfo moved to top right */}
+        <div className="hidden md:flex items-center gap-x-6 font-mono text-[9px] text-[#555555] tracking-widest select-none uppercase">
+          <span>© 2026 // NAVI MUMBAI</span>
+          <span className="flex items-center gap-1.5 tabular-nums">
+            <Clock size={10} className="text-[#742DE1]" /> INDIAN TIME {formattedTime}
+          </span>
+        </div>
       </div>
 
       {/* RHYTHMIC ASYMMETRIC GRID: Curated Editorial CSS Grid System */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12 lg:gap-x-8 lg:gap-y-16 items-start">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8 lg:gap-x-8 lg:gap-y-10 items-start">
         {filteredProjects.map((proj, idx) => (
           <motion.div
             layout
