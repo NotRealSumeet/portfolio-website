@@ -1,4 +1,5 @@
-import { motion } from 'motion/react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { BLACK_MARKET_SERVICES } from '../blackMarketData';
 import CurrencyToggle from './CurrencyToggle';
@@ -15,6 +16,14 @@ export default function BlackMarketPage({
   onCurrencyChange,
   onSelectService
 }: BlackMarketPageProps) {
+  const [showSwipeHint, setShowSwipeHint] = useState(true);
+
+  const handleScroll = () => {
+    if (showSwipeHint) {
+      setShowSwipeHint(false);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -48,18 +57,41 @@ export default function BlackMarketPage({
         On mobile: Horizontal flexbox with CSS snap scrolling and scrollbar hidden.
         On tablet/desktop: Spaced, premium grid.
       */}
-      <div 
-        className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory pb-10 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0 scrollbar-hide"
-        style={{
-          scrollbarWidth: 'none',
-          WebkitOverflowScrolling: 'touch'
-        }}
-      >
-        <style dangerouslySetInnerHTML={{ __html: `
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
-        `}} />
+      <div className="relative">
+        <AnimatePresence>
+          {showSwipeHint && (
+            <motion.div
+              key="swipe-hint"
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.3 } }}
+              className="md:hidden absolute right-6 top-[45%] -translate-y-1/2 z-20 pointer-events-none"
+            >
+              <motion.div
+                animate={{ x: [0, 8, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                className="bg-black/90 backdrop-blur-md border border-[#742DE1]/40 px-3.5 py-2 flex items-center gap-2 rounded-full shadow-[0_0_20px_rgba(116,45,225,0.25)]"
+              >
+                <span className="font-mono text-[9px] uppercase tracking-widest text-zinc-300 font-medium">Swipe</span>
+                <ArrowRight size={10} className="text-[#742DE1] animate-pulse" />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div 
+          onScroll={handleScroll}
+          className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory pb-10 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0 scrollbar-hide"
+          style={{
+            scrollbarWidth: 'none',
+            WebkitOverflowScrolling: 'touch'
+          }}
+        >
+          <style dangerouslySetInnerHTML={{ __html: `
+            .scrollbar-hide::-webkit-scrollbar {
+              display: none;
+            }
+          `}} />
 
         {BLACK_MARKET_SERVICES.map((service, index) => {
           const price = currency === 'USD' ? service.startingPriceUsd : service.startingPriceInr;
@@ -133,6 +165,7 @@ export default function BlackMarketPage({
           );
         })}
       </div>
-    </motion.div>
+    </div>
+  </motion.div>
   );
 }

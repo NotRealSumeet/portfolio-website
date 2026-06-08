@@ -91,13 +91,13 @@ export default function Sidebar({
                       onSelectProject(null);
                       setMobileMenuOpen(false);
                     }}
-                    className={`w-full text-left font-sans text-lg font-bold tracking-tight uppercase py-4 border-b border-[#111111] flex items-center justify-between transition-colors ${
+                    className={`w-full text-left font-sans text-[15px] font-bold tracking-tight uppercase py-3 border-b border-[#111111] flex items-center justify-between transition-colors ${
                       activeProjectId === null ? 'text-[#742DE1]' : 'text-[#666666] active:text-white'
                     }`}
-                    style={{ minHeight: '48px' }}
+                    style={{ minHeight: '44px' }}
                   >
                     <span>— SHOW ALL CATALOG</span>
-                    <span className="text-[10px] font-mono text-[#444444]">INDEX</span>
+                    <span className="text-[9px] font-mono text-[#444444]">INDEX</span>
                   </button>
 
                   {/* Projects List with seamless mobile design */}
@@ -110,68 +110,62 @@ export default function Sidebar({
                           onSelectProject(proj.id);
                           setMobileMenuOpen(false);
                         }}
-                        className={`w-full text-left font-sans text-lg font-bold tracking-tight uppercase flex items-start justify-between py-4 border-b border-[#111111] transition-colors ${
+                        className={`w-full text-left font-sans text-[15px] font-bold tracking-tight uppercase flex items-start justify-between py-3 border-b border-[#111111] transition-colors ${
                           isActive ? 'text-[#742DE1]' : 'text-[#666666] active:text-white'
                         }`}
-                        style={{ minHeight: '48px' }}
+                        style={{ minHeight: '44px' }}
                       >
                         <span className="flex items-start gap-3 min-w-0">
-                          <span className="font-mono text-[10px] text-[#444444] mt-[5px] shrink-0">
+                          <span className="font-mono text-[9px] text-[#444444] mt-[4px] shrink-0">
                             {(idx + 1).toString().padStart(2, '0')}
                           </span>
                           <span className="whitespace-normal break-words text-balance leading-tight">{proj.title}</span>
                         </span>
-                        <span className="text-[10px] font-mono text-[#555555] mt-[5px] shrink-0 ml-4">
+                        <span className="text-[9px] font-mono text-[#555555] mt-[4px] shrink-0 ml-4">
                           {proj.year}
                         </span>
                       </button>
                     );
                   })}
+                </nav>
+              </div>
 
-                  {/* Black Market Page trigger */}
+              {/* Special Navigation Sections */}
+              <div className="space-y-3 pt-2">
+                <span className="font-mono text-[9px] uppercase text-[#555555] tracking-[0.25em] block select-none">
+                  SPECIAL NAVIGATION
+                </span>
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => {
                       onSelectProject('black-market');
                       setMobileMenuOpen(false);
                     }}
-                    className={`w-full text-left font-sans text-lg font-bold tracking-tight uppercase flex items-center justify-between py-4 border-b border-[#111111] transition-colors ${
-                      activeProjectId === 'black-market' ? 'text-[#742DE1]' : 'text-[#666666] active:text-white'
+                    className={`py-3 px-4 font-mono text-[11px] uppercase tracking-widest text-center cursor-pointer transition-all ${
+                      activeProjectId === 'black-market'
+                        ? 'bg-white text-black border border-white'
+                        : 'premium-glow-button text-zinc-300 hover:text-white'
                     }`}
-                    style={{ minHeight: '48px' }}
+                    style={{ minHeight: '44px' }}
                   >
-                    <span className="flex items-center gap-3">
-                      <span className="font-mono text-[10px] text-[#444444]">
-                        —
-                      </span>
-                      <span>BLACK MARKET</span>
-                    </span>
-                    <span className="text-[10px] font-mono text-[#555555]">
-                      MARKET
-                    </span>
+                    [ BLACK MARKET ]
                   </button>
-
-                  {/* Integrated About Page trigger as part of the primary menu list */}
+                  
                   <button
                     onClick={() => {
                       onSelectProject('about');
                       setMobileMenuOpen(false);
                     }}
-                    className={`w-full text-left font-sans text-lg font-bold tracking-tight uppercase flex items-center justify-between py-4 border-b border-[#111111] transition-colors ${
-                      activeProjectId === 'about' ? 'text-[#742DE1]' : 'text-[#666666] active:text-white'
+                    className={`py-3 px-4 font-mono text-[11px] uppercase tracking-widest text-center border cursor-pointer transition-all ${
+                      activeProjectId === 'about'
+                        ? 'bg-white text-black border-white'
+                        : 'bg-black text-[#888888] border-[#1a1a1a] hover:border-white hover:text-[#742DE1] hover:bg-[#070707]'
                     }`}
-                    style={{ minHeight: '48px' }}
+                    style={{ minHeight: '44px' }}
                   >
-                    <span className="flex items-center gap-3">
-                      <span className="font-mono text-[10px] text-[#444444]">
-                        —
-                      </span>
-                      <span>PLAYER INFO</span>
-                    </span>
-                    <span className="text-[10px] font-mono text-[#555555]">
-                      INFO
-                    </span>
+                    [ PLAYER INFO ]
                   </button>
-                </nav>
+                </div>
               </div>
 
               {/* Connected Links grid for easy mobile activation */}
