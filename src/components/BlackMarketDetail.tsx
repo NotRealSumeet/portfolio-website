@@ -34,17 +34,17 @@ export default function BlackMarketDetail({
       className="space-y-10 pb-24"
     >
       {/* HEADER ACTIONS: Return & Currency Toggle */}
-      <div className="flex items-center justify-between border-b border-zinc-900 pb-8 pt-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 border-b border-zinc-900 pb-6 sm:pb-8 pt-4">
         <button
           onClick={onBack}
-          className="group flex items-center gap-3 font-mono text-xs text-[#666666] hover:text-[#742DE1] transition-colors cursor-pointer py-1"
+          className="group flex items-center gap-3 font-mono text-xs text-[#666666] hover:text-[#742DE1] transition-colors cursor-pointer py-1 self-start"
           style={{ minHeight: '44px' }}
         >
           <ArrowLeft size={16} className="group-hover:-translate-x-1.5 transition-transform text-[#742DE1]" />
           <span>[ RETURN TO BLACK MARKET ]</span>
         </button>
 
-        <div>
+        <div className="self-start sm:self-auto">
           <CurrencyToggle currency={currency} onChange={onCurrencyChange} />
         </div>
       </div>
