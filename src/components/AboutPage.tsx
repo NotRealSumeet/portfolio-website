@@ -208,24 +208,24 @@ export default function AboutPage({ onBack }: AboutPageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 pt-4 relative z-10">
         
         {/* LEFT COLUMN: Main identity / Biography / Info Table */}
-        <div className="lg:col-span-7 space-y-12 relative">
+        <div className="lg:col-span-7 space-y-10 relative">
           
-          {/* Wrapper for Heading and Bio with Divider */}
-          <div className="editorial-divider space-y-8">
+          {/* Hero Intro Section (Cohesive Headline + Summary) */}
+          <div className="space-y-6 max-w-xl">
             {/* Identity Title */}
-            <div className="space-y-4">
-              <h1 className="font-sans text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight text-white leading-none">
-                I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8c47e8] via-[#ab76f2] to-[#c084fc] drop-shadow-[0_2px_15px_rgba(140,71,232,0.35)] relative font-black">Sumit Shah</span>
+            <div className="space-y-2">
+              <h1 className="font-sans text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-white leading-tight">
+                I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8c47e8] via-[#ab76f2] to-[#c084fc] drop-shadow-[0_2px_12px_rgba(140,71,232,0.3)] relative font-extrabold">Sumit Shah</span>
               </h1>
             </div>
 
             {/* Biography Paragraphs */}
-            <div className="space-y-6 text-zinc-200 font-sans text-lg sm:text-xl leading-relaxed font-light tracking-wide max-w-2xl">
-              <p>
+            <div className="space-y-5">
+              <p className="text-base sm:text-lg text-zinc-300/95 font-light leading-[1.7] tracking-wide">
                 A graphic designer focused on thumbnails, posters, cover art, and visual storytelling. 
                 My work combines Swiss typography principles with experimental layouts, texture-heavy compositions, and modern internet visual culture.
               </p>
-              <p className="text-zinc-400 text-base sm:text-lg">
+              <p className="text-sm sm:text-base text-zinc-400/90 font-light leading-[1.65] tracking-wide">
                 I enjoy balancing structured design systems with raw expressive visuals, constructing interactive experiences, and developing atmospheric digital systems.
               </p>
             </div>
