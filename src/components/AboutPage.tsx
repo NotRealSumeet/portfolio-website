@@ -1,86 +1,61 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
 
 interface SpotifyTrack {
-  isPlaying: boolean;
   title: string;
   artist: string;
   album: string;
   albumImageUrl: string;
   songUrl: string;
-  previewUrl: string;
-  progressMs: number;
-  durationMs: number;
-  timestamp: number;
+  playedAt: number;
 }
 
-const formatTime = (timeInSeconds: number) => {
-  if (isNaN(timeInSeconds) || timeInSeconds < 0) return '00:00';
-  const minutes = Math.floor(timeInSeconds / 60);
-  const seconds = Math.floor(timeInSeconds % 60);
-  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-};
-
-const formatTimeAgo = (timestamp: number) => {
-  if (!timestamp) return 'OFFLINE';
+const formatRelativeTime = (timestamp: number) => {
+  if (!timestamp) return 'RECENTLY';
   const diff = Date.now() - timestamp;
+  if (diff < 0) return 'JUST NOW';
   const mins = Math.floor(diff / 60000);
   if (mins < 1) return 'JUST NOW';
   if (mins < 60) return `${mins}M AGO`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours}H AGO`;
-  return 'RECENTLY';
+  const days = Math.floor(hours / 24);
+  return `${days}D AGO`;
 };
 
-const BACKUP_PLAYLIST: SpotifyTrack[] = [
+const DEFAULT_TRACKS: SpotifyTrack[] = [
   {
-    isPlaying: false,
     title: "BEAUTY AND THE BEAST",
     artist: "Kanye West",
     album: "BULLY",
-    albumImageUrl: "https://i.scdn.co/image/ab67616d0000b27395184f6a953569b683ca9a0d",
+    albumImageUrl: "/spotify/bully.png",
     songUrl: "https://open.spotify.com/album/5poA9SAx0Xiz1cf17fWBLS",
-    previewUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
-    progressMs: 0,
-    durationMs: 192000,
-    timestamp: Date.now()
+    playedAt: Date.now() - 120000
   },
   {
-    isPlaying: false,
     title: "NIGHTCALL",
     artist: "Kavinsky",
     album: "Outrun",
-    albumImageUrl: "https://i.scdn.co/image/ab67616d0000b273616a2b8e3a34a36fcfb839ef",
+    albumImageUrl: "/spotify/nightcall.png",
     songUrl: "https://open.spotify.com/track/0mt02gJ425X5zI743g3Iuu",
-    previewUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    progressMs: 0,
-    durationMs: 258000,
-    timestamp: Date.now()
+    playedAt: Date.now() - 3600000
   },
   {
-    isPlaying: false,
     title: "STARBOY",
     artist: "The Weeknd",
     album: "Starboy",
-    albumImageUrl: "https://i.scdn.co/image/ab67616d0000b2734718dec6954e4477c7f215b6",
+    albumImageUrl: "/spotify/starboy.png",
     songUrl: "https://open.spotify.com/track/7i5i5VzK82I27V0pE33W6X",
-    previewUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-    progressMs: 0,
-    durationMs: 230000,
-    timestamp: Date.now()
+    playedAt: Date.now() - 14400000
   },
   {
-    isPlaying: false,
     title: "MIDNIGHT CITY",
     artist: "M83",
     album: "Hurry Up, We're Dreaming",
-    albumImageUrl: "https://i.scdn.co/image/ab67616d0000b2730b2e2d0f5e173e6cf1e4a113",
+    albumImageUrl: "/spotify/midnightcity.png",
     songUrl: "https://open.spotify.com/track/1eyZp2GMQI27JbpZ78jLci",
-    previewUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
-    progressMs: 0,
-    durationMs: 243000,
-    timestamp: Date.now()
+    playedAt: Date.now() - 86400000
   }
 ];
 
@@ -90,18 +65,7 @@ interface AboutPageProps {
 
 export default function AboutPage({ onBack }: AboutPageProps) {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
-  const [spotifyData, setSpotifyData] = useState<SpotifyTrack | null>(null);
-  
-  // Playlist / Playback Queue State
-  const [playlist, setPlaylist] = useState<SpotifyTrack[]>(BACKUP_PLAYLIST);
-  const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(0);
-  
-  const [currentProgress, setCurrentProgress] = useState<number>(0);
-  const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
-  const [audioProgress, setAudioProgress] = useState<number>(0);
-  const [audioDuration, setAudioDuration] = useState<number>(30);
-  
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [tracks, setTracks] = useState<SpotifyTrack[]>(DEFAULT_TRACKS);
 
   const copyEmail = () => {
     navigator.clipboard.writeText("sumeetshah24@gmail.com");
@@ -109,163 +73,29 @@ export default function AboutPage({ onBack }: AboutPageProps) {
     setTimeout(() => setCopyStatus('idle'), 2000);
   };
 
-  const fetchNowPlaying = async () => {
+  const fetchRecentlyPlayed = async () => {
     try {
       const res = await fetch('/api/spotify/now-playing');
       if (res.ok) {
-        const data = await res.json() as SpotifyTrack;
-        setSpotifyData(data);
-        // Sync progress only if local audio is not playing (so they don't fight)
-        if (!isAudioPlaying && currentTrackIndex === 0) {
-          setCurrentProgress(data.progressMs);
+        const data = await res.json() as { tracks: SpotifyTrack[] };
+        if (data.tracks && data.tracks.length > 0) {
+          setTracks(data.tracks);
         }
       }
     } catch (err) {
-      console.error('Error fetching Spotify now playing:', err);
+      console.error('Error fetching Spotify recently played:', err);
     }
   };
 
-  // Poll Spotify status
+  // Poll Spotify status every 30 seconds
   useEffect(() => {
-    fetchNowPlaying();
-    const pollInterval = setInterval(fetchNowPlaying, 10000);
+    fetchRecentlyPlayed();
+    const pollInterval = setInterval(fetchRecentlyPlayed, 30000);
     return () => clearInterval(pollInterval);
-  }, [isAudioPlaying, currentTrackIndex]);
+  }, []);
 
-  // Sync API song progress ticker (when local preview is NOT playing and showing the live song)
-  useEffect(() => {
-    if (currentTrackIndex !== 0 || !spotifyData || !spotifyData.isPlaying || isAudioPlaying) return;
-
-    const tickInterval = setInterval(() => {
-      setCurrentProgress((prev) => {
-        if (prev >= spotifyData.durationMs) {
-          clearInterval(tickInterval);
-          fetchNowPlaying();
-          return spotifyData.durationMs;
-        }
-        return prev + 1000;
-      });
-    }, 1000);
-
-    return () => clearInterval(tickInterval);
-  }, [spotifyData, isAudioPlaying, currentTrackIndex]);
-
-  // Sync playlist[0] when live spotifyData changes
-  useEffect(() => {
-    if (spotifyData) {
-      setPlaylist(prev => {
-        const exists = prev.some(t => t.title.toLowerCase() === spotifyData.title.toLowerCase() && t.artist.toLowerCase() === spotifyData.artist.toLowerCase());
-        if (exists) {
-          return prev.map((t, idx) => {
-            if (t.title.toLowerCase() === spotifyData.title.toLowerCase() && t.artist.toLowerCase() === spotifyData.artist.toLowerCase()) {
-              return { ...t, isPlaying: spotifyData.isPlaying, progressMs: spotifyData.progressMs };
-            }
-            return t;
-          });
-        } else {
-          // Keep API song at index 0 and clear duplicate back-up instances
-          const filtered = BACKUP_PLAYLIST.filter(t => t.title.toLowerCase() !== spotifyData.title.toLowerCase());
-          return [spotifyData, ...filtered];
-        }
-      });
-    }
-  }, [spotifyData]);
-
-  // Sync audio source when track changes
-  useEffect(() => {
-    const activeTrack = playlist[currentTrackIndex];
-    if (audioRef.current && activeTrack?.previewUrl) {
-      const wasPlaying = isAudioPlaying;
-      audioRef.current.src = activeTrack.previewUrl;
-      audioRef.current.load();
-      if (wasPlaying) {
-        audioRef.current.play().catch(() => setIsAudioPlaying(false));
-      } else {
-        setAudioProgress(0);
-      }
-    }
-  }, [currentTrackIndex, playlist]);
-
-  // Handle local audio time updates
-  const handleAudioTimeUpdate = () => {
-    if (audioRef.current) {
-      setAudioProgress(audioRef.current.currentTime);
-    }
-  };
-
-  const handleAudioLoadedMetadata = () => {
-    if (audioRef.current) {
-      setAudioDuration(audioRef.current.duration || 30);
-    }
-  };
-
-  // Toggle local playback preview audio
-  const handlePlayPause = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!audioRef.current) return;
-
-    if (isAudioPlaying) {
-      audioRef.current.pause();
-      setIsAudioPlaying(false);
-    } else {
-      audioRef.current.play()
-        .then(() => setIsAudioPlaying(true))
-        .catch((err) => {
-          console.error("Local audio playback blocked/failed:", err);
-          setIsAudioPlaying(false);
-        });
-    }
-  };
-
-  // Next Track
-  const handleNext = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setAudioProgress(0);
-    setIsAudioPlaying(true);
-    setCurrentTrackIndex((prev) => (prev + 1) % playlist.length);
-  };
-
-  // Previous Track
-  const handlePrev = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setAudioProgress(0);
-    setIsAudioPlaying(true);
-    setCurrentTrackIndex((prev) => (prev - 1 + playlist.length) % playlist.length);
-  };
-
-  // Seek Progress
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!audioRef.current) return;
-    
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const width = rect.width;
-    const newPercentage = clickX / width;
-    const newTime = newPercentage * audioDuration;
-    
-    audioRef.current.currentTime = newTime;
-    setAudioProgress(newTime);
-    
-    if (!isAudioPlaying) {
-      audioRef.current.play()
-        .then(() => setIsAudioPlaying(true))
-        .catch(() => setIsAudioPlaying(false));
-    }
-  };
-
-  const activeTrack = playlist[currentTrackIndex] || BACKUP_PLAYLIST[0];
-
-  // Select progress and duration dynamically based on whether preview is playing
-  const isCurrentlyShowingLive = currentTrackIndex === 0 && spotifyData?.isPlaying && !isAudioPlaying;
-  const displayProgress = isAudioPlaying ? audioProgress : (isCurrentlyShowingLive ? currentProgress / 1000 : 0);
-  const displayDuration = isAudioPlaying ? audioDuration : (activeTrack.durationMs || 1000) / 1000;
-  const progressPercent = Math.min(100, Math.max(0, (displayProgress / displayDuration) * 100));
+  const latestTrack = tracks[0] || DEFAULT_TRACKS[0];
+  const historyTracks = tracks.slice(1, 4);
 
   return (
     <motion.div
@@ -278,30 +108,16 @@ export default function AboutPage({ onBack }: AboutPageProps) {
       {/* Dossier Procedural Film Grain Overlay */}
       <div className="dossier-grain" />
 
-      {/* Hidden HTML5 Audio Element for track preview playback */}
-      <audio
-        ref={audioRef}
-        onTimeUpdate={handleAudioTimeUpdate}
-        onLoadedMetadata={handleAudioLoadedMetadata}
-        onPlay={() => setIsAudioPlaying(true)}
-        onPause={() => setIsAudioPlaying(false)}
-        onEnded={() => {
-          setIsAudioPlaying(false);
-          setAudioProgress(0);
-        }}
-        preload="metadata"
-      />
-
       {/* Dynamic Background Atmospheric Orbs */}
       <motion.div 
         animate={{ 
-          scale: [1, 1.15, 0.95, 1],
-          opacity: [0.05, 0.1, 0.07, 0.05],
-          x: [0, 15, -20, 0],
-          y: [0, -25, 15, 0]
+          scale: [1, 1.12, 0.95, 1],
+          opacity: [0.05, 0.09, 0.07, 0.05],
+          x: [0, 10, -15, 0],
+          y: [0, -20, 10, 0]
         }}
         transition={{ 
-          duration: 18, 
+          duration: 20, 
           repeat: Infinity, 
           ease: "easeInOut" 
         }}
@@ -309,13 +125,13 @@ export default function AboutPage({ onBack }: AboutPageProps) {
       />
       <motion.div 
         animate={{ 
-          scale: [1, 0.88, 1.12, 1],
-          opacity: [0.02, 0.05, 0.03, 0.02],
-          x: [0, -20, 20, 0],
-          y: [0, 15, -20, 0]
+          scale: [1, 0.9, 1.1, 1],
+          opacity: [0.02, 0.04, 0.03, 0.02],
+          x: [0, -15, 15, 0],
+          y: [0, 10, -15, 0]
         }}
         transition={{ 
-          duration: 22, 
+          duration: 25, 
           repeat: Infinity, 
           ease: "easeInOut" 
         }}
@@ -323,13 +139,13 @@ export default function AboutPage({ onBack }: AboutPageProps) {
       />
       <motion.div 
         animate={{ 
-          scale: [1, 1.08, 0.92, 1],
-          opacity: [0.03, 0.07, 0.04, 0.03],
-          x: [15, -15, 10, 15],
-          y: [-15, 20, -10, -15]
+          scale: [1, 1.05, 0.95, 1],
+          opacity: [0.03, 0.06, 0.04, 0.03],
+          x: [10, -10, 5, 10],
+          y: [-10, 15, -5, -10]
         }}
         transition={{ 
-          duration: 25, 
+          duration: 28, 
           repeat: Infinity, 
           ease: "easeInOut" 
         }}
@@ -358,16 +174,8 @@ export default function AboutPage({ onBack }: AboutPageProps) {
         {/* LEFT COLUMN: Main identity / Biography / Info Table */}
         <div className="lg:col-span-7 space-y-12 relative">
           
-          {/* Cyber Dossier Corner Mark */}
-          <div className="hidden sm:block absolute -left-12 top-14 font-mono text-[9px] text-zinc-700 rotate-90 origin-left tracking-[0.3em] select-none">
-            INDEX // 02_ABOUT_DOSSIER
-          </div>
-
           {/* Identity Title */}
           <div className="space-y-4">
-            <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-[0.2em] block select-none">
-              [ SECTION 02 // DOSSIER ]
-            </span>
             <h1 className="font-sans text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight text-white leading-none">
               I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8c47e8] via-[#ab76f2] to-[#c084fc] drop-shadow-[0_2px_15px_rgba(140,71,232,0.35)] relative font-black">Sumit Shah</span>
             </h1>
@@ -528,189 +336,127 @@ export default function AboutPage({ onBack }: AboutPageProps) {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Interactive Spotify Status Widget */}
+        {/* RIGHT COLUMN: Authentic Recently Played Soundtrack Archive */}
         <div className="lg:col-span-5 h-full">
-          <div className={`luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl transition-all duration-500 shadow-2xl overflow-hidden min-h-[460px] ${
-            isAudioPlaying 
-              ? 'luxury-glow-green border-[#1DB954]/45 shadow-[0_0_35px_rgba(29,185,84,0.18)]' 
-              : 'luxury-glow-purple border-zinc-800/80 hover:border-zinc-700/80'
-          }`}>
+          <div className="luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl transition-all duration-500 shadow-2xl overflow-hidden min-h-[480px] border-zinc-800/80 hover:border-zinc-700/80">
             
             {/* Cyber Glow background orb */}
-            <div className={`absolute -right-24 -top-24 w-52 h-52 rounded-full blur-3xl pointer-events-none transition-all duration-1000 ${
-              isAudioPlaying ? 'bg-[#1DB954]/18' : 'bg-[#742DE1]/12'
-            }`} />
+            <div className="absolute -right-24 -top-24 w-52 h-52 rounded-full blur-3xl pointer-events-none bg-[#742DE1]/12" />
 
-            {/* Top Header Badge */}
-            <div className="flex items-center justify-between z-10 relative select-none">
-              {currentTrackIndex === 0 && spotifyData?.isPlaying ? (
-                <div className="flex items-center gap-2 bg-[#1DB954]/10 border border-[#1DB954]/30 px-2.5 py-1 rounded-full text-[9px] font-mono text-[#1DB954] tracking-widest uppercase shadow-[0_0_10px_rgba(29,185,84,0.15)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#1DB954] shadow-[0_0_8px_#1DB954] animate-pulse" />
-                  LIVE NOW
+            <div className="space-y-6 w-full">
+              {/* Top Header Badge */}
+              <div className="flex items-center justify-between z-10 relative select-none">
+                <div className="flex items-center gap-2 bg-[#1DB954]/10 border border-[#1DB954]/25 px-2.5 py-1 rounded-full text-[9px] font-mono text-[#1DB954] tracking-widest uppercase shadow-[0_0_8px_rgba(29,185,84,0.08)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#1DB954] shadow-[0_0_6px_#1DB954]" />
+                  CONNECTED // SUMEETISM
                 </div>
-              ) : (
-                <div className="flex items-center gap-2 bg-zinc-900/60 border border-zinc-800/80 px-2.5 py-1 rounded-full text-[9px] font-mono text-zinc-400 tracking-widest uppercase">
-                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-650" />
-                  {currentTrackIndex === 0 ? "LAST PLAYED" : "PREVIEW PLAYER"}
-                </div>
-              )}
-              
-              <div className="flex items-center gap-2">
-                {/* Animated Equalizer when local audio or spotify is actively playing */}
-                {(isAudioPlaying || (currentTrackIndex === 0 && spotifyData?.isPlaying)) && (
-                  <div className="flex items-end gap-[2px] h-3 w-4 select-none">
-                    <div className="w-[2px] bg-[#1DB954] rounded-t-sm animate-[eq-bar-1_0.8s_ease-in-out_infinite] shadow-[0_0_4px_rgba(29,185,84,0.4)]" />
-                    <div className="w-[2px] bg-[#1DB954] rounded-t-sm animate-[eq-bar-2_0.6s_ease-in-out_infinite] shadow-[0_0_4px_rgba(29,185,84,0.4)]" />
-                    <div className="w-[2px] bg-[#1DB954] rounded-t-sm animate-[eq-bar-3_0.7s_ease-in-out_infinite] shadow-[0_0_4px_rgba(29,185,84,0.4)]" />
-                    <div className="w-[2px] bg-[#1DB954] rounded-t-sm animate-[eq-bar-4_0.5s_ease-in-out_infinite] shadow-[0_0_4px_rgba(29,185,84,0.4)]" />
-                  </div>
-                )}
-                <span className="font-mono text-[9px] text-[#1DB954] uppercase tracking-widest font-semibold">
-                  SPOTIFY
+                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest">
+                  MUSIC DOSSIER
                 </span>
               </div>
-            </div>
 
-            {/* Center Album Art with hover interactive overlay */}
-            <div className="my-6 aspect-square w-full rounded-xl overflow-hidden border border-zinc-900/80 relative shadow-inner z-10 select-none group">
-              <img 
-                src={activeTrack.albumImageUrl} 
-                alt={activeTrack.album} 
-                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 select-none"
-              />
-              
-              {/* CD Metallic Sheen Reflection layer */}
-              <div className={`cd-sheen ${isAudioPlaying ? 'animate-spin-slow' : ''}`} />
-
-              {/* Visual playing state gradient overlay */}
-              <div className={`absolute inset-0 transition-opacity duration-500 pointer-events-none ${
-                isAudioPlaying ? 'bg-black/35 bg-gradient-to-t from-black/60 to-[#1DB954]/8' : 'bg-gradient-to-t from-black/60 via-transparent to-transparent'
-              }`} />
-
-              {/* Center Play/Pause Button Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                <button
-                  onClick={handlePlayPause}
-                  className={`pointer-events-auto w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer shadow-[0_0_15px_rgba(116,45,225,0.4)] hover:shadow-[0_0_25px_rgba(29,185,84,0.6)] backdrop-blur-md ${
-                    isAudioPlaying 
-                      ? 'bg-zinc-950/85 border border-[#1DB954] text-[#1DB954] opacity-90 scale-95 hover:scale-100' 
-                      : 'bg-black/75 border border-[#742DE1] text-white opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 hover:bg-zinc-950/90'
-                  }`}
-                  title={isAudioPlaying ? "Pause Preview" : "Play Preview"}
-                >
-                  {isAudioPlaying ? (
-                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 fill-current translate-x-[2px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Bottom Metadata & Controls */}
-            <div className="space-y-5 z-10 relative">
-              <div className="flex justify-between items-start gap-4">
-                <div className="flex-1 min-w-0">
-                  <a
-                    href={activeTrack.songUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block max-w-full font-sans font-bold text-xl text-zinc-100 tracking-tight leading-tight hover:text-[#1DB954] transition-colors line-clamp-1 cursor-pointer"
-                  >
-                    {activeTrack.title}
-                  </a>
-                  <p className="font-mono text-xs text-zinc-400 tracking-wide uppercase mt-1 line-clamp-1">
-                    {activeTrack.artist}
-                  </p>
-                  <p className="font-sans text-[10px] text-zinc-500 mt-1.5 uppercase tracking-wider line-clamp-1 select-none">
-                    {activeTrack.album}
-                  </p>
-                </div>
+              {/* LATEST ROTATION: Showcasing the single most recent track sleeve */}
+              <div className="space-y-4 z-10 relative">
+                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest block select-none">
+                  // LATEST ROTATION
+                </span>
                 
-                {/* External Link Out to Spotify */}
                 <a
-                  href={activeTrack.songUrl}
+                  href={latestTrack.songUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800/80 hover:border-zinc-700/80 text-zinc-400 hover:text-[#1DB954] transition-all duration-300"
-                  title="Open on Spotify"
+                  className="group block relative aspect-square w-full rounded-xl overflow-hidden border border-zinc-900/80 shadow-2xl cursor-pointer"
                 >
-                  <ArrowUpRight size={16} />
+                  <img 
+                    src={latestTrack.albumImageUrl} 
+                    alt={latestTrack.album} 
+                    className="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-700 select-none"
+                  />
+                  
+                  {/* CD Metallic Sheen Reflection layer */}
+                  <div className="cd-sheen" />
+
+                  {/* Gradient bottom overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+
+                  {/* Dynamic absolute text overlay inside the cover */}
+                  <div className="absolute bottom-4 left-4 right-4 text-left">
+                    <span className="font-mono text-[8px] text-[#1DB954] tracking-widest uppercase bg-black/60 border border-[#1DB954]/30 px-2 py-0.5 rounded backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+                      LATEST // {formatRelativeTime(latestTrack.playedAt)}
+                    </span>
+                    <h3 className="font-sans font-bold text-lg sm:text-xl text-white tracking-tight leading-tight mt-2 drop-shadow-md truncate">
+                      {latestTrack.title}
+                    </h3>
+                    <p className="font-mono text-[10px] text-zinc-300 tracking-wide uppercase drop-shadow-md truncate">
+                      {latestTrack.artist}
+                    </p>
+                  </div>
+                  
+                  {/* Tiny Hover Indicator icon */}
+                  <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-black/65 border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-[#1DB954] group-hover:border-[#1DB954]/45 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm">
+                    <ArrowUpRight size={14} />
+                  </div>
                 </a>
               </div>
 
-              {/* Dynamic Interactive Progress Bar (either Spotify live or local audio playback) */}
-              <div className="space-y-2">
-                <div 
-                  onClick={handleProgressClick}
-                  className="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden relative border border-zinc-900/40 cursor-pointer group/progress-bar"
-                  title={isAudioPlaying ? "Click to seek" : "Preview playback to seek"}
-                >
-                  <div 
-                    className="h-full bg-gradient-to-r from-[#742DE1] via-[#a78bfa] to-[#1DB954] rounded-full shadow-[0_0_8px_rgba(29,185,84,0.45)] transition-all duration-100"
-                    style={{ width: `${progressPercent}%` }}
-                  />
-                  {isAudioPlaying && (
-                    <div 
-                      className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white border border-[#1DB954] opacity-0 group-hover/progress-bar:opacity-100 transition-opacity duration-150 shadow-[0_0_6px_#1DB954]"
-                      style={{ left: `calc(${progressPercent}% - 6px)` }}
-                    />
-                  )}
-                </div>
-                <div className="flex justify-between font-mono text-[9px] text-zinc-500 select-none">
-                  <span>{formatTime(displayProgress)}</span>
-                  <span>{formatTime(displayDuration)}</span>
+              {/* RECENT MUSIC ARCHIVE LOG FEED */}
+              <div className="space-y-3 z-10 relative">
+                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest block select-none">
+                  // RECENT LISTEN HISTORY
+                </span>
+
+                <div className="divide-y divide-zinc-900/80 border border-zinc-900/60 rounded-xl bg-zinc-950/20 overflow-hidden">
+                  {historyTracks.map((track, idx) => (
+                    <a
+                      key={idx}
+                      href={track.songUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/row flex items-center gap-3.5 py-3.5 px-4 hover:bg-white/[0.02] transition-all duration-300 relative overflow-hidden block cursor-pointer"
+                    >
+                      {/* Left glowing slider indicator */}
+                      <div className="absolute left-0 top-1/4 bottom-1/4 w-[2.5px] bg-[#1DB954] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r shadow-[0_0_8px_#1DB954]" />
+
+                      {/* Small thumbnail artwork */}
+                      <div className="w-10 h-10 rounded overflow-hidden shrink-0 border border-zinc-900 bg-zinc-950 relative">
+                        <img 
+                          src={track.albumImageUrl} 
+                          alt={track.album} 
+                          className="w-full h-full object-cover transform group-hover/row:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+
+                      {/* Metadata */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <h4 className="font-sans font-semibold text-sm text-zinc-200 truncate group-hover/row:text-white transition-colors">
+                            {track.title}
+                          </h4>
+                          <span className="font-mono text-[8px] text-zinc-500 group-hover/row:text-zinc-400 tracking-wider shrink-0 uppercase select-none">
+                            {formatRelativeTime(track.playedAt)}
+                          </span>
+                        </div>
+                        <p className="font-sans text-xs text-zinc-400 truncate mt-0.5 group-hover/row:text-zinc-300 transition-colors">
+                          {track.artist}
+                        </p>
+                      </div>
+
+                      {/* External Arrow hover reveal */}
+                      <div className="text-zinc-600 group-hover/row:text-[#1DB954] transition-colors shrink-0">
+                        <ArrowUpRight size={13} />
+                      </div>
+                    </a>
+                  ))}
                 </div>
               </div>
-
-              {/* Brushed-Metal Deck Audio Controls */}
-              <div className="flex items-center justify-center gap-6 py-1 select-none">
-                <button
-                  onClick={handlePrev}
-                  className="p-2.5 rounded-lg border border-transparent hover:border-zinc-800/80 bg-transparent hover:bg-zinc-900/50 text-zinc-400 hover:text-[#1DB954] transition-all cursor-pointer hover:scale-105 active:scale-95 duration-200"
-                  title="Previous Track"
-                >
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
-                  </svg>
-                </button>
-
-                <button
-                  onClick={handlePlayPause}
-                  className={`p-3.5 rounded-full transition-all cursor-pointer hover:scale-105 active:scale-95 shadow-[0_4px_12px_rgba(0,0,0,0.4)] flex items-center justify-center ${
-                    isAudioPlaying 
-                      ? 'bg-[#1DB954] text-black hover:bg-[#1DB954] hover:shadow-[0_4px_20px_rgba(29,185,84,0.5)]' 
-                      : 'bg-white text-black hover:bg-white hover:shadow-[0_4px_20px_rgba(255,255,255,0.3)]'
-                  }`}
-                  title={isAudioPlaying ? "Pause Preview" : "Play Preview"}
-                >
-                  {isAudioPlaying ? (
-                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 fill-current translate-x-[1px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  )}
-                </button>
-
-                <button
-                  onClick={handleNext}
-                  className="p-2.5 rounded-lg border border-transparent hover:border-zinc-800/80 bg-transparent hover:bg-zinc-900/50 text-zinc-400 hover:text-[#1DB954] transition-all cursor-pointer hover:scale-105 active:scale-95 duration-200"
-                  title="Next Track"
-                >
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 18l8.5-6L6 6zm9-12v12h2V6z"/>
-                  </svg>
-                </button>
-              </div>
-
             </div>
+
+            {/* Bottom Disclaimer */}
+            <div className="border-t border-zinc-900/60 pt-4 flex justify-between items-center text-[8px] font-mono text-zinc-600 z-10 relative select-none">
+              <span>STATUS // API COMPLIANT</span>
+              <span>SYNCHRONIZED WITH SPOTIFY</span>
+            </div>
+
           </div>
         </div>
 
