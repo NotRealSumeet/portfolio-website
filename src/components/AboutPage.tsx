@@ -38,44 +38,7 @@ const formatRelativeTime = (timestamp: number) => {
   return `${days}D AGO`;
 };
 
-const DEFAULT_TRACKS: SpotifyTrack[] = [
-  {
-    title: "BEAUTY AND THE BEAST",
-    artist: "Kanye West",
-    album: "BULLY",
-    albumImageUrl: "/spotify/bully.png",
-    songUrl: "https://open.spotify.com/album/5poA9SAx0Xiz1cf17fWBLS",
-    playedAt: Date.now() - 120000,
-    currentlyPlaying: false
-  },
-  {
-    title: "NIGHTCALL",
-    artist: "Kavinsky",
-    album: "Outrun",
-    albumImageUrl: "/spotify/nightcall.png",
-    songUrl: "https://open.spotify.com/track/0mt02gJ425X5zI743g3Iuu",
-    playedAt: Date.now() - 3600000,
-    currentlyPlaying: false
-  },
-  {
-    title: "STARBOY",
-    artist: "The Weeknd",
-    album: "Starboy",
-    albumImageUrl: "/spotify/starboy.png",
-    songUrl: "https://open.spotify.com/track/7i5i5VzK82I27V0pE33W6X",
-    playedAt: Date.now() - 14400000,
-    currentlyPlaying: false
-  },
-  {
-    title: "MIDNIGHT CITY",
-    artist: "M83",
-    album: "Hurry Up, We're Dreaming",
-    albumImageUrl: "/spotify/midnightcity.png",
-    songUrl: "https://open.spotify.com/track/1eyZp2GMQI27JbpZ78jLci",
-    playedAt: Date.now() - 86400000,
-    currentlyPlaying: false
-  }
-];
+
 
 interface AboutPageProps {
   onBack: () => void;
@@ -83,7 +46,8 @@ interface AboutPageProps {
 
 export default function AboutPage({ onBack }: AboutPageProps) {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
-  const [tracks, setTracks] = useState<SpotifyTrack[]>(DEFAULT_TRACKS);
+  const [tracks, setTracks] = useState<SpotifyTrack[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const copyEmail = () => {
     navigator.clipboard.writeText("sumeetshah24@gmail.com");
@@ -157,6 +121,8 @@ export default function AboutPage({ onBack }: AboutPageProps) {
       }
     } catch (err) {
       console.error('Error fetching Last.fm recently played:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -166,9 +132,6 @@ export default function AboutPage({ onBack }: AboutPageProps) {
     const pollInterval = setInterval(fetchRecentlyPlayed, 15000);
     return () => clearInterval(pollInterval);
   }, []);
-
-  const latestTrack = tracks[0] || DEFAULT_TRACKS[0];
-  const historyTracks = tracks.slice(1, 4);
 
   return (
     <motion.div
@@ -247,22 +210,25 @@ export default function AboutPage({ onBack }: AboutPageProps) {
         {/* LEFT COLUMN: Main identity / Biography / Info Table */}
         <div className="lg:col-span-7 space-y-12 relative">
           
-          {/* Identity Title */}
-          <div className="space-y-4">
-            <h1 className="font-sans text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight text-white leading-none">
-              I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8c47e8] via-[#ab76f2] to-[#c084fc] drop-shadow-[0_2px_15px_rgba(140,71,232,0.35)] relative font-black">Sumit Shah</span>
-            </h1>
-          </div>
+          {/* Wrapper for Heading and Bio with Divider */}
+          <div className="editorial-divider space-y-8">
+            {/* Identity Title */}
+            <div className="space-y-4">
+              <h1 className="font-sans text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight text-white leading-none">
+                I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8c47e8] via-[#ab76f2] to-[#c084fc] drop-shadow-[0_2px_15px_rgba(140,71,232,0.35)] relative font-black">Sumit Shah</span>
+              </h1>
+            </div>
 
-          {/* Biography Paragraphs */}
-          <div className="space-y-6 text-zinc-200 font-sans text-lg sm:text-xl leading-relaxed font-light tracking-wide max-w-2xl border-l border-zinc-800/50 pl-6">
-            <p>
-              A graphic designer focused on thumbnails, posters, cover art, and visual storytelling. 
-              My work combines Swiss typography principles with experimental layouts, texture-heavy compositions, and modern internet visual culture.
-            </p>
-            <p className="text-zinc-400 text-base sm:text-lg">
-              I enjoy balancing structured design systems with raw expressive visuals, constructing interactive experiences, and developing atmospheric digital systems.
-            </p>
+            {/* Biography Paragraphs */}
+            <div className="space-y-6 text-zinc-200 font-sans text-lg sm:text-xl leading-relaxed font-light tracking-wide max-w-2xl">
+              <p>
+                A graphic designer focused on thumbnails, posters, cover art, and visual storytelling. 
+                My work combines Swiss typography principles with experimental layouts, texture-heavy compositions, and modern internet visual culture.
+              </p>
+              <p className="text-zinc-400 text-base sm:text-lg">
+                I enjoy balancing structured design systems with raw expressive visuals, constructing interactive experiences, and developing atmospheric digital systems.
+              </p>
+            </div>
           </div>
 
           {/* Premium Glassmorphic Info Table Card (Luxury SaaS Panel) */}
@@ -411,186 +377,271 @@ export default function AboutPage({ onBack }: AboutPageProps) {
 
         {/* RIGHT COLUMN: Live Music Presence System */}
         <div className="lg:col-span-5 h-full">
-          <div className={`luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl transition-all duration-1000 shadow-2xl overflow-hidden min-h-[480px] ${
-            latestTrack.currentlyPlaying 
-              ? 'shadow-[0_0_50px_-12px_rgba(29,185,84,0.12)] border-emerald-900/30' 
-              : 'border-zinc-800/80'
-          } hover:border-zinc-700/50`}>
-            
-            {/* Ambient background glows inside card */}
-            <div className={`absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none transition-all duration-1000 ${
-              latestTrack.currentlyPlaying 
-                ? 'bg-[#1DB954]/8' 
-                : 'bg-[#742DE1]/6'
-            }`} />
-            <div className={`absolute -left-24 -bottom-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none transition-all duration-1000 ${
-              latestTrack.currentlyPlaying 
-                ? 'bg-[#742DE1]/5' 
-                : 'bg-[#1DB954]/1'
-            }`} />
-
-            <div className="space-y-6 w-full relative z-10">
-              {/* Top Header Badge */}
-              <div className="flex items-center justify-between border-b border-zinc-950 pb-4 select-none">
-                {latestTrack.currentlyPlaying ? (
-                  <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-[#1DB954] uppercase">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1DB954] opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1DB954] shadow-[0_0_6px_#1DB954]"></span>
-                    </span>
-                    <span>LISTENING IN REAL-TIME</span>
-                  </div>
-                ) : (
+          {loading ? (
+            /* SKELETON LOADING CARD */
+            <div className="luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl shadow-2xl overflow-hidden min-h-[480px] border-zinc-800/80 animate-pulse">
+              {/* Glows */}
+              <div className="absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none bg-[#742DE1]/4" />
+              
+              <div className="space-y-6 w-full relative z-10">
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-zinc-950 pb-4 select-none">
                   <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-zinc-500 uppercase">
-                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-700" />
-                    <span>RECENTLY PLAYED</span>
-                  </div>
-                )}
-                <span className="font-mono text-[9px] text-zinc-600 uppercase tracking-widest font-light">
-                  ♫ LIVE PRESENCE
-                </span>
-              </div>
-
-              {/* LATEST ROTATION: Showcasing the single most recent track sleeve */}
-              <div className="w-full relative">
-                <a
-                  href={latestTrack.songUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`group block relative aspect-square w-full rounded-xl overflow-hidden border transition-all duration-700 shadow-2xl cursor-pointer ${
-                    latestTrack.currentlyPlaying 
-                      ? 'border-emerald-500/25 shadow-[0_0_35px_-5px_rgba(29,185,84,0.15)] hover:shadow-[0_0_40px_-2px_rgba(29,185,84,0.25)]' 
-                      : 'border-zinc-900/80 hover:border-zinc-800'
-                  }`}
-                >
-                  <img 
-                    src={latestTrack.albumImageUrl} 
-                    alt={latestTrack.album} 
-                    onError={handleImageError}
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 select-none"
-                  />
-                  
-                  {/* CD Metallic Sheen Reflection layer */}
-                  <div className="cd-sheen" />
-
-                  {/* Gradient bottom overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
-
-                  {/* LIVE NOW top-left breathing badge */}
-                  {latestTrack.currentlyPlaying && (
-                    <div className="absolute top-4 left-4 bg-emerald-500/90 text-black font-mono text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded shadow-[0_4px_12px_rgba(0,0,0,0.5)] z-20 flex items-center gap-1.5 animate-pulse">
-                      <span className="relative flex h-1.5 w-1.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-black"></span>
-                      </span>
-                      LIVE NOW
-                    </div>
-                  )}
-
-                  {/* Dynamic absolute text overlay inside the cover */}
-                  <div className="absolute bottom-5 left-5 right-5 text-left z-10">
-                    <span className={`font-mono text-[9px] tracking-wider uppercase px-2.5 py-1 rounded-md backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] inline-flex items-center gap-2 transition-colors duration-500 ${
-                      latestTrack.currentlyPlaying 
-                        ? 'text-[#1DB954] bg-[#1DB954]/10 border border-[#1DB954]/25' 
-                        : 'text-zinc-400 bg-zinc-950/60 border border-zinc-800/30'
-                    }`}>
-                      {latestTrack.currentlyPlaying ? (
-                        <>
-                          <Equalizer />
-                          <span className="font-semibold tracking-widest">NOW PLAYING</span>
-                        </>
-                      ) : (
-                        <span>LATEST // {formatRelativeTime(latestTrack.playedAt)}</span>
-                      )}
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-500 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-zinc-600"></span>
                     </span>
-                    <h3 className="font-sans font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug mt-3 drop-shadow-lg truncate">
-                      {latestTrack.title}
-                    </h3>
-                    <p className="font-mono text-[10px] text-zinc-400 tracking-widest uppercase mt-1 drop-shadow-md truncate">
-                      {latestTrack.artist}
-                    </p>
+                    <span>LOADING LIVE SYSTEM...</span>
                   </div>
+                  <span className="font-mono text-[9px] text-zinc-600 uppercase tracking-widest font-light">
+                    ♫ LIVE PRESENCE
+                  </span>
+                </div>
+
+                {/* Cover Skeleton */}
+                <div className="w-full relative aspect-square rounded-xl overflow-hidden border border-zinc-900/80 bg-zinc-950/40 shadow-2xl flex flex-col justify-end p-5">
+                  <div className="cd-sheen" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -translate-x-full animate-shimmer" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
                   
-                  {/* Tiny Hover Indicator icon */}
-                  <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-black/65 border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-[#1DB954] group-hover:border-[#1DB954]/45 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm z-20">
-                    <ArrowUpRight size={14} />
+                  <div className="relative z-10 space-y-3">
+                    <div className="h-5 w-24 bg-zinc-900/80 border border-zinc-800/50 rounded-md" />
+                    <div className="h-7 w-2/3 bg-zinc-900/80 rounded" />
+                    <div className="h-3.5 w-1/3 bg-zinc-900/40 rounded" />
                   </div>
+                </div>
 
-                  {/* Animated progress heartbeat neon line */}
-                  {latestTrack.currentlyPlaying && (
-                    <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-zinc-950/60 overflow-hidden z-20">
-                      <motion.div 
-                        animate={{ 
-                          x: ['-100%', '100%']
-                        }}
-                        transition={{ 
-                          duration: 3.5, 
-                          repeat: Infinity, 
-                          ease: "easeInOut" 
-                        }}
-                        className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#1DB954] to-transparent opacity-90" 
-                      />
-                    </div>
-                  )}
-                </a>
-              </div>
-
-              {/* RECENT MUSIC ARCHIVE LOG FEED */}
-              <div className="space-y-4 w-full">
-                <div className="divide-y divide-zinc-900/40 border border-zinc-900/30 rounded-xl bg-zinc-950/15 overflow-hidden">
-                  {historyTracks.map((track, idx) => (
-                    <a
-                      key={idx}
-                      href={track.songUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group/row flex items-center gap-4 py-4 px-4 hover:bg-white/[0.015] transition-all duration-300 relative overflow-hidden block cursor-pointer"
-                    >
-                      {/* Left glowing slider indicator */}
-                      <div className="absolute left-0 top-1/4 bottom-1/4 w-[2.5px] bg-[#1DB954] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r shadow-[0_0_8px_#1DB954]" />
-
-                      {/* Small thumbnail artwork */}
-                      <div className="w-11 h-11 rounded overflow-hidden shrink-0 border border-zinc-900/50 bg-zinc-950 relative">
-                        <img 
-                          src={track.albumImageUrl} 
-                          alt={track.album} 
-                          onError={handleImageError}
-                          className="w-full h-full object-cover transform group-hover/row:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-
-                      {/* Metadata */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-3">
-                          <h4 className="font-sans font-medium text-sm text-zinc-200 truncate group-hover/row:text-white transition-colors">
-                            {track.title}
-                          </h4>
-                          <span className="font-mono text-[8px] text-zinc-600 group-hover/row:text-zinc-500 tracking-wider shrink-0 uppercase select-none transition-colors">
-                            {formatRelativeTime(track.playedAt)}
-                          </span>
+                {/* History Skeleton */}
+                <div className="space-y-4 w-full">
+                  <div className="divide-y divide-zinc-900/40 border border-zinc-900/30 rounded-xl bg-zinc-950/15 overflow-hidden">
+                    {[1, 2, 3].map((val) => (
+                      <div key={val} className="flex items-center gap-4 py-4 px-4 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.015] to-transparent -translate-x-full animate-shimmer" />
+                        <div className="w-11 h-11 rounded bg-zinc-950 border border-zinc-900/50 shrink-0 relative overflow-hidden">
+                          <div className="absolute inset-0 bg-zinc-900/20" />
                         </div>
-                        <p className="font-mono text-[10px] text-zinc-500 truncate mt-1 group-hover/row:text-zinc-400 transition-colors tracking-wide">
-                          {track.artist}
-                        </p>
+                        <div className="flex-1 min-w-0 space-y-2">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="h-4 w-28 bg-zinc-900/60 rounded" />
+                            <div className="h-2 w-10 bg-zinc-900/40 rounded" />
+                          </div>
+                          <div className="h-3 w-20 bg-zinc-900/30 rounded" />
+                        </div>
                       </div>
-
-                      {/* External Arrow hover reveal */}
-                      <div className="text-zinc-700 group-hover/row:text-[#1DB954] transition-colors shrink-0 duration-300">
-                        <ArrowUpRight size={13} />
-                      </div>
-                    </a>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Bottom Disclaimer */}
-            <div className="border-t border-zinc-950 pt-4 flex justify-between items-center text-[10px] font-mono text-zinc-500 z-10 relative select-none">
-              <span>LIVE SOUNDTRACK</span>
-              <span>♫</span>
+              {/* Bottom Disclaimer */}
+              <div className="border-t border-zinc-950 pt-4 flex justify-between items-center text-[10px] font-mono text-zinc-600 z-10 relative select-none">
+                <div className="h-3.5 w-20 bg-zinc-900/30 rounded" />
+                <span>♫</span>
+              </div>
             </div>
+          ) : tracks.length > 0 ? (
+            /* REAL MUSIC CARD (Only after data is fetched successfully) */
+            <div className={`luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl transition-all duration-1000 shadow-2xl overflow-hidden min-h-[480px] ${
+              tracks[0].currentlyPlaying 
+                ? 'shadow-[0_0_50px_-12px_rgba(29,185,84,0.12)] border-emerald-900/30' 
+                : 'border-zinc-800/80'
+            } hover:border-zinc-700/50`}>
+              
+              {/* Ambient background glows inside card */}
+              <div className={`absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none transition-all duration-1000 ${
+                tracks[0].currentlyPlaying 
+                  ? 'bg-[#1DB954]/8' 
+                  : 'bg-[#742DE1]/6'
+              }`} />
+              <div className={`absolute -left-24 -bottom-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none transition-all duration-1000 ${
+                tracks[0].currentlyPlaying 
+                  ? 'bg-[#742DE1]/5' 
+                  : 'bg-[#1DB954]/1'
+              }`} />
 
-          </div>
+              <div className="space-y-6 w-full relative z-10">
+                {/* Top Header Badge */}
+                <div className="flex items-center justify-between border-b border-zinc-950 pb-4 select-none">
+                  {tracks[0].currentlyPlaying ? (
+                    <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-[#1DB954] uppercase">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1DB954] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1DB954] shadow-[0_0_6px_#1DB954]"></span>
+                      </span>
+                      <span>LISTENING IN REAL-TIME</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-zinc-500 uppercase">
+                      <span className="h-1.5 w-1.5 rounded-full bg-zinc-700" />
+                      <span>RECENTLY PLAYED</span>
+                    </div>
+                  )}
+                  <span className="font-mono text-[9px] text-zinc-600 uppercase tracking-widest font-light">
+                    ♫ LIVE PRESENCE
+                  </span>
+                </div>
+
+                {/* LATEST ROTATION */}
+                <div className="w-full relative">
+                  <a
+                    href={tracks[0].songUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`group block relative aspect-square w-full rounded-xl overflow-hidden border transition-all duration-700 shadow-2xl cursor-pointer ${
+                      tracks[0].currentlyPlaying 
+                        ? 'border-emerald-500/25 shadow-[0_0_35px_-5px_rgba(29,185,84,0.15)] hover:shadow-[0_0_40px_-2px_rgba(29,185,84,0.25)]' 
+                        : 'border-zinc-900/80 hover:border-zinc-800'
+                    }`}
+                  >
+                    <img 
+                      src={tracks[0].albumImageUrl} 
+                      alt={tracks[0].album} 
+                      onError={handleImageError}
+                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 select-none"
+                    />
+                    <div className="cd-sheen" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
+
+                    {tracks[0].currentlyPlaying && (
+                      <div className="absolute top-4 left-4 bg-emerald-500/90 text-black font-mono text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded shadow-[0_4px_12px_rgba(0,0,0,0.5)] z-20 flex items-center gap-1.5 animate-pulse">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-black"></span>
+                        </span>
+                        LIVE NOW
+                      </div>
+                    )}
+
+                    <div className="absolute bottom-5 left-5 right-5 text-left z-10">
+                      <span className={`font-mono text-[9px] tracking-wider uppercase px-2.5 py-1 rounded-md backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] inline-flex items-center gap-2 transition-colors duration-500 ${
+                        tracks[0].currentlyPlaying 
+                          ? 'text-[#1DB954] bg-[#1DB954]/10 border border-[#1DB954]/25' 
+                          : 'text-zinc-400 bg-zinc-950/60 border border-zinc-800/30'
+                      }`}>
+                        {tracks[0].currentlyPlaying ? (
+                          <>
+                            <Equalizer />
+                            <span className="font-semibold tracking-widest">NOW PLAYING</span>
+                          </>
+                        ) : (
+                          <span>LATEST // {formatRelativeTime(tracks[0].playedAt)}</span>
+                        )}
+                      </span>
+                      <h3 className="font-sans font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug mt-3 drop-shadow-lg truncate">
+                        {tracks[0].title}
+                      </h3>
+                      <p className="font-mono text-[10px] text-zinc-400 tracking-widest uppercase mt-1 drop-shadow-md truncate">
+                        {tracks[0].artist}
+                      </p>
+                    </div>
+                    
+                    <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-black/65 border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-[#1DB954] group-hover:border-[#1DB954]/45 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm z-20">
+                      <ArrowUpRight size={14} />
+                    </div>
+
+                    {tracks[0].currentlyPlaying && (
+                      <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-zinc-950/60 overflow-hidden z-20">
+                        <motion.div 
+                          animate={{ 
+                            x: ['-100%', '100%']
+                          }}
+                          transition={{ 
+                            duration: 3.5, 
+                            repeat: Infinity, 
+                            ease: "easeInOut" 
+                          }}
+                          className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#1DB954] to-transparent opacity-90" 
+                        />
+                      </div>
+                    )}
+                  </a>
+                </div>
+
+                {/* RECENT MUSIC ARCHIVE LOG FEED */}
+                <div className="space-y-4 w-full">
+                  <div className="divide-y divide-zinc-900/40 border border-zinc-900/30 rounded-xl bg-zinc-950/15 overflow-hidden">
+                    {tracks.slice(1, 4).map((track, idx) => (
+                      <a
+                        key={idx}
+                        href={track.songUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group/row flex items-center gap-4 py-4 px-4 hover:bg-white/[0.015] transition-all duration-300 relative overflow-hidden block cursor-pointer"
+                      >
+                        <div className="absolute left-0 top-1/4 bottom-1/4 w-[2.5px] bg-[#1DB954] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r shadow-[0_0_8px_#1DB954]" />
+                        <div className="w-11 h-11 rounded overflow-hidden shrink-0 border border-zinc-900/50 bg-zinc-950 relative">
+                          <img 
+                            src={track.albumImageUrl} 
+                            alt={track.album} 
+                            onError={handleImageError}
+                            className="w-full h-full object-cover transform group-hover/row:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-3">
+                            <h4 className="font-sans font-medium text-sm text-zinc-200 truncate group-hover/row:text-white transition-colors">
+                              {track.title}
+                            </h4>
+                            <span className="font-mono text-[8px] text-[#742DE1] group-hover/row:text-[#a78bfa] tracking-wider shrink-0 uppercase select-none transition-colors">
+                              {formatRelativeTime(track.playedAt)}
+                            </span>
+                          </div>
+                          <p className="font-mono text-[10px] text-zinc-500 truncate mt-1 group-hover/row:text-zinc-400 transition-colors tracking-wide">
+                            {track.artist}
+                          </p>
+                        </div>
+                        <div className="text-zinc-700 group-hover/row:text-[#1DB954] transition-colors shrink-0 duration-300">
+                          <ArrowUpRight size={13} />
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-zinc-950 pt-4 flex justify-between items-center text-[10px] font-mono text-zinc-500 z-10 relative select-none">
+                <span>LIVE SOUNDTRACK</span>
+                <span>♫</span>
+              </div>
+            </div>
+          ) : (
+            /* EMPTY/OFFLINE STATE */
+            <div className="luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl border-zinc-800/80 shadow-2xl overflow-hidden min-h-[480px]">
+              <div className="absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none bg-[#742DE1]/3" />
+              
+              <div className="space-y-6 w-full relative z-10">
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-zinc-950 pb-4 select-none">
+                  <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-zinc-500 uppercase">
+                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-800" />
+                    <span>SYSTEM OFFLINE</span>
+                  </div>
+                  <span className="font-mono text-[9px] text-zinc-600 uppercase tracking-widest font-light">
+                    ♫ LIVE PRESENCE
+                  </span>
+                </div>
+
+                {/* Centered Offline Message */}
+                <div className="flex flex-col items-center justify-center py-20 text-center space-y-4 my-auto">
+                  <div className="w-12 h-12 rounded-full bg-zinc-950 border border-zinc-900/60 flex items-center justify-center text-zinc-500 shadow-inner">
+                    ♫
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-sans font-medium text-sm text-zinc-300">Live Soundfeed Offline</h3>
+                    <p className="font-mono text-[10px] text-zinc-500 max-w-[200px] leading-relaxed mx-auto">
+                      Unable to connect to Last.fm stream. Check back later.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Disclaimer */}
+              <div className="border-t border-zinc-950 pt-4 flex justify-between items-center text-[10px] font-mono text-zinc-600 z-10 relative select-none">
+                <span>OFFLINE</span>
+                <span>♫</span>
+              </div>
+            </div>
+          )}
         </div>
 
       </div>
