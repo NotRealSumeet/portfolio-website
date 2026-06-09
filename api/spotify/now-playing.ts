@@ -1,38 +1,8 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 
-const client_id = process.env.SPOTIFY_CLIENT_ID;
-const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const refresh_token = process.env.SPOTIFY_REFRESH_TOKEN;
-
-const getAccessToken = async () => {
-  const basic = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
-  const response = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${basic}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: refresh_token || '',
-    }),
-  });
-
-  return response.json();
-};
-
-const getRecentlyPlayed = async (limit = 5) => {
-  const tokenData = await getAccessToken() as any;
-  if (!tokenData || !tokenData.access_token) {
-    throw new Error('Failed to get access token');
-  }
-
-  return fetch(`https://api.spotify.com/v1/me/player/recently-played?limit=${limit}`, {
-    headers: {
-      Authorization: `Bearer ${tokenData.access_token}`,
-    },
-  });
-};
+const LASTFM_USERNAME = process.env.LASTFM_USERNAME || 'Sumit_shah';
+const LASTFM_API_KEY = process.env.LASTFM_API_KEY || '2bed1944f3a074be318fed728e990ffe';
+const FALLBACK_IMAGE_URL = '/spotify/bully.png';
 
 const getMockResponse = (res: any) => {
   return res.status(200).json({
@@ -43,7 +13,8 @@ const getMockResponse = (res: any) => {
         album: "BULLY",
         albumImageUrl: "/spotify/bully.png",
         songUrl: "https://open.spotify.com/album/5poA9SAx0Xiz1cf17fWBLS",
-        playedAt: Date.now() - 120000 // 2 minutes ago
+        playedAt: Date.now() - 120000,
+        currentlyPlaying: false
       },
       {
         title: "NIGHTCALL",
@@ -51,7 +22,8 @@ const getMockResponse = (res: any) => {
         album: "Outrun",
         albumImageUrl: "/spotify/nightcall.png",
         songUrl: "https://open.spotify.com/track/0mt02gJ425X5zI743g3Iuu",
-        playedAt: Date.now() - 3600000 // 1 hour ago
+        playedAt: Date.now() - 3600000,
+        currentlyPlaying: false
       },
       {
         title: "STARBOY",
@@ -59,7 +31,8 @@ const getMockResponse = (res: any) => {
         album: "Starboy",
         albumImageUrl: "/spotify/starboy.png",
         songUrl: "https://open.spotify.com/track/7i5i5VzK82I27V0pE33W6X",
-        playedAt: Date.now() - 14400000 // 4 hours ago
+        playedAt: Date.now() - 14400000,
+        currentlyPlaying: false
       },
       {
         title: "MIDNIGHT CITY",
@@ -67,7 +40,8 @@ const getMockResponse = (res: any) => {
         album: "Hurry Up, We're Dreaming",
         albumImageUrl: "/spotify/midnightcity.png",
         songUrl: "https://open.spotify.com/track/1eyZp2GMQI27JbpZ78jLci",
-        playedAt: Date.now() - 86400000 // 1 day ago
+        playedAt: Date.now() - 86400000,
+        currentlyPlaying: false
       }
     ]
   });
@@ -79,35 +53,52 @@ export default async function handler(req: any, res: any) {
   res.setHeader('Access-Control-Allow-Methods', 'GET');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (!client_id || !client_secret || !refresh_token) {
-    return getMockResponse(res);
-  }
-  
   try {
-    const recentlyPlayedRes = await getRecentlyPlayed(5);
-    if (recentlyPlayedRes.status === 204 || recentlyPlayedRes.status > 400) {
-      return getMockResponse(res);
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${LASTFM_USERNAME}&api_key=${LASTFM_API_KEY}&format=json&limit=5`;
+    const lastFmRes = await fetch(url);
+    if (!lastFmRes.ok) {
+      throw new Error('Last.fm API error');
     }
-    
-    const recent = await recentlyPlayedRes.json() as any;
-    if (!recent || !recent.items || recent.items.length === 0) {
-      return getMockResponse(res);
+    const data = await lastFmRes.json() as any;
+    if (!data.recenttracks || !data.recenttracks.track) {
+      throw new Error('Invalid Last.fm response');
     }
-    
-    const tracks = recent.items.map((item: any) => {
-      const track = item.track;
+
+    const rawTracks = data.recenttracks.track;
+    const tracks = rawTracks.map((track: any) => {
+      const isNowPlaying = track['@attr']?.nowplaying === 'true' || track['@attr']?.currentlyplaying === 'true';
+      
+      let albumImageUrl = FALLBACK_IMAGE_URL;
+      if (track.image && track.image.length > 0) {
+        const xlImage = track.image.find((img: any) => img.size === 'extralarge');
+        if (xlImage && xlImage['#text']) {
+          albumImageUrl = xlImage['#text'];
+        } else {
+          const lgImage = track.image.find((img: any) => img.size === 'large');
+          if (lgImage && lgImage['#text']) {
+            albumImageUrl = lgImage['#text'];
+          } else {
+            const anyImage = track.image.find((img: any) => img['#text']);
+            if (anyImage) albumImageUrl = anyImage['#text'];
+          }
+        }
+      }
+
       return {
-        title: track.name,
-        artist: track.artists.map((_artist: any) => _artist.name).join(', '),
-        album: track.album.name,
-        albumImageUrl: track.album.images[0]?.url || "/spotify/bully.png",
-        songUrl: track.external_urls.spotify,
-        playedAt: new Date(item.played_at).getTime()
+        title: track.name || 'UNKNOWN TRACK',
+        artist: track.artist?.['#text'] || 'UNKNOWN ARTIST',
+        album: track.album?.['#text'] || 'UNKNOWN ALBUM',
+        albumImageUrl,
+        songUrl: track.url || 'https://www.last.fm',
+        playedAt: isNowPlaying ? Date.now() : (track.date?.uts ? parseInt(track.date.uts) * 1000 : Date.now()),
+        currentlyPlaying: isNowPlaying
       };
     });
-    
+
     return res.status(200).json({ tracks });
   } catch (err) {
+    console.error('Error fetching Last.fm on backend endpoint:', err);
     return getMockResponse(res);
   }
 }
+

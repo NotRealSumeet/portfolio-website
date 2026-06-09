@@ -9,7 +9,21 @@ interface SpotifyTrack {
   albumImageUrl: string;
   songUrl: string;
   playedAt: number;
+  currentlyPlaying?: boolean;
 }
+
+const LASTFM_USERNAME = import.meta.env.VITE_LASTFM_USERNAME || 'Sumit_shah';
+const LASTFM_API_KEY = import.meta.env.VITE_LASTFM_API_KEY || '2bed1944f3a074be318fed728e990ffe';
+const FALLBACK_IMAGE_URL = '/spotify/bully.png';
+
+const Equalizer = () => (
+  <div className="flex items-end gap-[2px] h-3 w-3.5 shrink-0" aria-hidden="true">
+    <div className="w-[2px] bg-[#1DB954] rounded-t-xs h-[3px] animate-eq-bar-1" />
+    <div className="w-[2px] bg-[#1DB954] rounded-t-xs h-[4px] animate-eq-bar-2" />
+    <div className="w-[2px] bg-[#1DB954] rounded-t-xs h-[2px] animate-eq-bar-3" />
+    <div className="w-[2px] bg-[#1DB954] rounded-t-xs h-[3px] animate-eq-bar-4" />
+  </div>
+);
 
 const formatRelativeTime = (timestamp: number) => {
   if (!timestamp) return 'RECENTLY';
@@ -31,7 +45,8 @@ const DEFAULT_TRACKS: SpotifyTrack[] = [
     album: "BULLY",
     albumImageUrl: "/spotify/bully.png",
     songUrl: "https://open.spotify.com/album/5poA9SAx0Xiz1cf17fWBLS",
-    playedAt: Date.now() - 120000
+    playedAt: Date.now() - 120000,
+    currentlyPlaying: false
   },
   {
     title: "NIGHTCALL",
@@ -39,7 +54,8 @@ const DEFAULT_TRACKS: SpotifyTrack[] = [
     album: "Outrun",
     albumImageUrl: "/spotify/nightcall.png",
     songUrl: "https://open.spotify.com/track/0mt02gJ425X5zI743g3Iuu",
-    playedAt: Date.now() - 3600000
+    playedAt: Date.now() - 3600000,
+    currentlyPlaying: false
   },
   {
     title: "STARBOY",
@@ -47,7 +63,8 @@ const DEFAULT_TRACKS: SpotifyTrack[] = [
     album: "Starboy",
     albumImageUrl: "/spotify/starboy.png",
     songUrl: "https://open.spotify.com/track/7i5i5VzK82I27V0pE33W6X",
-    playedAt: Date.now() - 14400000
+    playedAt: Date.now() - 14400000,
+    currentlyPlaying: false
   },
   {
     title: "MIDNIGHT CITY",
@@ -55,7 +72,8 @@ const DEFAULT_TRACKS: SpotifyTrack[] = [
     album: "Hurry Up, We're Dreaming",
     albumImageUrl: "/spotify/midnightcity.png",
     songUrl: "https://open.spotify.com/track/1eyZp2GMQI27JbpZ78jLci",
-    playedAt: Date.now() - 86400000
+    playedAt: Date.now() - 86400000,
+    currentlyPlaying: false
   }
 ];
 
@@ -73,24 +91,79 @@ export default function AboutPage({ onBack }: AboutPageProps) {
     setTimeout(() => setCopyStatus('idle'), 2000);
   };
 
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = FALLBACK_IMAGE_URL;
+  };
+
   const fetchRecentlyPlayed = async () => {
     try {
-      const res = await fetch('/api/spotify/now-playing');
+      // Limit to 12 tracks to ensure we have enough unique tracks after deduplication
+      const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${LASTFM_USERNAME}&api_key=${LASTFM_API_KEY}&format=json&limit=12&cb=${Date.now()}`;
+      const res = await fetch(url);
       if (res.ok) {
-        const data = await res.json() as { tracks: SpotifyTrack[] };
-        if (data.tracks && data.tracks.length > 0) {
-          setTracks(data.tracks);
+        const data = await res.json();
+        if (data.recenttracks && data.recenttracks.track) {
+          const rawTracks = data.recenttracks.track;
+          const mappedTracks = rawTracks.map((track: any) => {
+            const isNowPlaying = track['@attr']?.nowplaying === 'true' || track['@attr']?.currentlyplaying === 'true';
+            
+            let albumImageUrl = FALLBACK_IMAGE_URL;
+            if (track.image && track.image.length > 0) {
+              const xlImage = track.image.find((img: any) => img.size === 'extralarge');
+              if (xlImage && xlImage['#text']) {
+                albumImageUrl = xlImage['#text'];
+              } else {
+                const lgImage = track.image.find((img: any) => img.size === 'large');
+                if (lgImage && lgImage['#text']) {
+                  albumImageUrl = lgImage['#text'];
+                } else {
+                  const anyImage = track.image.find((img: any) => img['#text']);
+                  if (anyImage) albumImageUrl = anyImage['#text'];
+                }
+              }
+            }
+
+            return {
+              title: track.name || 'UNKNOWN TRACK',
+              artist: track.artist?.['#text'] || 'UNKNOWN ARTIST',
+              album: track.album?.['#text'] || 'UNKNOWN ALBUM',
+              albumImageUrl,
+              songUrl: track.url || 'https://www.last.fm',
+              playedAt: isNowPlaying ? Date.now() : (track.date?.uts ? parseInt(track.date.uts) * 1000 : Date.now()),
+              currentlyPlaying: isNowPlaying
+            };
+          });
+
+          // Deduplicate scrobbles to avoid showing the same song multiple times in the history list
+          const uniqueTracks: SpotifyTrack[] = [];
+          const seen = new Set<string>();
+
+          for (const track of mappedTracks) {
+            const key = `${track.title.toLowerCase().trim()} - ${track.artist.toLowerCase().trim()}`;
+            // Always keep the first track (current or most recent)
+            if (uniqueTracks.length === 0) {
+              uniqueTracks.push(track);
+              seen.add(key);
+            } else if (!seen.has(key)) {
+              uniqueTracks.push(track);
+              seen.add(key);
+            }
+          }
+
+          if (uniqueTracks.length > 0) {
+            setTracks(uniqueTracks);
+          }
         }
       }
     } catch (err) {
-      console.error('Error fetching Spotify recently played:', err);
+      console.error('Error fetching Last.fm recently played:', err);
     }
   };
 
-  // Poll Spotify status every 30 seconds
+  // Poll Last.fm status every 15 seconds to keep it highly dynamic and responsive
   useEffect(() => {
     fetchRecentlyPlayed();
-    const pollInterval = setInterval(fetchRecentlyPlayed, 30000);
+    const pollInterval = setInterval(fetchRecentlyPlayed, 15000);
     return () => clearInterval(pollInterval);
   }, []);
 
@@ -336,113 +409,173 @@ export default function AboutPage({ onBack }: AboutPageProps) {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Authentic Recently Played Soundtrack Archive */}
+        {/* RIGHT COLUMN: Live Music Presence System */}
         <div className="lg:col-span-5 h-full">
-          <div className="luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl transition-all duration-500 shadow-2xl overflow-hidden min-h-[480px] border-zinc-800/80 hover:border-zinc-700/80">
+          <div className={`luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl transition-all duration-1000 shadow-2xl overflow-hidden min-h-[480px] ${
+            latestTrack.currentlyPlaying 
+              ? 'shadow-[0_0_50px_-12px_rgba(29,185,84,0.12)] border-emerald-900/30' 
+              : 'border-zinc-800/80'
+          } hover:border-zinc-700/50`}>
             
-            {/* Cyber Glow background orb */}
-            <div className="absolute -right-24 -top-24 w-52 h-52 rounded-full blur-3xl pointer-events-none bg-[#742DE1]/12" />
+            {/* Ambient background glows inside card */}
+            <div className={`absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none transition-all duration-1000 ${
+              latestTrack.currentlyPlaying 
+                ? 'bg-[#1DB954]/8' 
+                : 'bg-[#742DE1]/6'
+            }`} />
+            <div className={`absolute -left-24 -bottom-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none transition-all duration-1000 ${
+              latestTrack.currentlyPlaying 
+                ? 'bg-[#742DE1]/5' 
+                : 'bg-[#1DB954]/1'
+            }`} />
 
-            <div className="space-y-6 w-full">
+            <div className="space-y-6 w-full relative z-10">
               {/* Top Header Badge */}
-              <div className="flex items-center justify-between z-10 relative select-none">
-                <div className="flex items-center gap-2 bg-[#1DB954]/10 border border-[#1DB954]/25 px-2.5 py-1 rounded-full text-[9px] font-mono text-[#1DB954] tracking-widest uppercase shadow-[0_0_8px_rgba(29,185,84,0.08)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#1DB954] shadow-[0_0_6px_#1DB954]" />
-                  CONNECTED // SUMEETISM
-                </div>
-                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest">
-                  MUSIC DOSSIER
+              <div className="flex items-center justify-between border-b border-zinc-950 pb-4 select-none">
+                {latestTrack.currentlyPlaying ? (
+                  <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-[#1DB954] uppercase">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1DB954] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1DB954] shadow-[0_0_6px_#1DB954]"></span>
+                    </span>
+                    <span>LISTENING IN REAL-TIME</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-zinc-500 uppercase">
+                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-700" />
+                    <span>RECENTLY PLAYED</span>
+                  </div>
+                )}
+                <span className="font-mono text-[9px] text-zinc-600 uppercase tracking-widest font-light">
+                  ♫ LIVE PRESENCE
                 </span>
               </div>
 
               {/* LATEST ROTATION: Showcasing the single most recent track sleeve */}
-              <div className="space-y-4 z-10 relative">
-                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest block select-none">
-                  // LATEST ROTATION
-                </span>
-                
+              <div className="w-full relative">
                 <a
                   href={latestTrack.songUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group block relative aspect-square w-full rounded-xl overflow-hidden border border-zinc-900/80 shadow-2xl cursor-pointer"
+                  className={`group block relative aspect-square w-full rounded-xl overflow-hidden border transition-all duration-700 shadow-2xl cursor-pointer ${
+                    latestTrack.currentlyPlaying 
+                      ? 'border-emerald-500/25 shadow-[0_0_35px_-5px_rgba(29,185,84,0.15)] hover:shadow-[0_0_40px_-2px_rgba(29,185,84,0.25)]' 
+                      : 'border-zinc-900/80 hover:border-zinc-800'
+                  }`}
                 >
                   <img 
                     src={latestTrack.albumImageUrl} 
                     alt={latestTrack.album} 
-                    className="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-700 select-none"
+                    onError={handleImageError}
+                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 select-none"
                   />
                   
                   {/* CD Metallic Sheen Reflection layer */}
                   <div className="cd-sheen" />
 
                   {/* Gradient bottom overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
+
+                  {/* LIVE NOW top-left breathing badge */}
+                  {latestTrack.currentlyPlaying && (
+                    <div className="absolute top-4 left-4 bg-emerald-500/90 text-black font-mono text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded shadow-[0_4px_12px_rgba(0,0,0,0.5)] z-20 flex items-center gap-1.5 animate-pulse">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-black"></span>
+                      </span>
+                      LIVE NOW
+                    </div>
+                  )}
 
                   {/* Dynamic absolute text overlay inside the cover */}
-                  <div className="absolute bottom-4 left-4 right-4 text-left">
-                    <span className="font-mono text-[8px] text-[#1DB954] tracking-widest uppercase bg-black/60 border border-[#1DB954]/30 px-2 py-0.5 rounded backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
-                      LATEST // {formatRelativeTime(latestTrack.playedAt)}
+                  <div className="absolute bottom-5 left-5 right-5 text-left z-10">
+                    <span className={`font-mono text-[9px] tracking-wider uppercase px-2.5 py-1 rounded-md backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] inline-flex items-center gap-2 transition-colors duration-500 ${
+                      latestTrack.currentlyPlaying 
+                        ? 'text-[#1DB954] bg-[#1DB954]/10 border border-[#1DB954]/25' 
+                        : 'text-zinc-400 bg-zinc-950/60 border border-zinc-800/30'
+                    }`}>
+                      {latestTrack.currentlyPlaying ? (
+                        <>
+                          <Equalizer />
+                          <span className="font-semibold tracking-widest">NOW PLAYING</span>
+                        </>
+                      ) : (
+                        <span>LATEST // {formatRelativeTime(latestTrack.playedAt)}</span>
+                      )}
                     </span>
-                    <h3 className="font-sans font-bold text-lg sm:text-xl text-white tracking-tight leading-tight mt-2 drop-shadow-md truncate">
+                    <h3 className="font-sans font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug mt-3 drop-shadow-lg truncate">
                       {latestTrack.title}
                     </h3>
-                    <p className="font-mono text-[10px] text-zinc-300 tracking-wide uppercase drop-shadow-md truncate">
+                    <p className="font-mono text-[10px] text-zinc-400 tracking-widest uppercase mt-1 drop-shadow-md truncate">
                       {latestTrack.artist}
                     </p>
                   </div>
                   
                   {/* Tiny Hover Indicator icon */}
-                  <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-black/65 border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-[#1DB954] group-hover:border-[#1DB954]/45 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm">
+                  <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-black/65 border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-[#1DB954] group-hover:border-[#1DB954]/45 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm z-20">
                     <ArrowUpRight size={14} />
                   </div>
+
+                  {/* Animated progress heartbeat neon line */}
+                  {latestTrack.currentlyPlaying && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-zinc-950/60 overflow-hidden z-20">
+                      <motion.div 
+                        animate={{ 
+                          x: ['-100%', '100%']
+                        }}
+                        transition={{ 
+                          duration: 3.5, 
+                          repeat: Infinity, 
+                          ease: "easeInOut" 
+                        }}
+                        className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#1DB954] to-transparent opacity-90" 
+                      />
+                    </div>
+                  )}
                 </a>
               </div>
 
               {/* RECENT MUSIC ARCHIVE LOG FEED */}
-              <div className="space-y-3 z-10 relative">
-                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest block select-none">
-                  // RECENT LISTEN HISTORY
-                </span>
-
-                <div className="divide-y divide-zinc-900/80 border border-zinc-900/60 rounded-xl bg-zinc-950/20 overflow-hidden">
+              <div className="space-y-4 w-full">
+                <div className="divide-y divide-zinc-900/40 border border-zinc-900/30 rounded-xl bg-zinc-950/15 overflow-hidden">
                   {historyTracks.map((track, idx) => (
                     <a
                       key={idx}
                       href={track.songUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group/row flex items-center gap-3.5 py-3.5 px-4 hover:bg-white/[0.02] transition-all duration-300 relative overflow-hidden block cursor-pointer"
+                      className="group/row flex items-center gap-4 py-4 px-4 hover:bg-white/[0.015] transition-all duration-300 relative overflow-hidden block cursor-pointer"
                     >
                       {/* Left glowing slider indicator */}
                       <div className="absolute left-0 top-1/4 bottom-1/4 w-[2.5px] bg-[#1DB954] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r shadow-[0_0_8px_#1DB954]" />
 
                       {/* Small thumbnail artwork */}
-                      <div className="w-10 h-10 rounded overflow-hidden shrink-0 border border-zinc-900 bg-zinc-950 relative">
+                      <div className="w-11 h-11 rounded overflow-hidden shrink-0 border border-zinc-900/50 bg-zinc-950 relative">
                         <img 
                           src={track.albumImageUrl} 
                           alt={track.album} 
+                          onError={handleImageError}
                           className="w-full h-full object-cover transform group-hover/row:scale-105 transition-transform duration-500"
                         />
                       </div>
 
                       {/* Metadata */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2">
-                          <h4 className="font-sans font-semibold text-sm text-zinc-200 truncate group-hover/row:text-white transition-colors">
+                        <div className="flex items-center justify-between gap-3">
+                          <h4 className="font-sans font-medium text-sm text-zinc-200 truncate group-hover/row:text-white transition-colors">
                             {track.title}
                           </h4>
-                          <span className="font-mono text-[8px] text-zinc-500 group-hover/row:text-zinc-400 tracking-wider shrink-0 uppercase select-none">
+                          <span className="font-mono text-[8px] text-zinc-600 group-hover/row:text-zinc-500 tracking-wider shrink-0 uppercase select-none transition-colors">
                             {formatRelativeTime(track.playedAt)}
                           </span>
                         </div>
-                        <p className="font-sans text-xs text-zinc-400 truncate mt-0.5 group-hover/row:text-zinc-300 transition-colors">
+                        <p className="font-mono text-[10px] text-zinc-500 truncate mt-1 group-hover/row:text-zinc-400 transition-colors tracking-wide">
                           {track.artist}
                         </p>
                       </div>
 
                       {/* External Arrow hover reveal */}
-                      <div className="text-zinc-600 group-hover/row:text-[#1DB954] transition-colors shrink-0">
+                      <div className="text-zinc-700 group-hover/row:text-[#1DB954] transition-colors shrink-0 duration-300">
                         <ArrowUpRight size={13} />
                       </div>
                     </a>
@@ -452,9 +585,9 @@ export default function AboutPage({ onBack }: AboutPageProps) {
             </div>
 
             {/* Bottom Disclaimer */}
-            <div className="border-t border-zinc-900/60 pt-4 flex justify-between items-center text-[8px] font-mono text-zinc-600 z-10 relative select-none">
-              <span>STATUS // API COMPLIANT</span>
-              <span>SYNCHRONIZED WITH SPOTIFY</span>
+            <div className="border-t border-zinc-950 pt-4 flex justify-between items-center text-[10px] font-mono text-zinc-500 z-10 relative select-none">
+              <span>LIVE SOUNDTRACK</span>
+              <span>♫</span>
             </div>
 
           </div>
