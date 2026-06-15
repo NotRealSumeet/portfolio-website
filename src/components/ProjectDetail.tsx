@@ -496,7 +496,7 @@ export default function ProjectDetail({
             </div>
           )}
         </div>
-      ) : project.id === 'music-cover-art' ? (
+      ) : (project.id === 'music-cover-art' || project.id === '2tone-ep') ? (
         /* SPECIAL SEAMLESS BEHANCE-STYLE STACKED GALLERY FOR MUSIC COVER ART (excludes THUMB, renders all media continuously) */
         <div className="w-full flex flex-col pt-2 gap-0">
           {project.media.map((item, idx) => (

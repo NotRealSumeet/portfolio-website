@@ -124,7 +124,74 @@ const rajAlbumArtRemaining = rajAlbumArtMediaFiles
     return numA - numB;
   });
 
+// 2TONE EP COVER ART (Nemo Album Art)
+const nemoAlbumArtMediaFiles = (Object.values(
+  import.meta.glob('./assets/projects/nemo_albumart/*.{jpg,jpeg,png,webp,webm}', {
+    eager: true,
+    import: 'default',
+  })
+) as string[]);
+
+const nemoAlbumArtThumb = nemoAlbumArtMediaFiles.find(
+  (file) => getBaseFilename(file) === 'nemo thumb.png'
+) || '';
+
+const nemoAlbumArtRemaining = nemoAlbumArtMediaFiles
+  .filter((file) => getBaseFilename(file) !== 'nemo thumb.png')
+  .sort((a, b) => {
+    const matchA = a.match(/\((\d+)\)/);
+    const matchB = b.match(/\((\d+)\)/);
+    const numA = matchA ? parseInt(matchA[1], 10) : 0;
+    const numB = matchB ? parseInt(matchB[1], 10) : 0;
+    return numA - numB;
+  });
+
 const RAW_PROJECTS_DATA: Project[] = [
+
+  // 2TONE EP COVER ART
+  {
+    id: '2tone-ep',
+
+    title: '2TONE - COVER ART',
+
+    subtitle: 'EP COVER ART & VISUAL DIRECTION',
+
+    category: 'COVER ART DESIGN',
+
+    year: '2026',
+
+    client: 'Nemo Arpit',
+
+    role: 'Graphic Designer',
+
+    services: [
+      'Cover Art Design',
+      'Art Direction',
+      'Photo Manipulation',
+      'Music Visual Design'
+    ],
+
+    summary:
+      'Cover artwork created for Nemo Arpit’s EP "2TONE", combining cinematic photography, dual-character storytelling, and contemporary music visuals.',
+
+    about:
+      'Designed for artist Nemo Arpit, 2TONE explores the contrast between two identities through fashion-driven imagery and cinematic visual storytelling. The artwork blends editorial photography, dramatic styling, luxury-inspired elements, and atmospheric color grading to create a distinct visual identity that reflects the EP’s themes of duality, emotion, and self-expression.',
+
+    thumbnailUrl: nemoAlbumArtThumb,
+
+    aspectRatio: 'aspect-square',
+
+    media: nemoAlbumArtRemaining.map((img, index) => {
+      const isVideo = getBaseFilename(img).endsWith('.webm');
+      return {
+        id: `nemo-albumart-${index}`,
+        type: isVideo ? 'video' : 'image',
+        url: img,
+        caption: '',
+        ...lookupDimensions('nemo_albumart', img),
+      };
+    }),
+  },
 
   // MUSIC COVER ART
   {

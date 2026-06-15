@@ -603,5 +603,37 @@
       "height": 2500,
       "aspectRatio": 1.0
     }
+  },
+  "nemo_albumart": {
+    "nemo thumb.png": {
+      "width": 2500,
+      "height": 2500,
+      "aspectRatio": 1
+    },
+    "nemo slide (1).png": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "nemo slide (2).webp": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "nemo slide (3).png": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "nemo slide (4).png": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    },
+    "nemo slide (5).png": {
+      "width": 1920,
+      "height": 1080,
+      "aspectRatio": 1.7777777777777777
+    }
   }
 }
