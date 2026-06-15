@@ -92,7 +92,7 @@ export default function MasonryGrid({ projects, onSelectProject, currentLocalTim
                   <h4 className="font-sans font-bold text-white text-base lg:text-lg tracking-tight uppercase leading-none">
                     {proj.title}
                   </h4>
-                  <span className="font-mono text-[9px] text-[#742DE1] uppercase tracking-widest block">
+                  <span className="font-mono text-[12px] font-semibold text-[#a78bfa] uppercase tracking-wider block opacity-0 translate-y-1.5 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:translate-y-0 delay-75">
                     [{proj.category}]
                   </span>
                 </div>
@@ -102,11 +102,6 @@ export default function MasonryGrid({ projects, onSelectProject, currentLocalTim
                     VIEW RECORD <ArrowUpRight size={10} className="text-[#742DE1]" />
                   </span>
                 </div>
-              </div>
-
-              {/* Index badge and stamp inside bottom right corner */}
-              <div className="absolute bottom-3 left-3 bg-black/80 border border-[#1a1a1a] text-white font-mono text-[8px] px-2 py-0.5 select-none">
-                [ {(idx + 1).toString().padStart(2, '0')} // {proj.category} ]
               </div>
             </div>
 
