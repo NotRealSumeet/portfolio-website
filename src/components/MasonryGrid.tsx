@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, Clock } from 'lucide-react';
 import { Project } from '../types';
@@ -13,21 +13,29 @@ export default function MasonryGrid({ projects, onSelectProject, currentLocalTim
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
 
   // Format as Indian Standard Time (Asia/Kolkata timezone)
-  const formattedTime = (currentLocalTime || new Date()).toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-    timeZone: 'Asia/Kolkata'
-  });
+  const formattedTime = useMemo(() => {
+    return (currentLocalTime || new Date()).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+      timeZone: 'Asia/Kolkata'
+    });
+  }, [currentLocalTime]);
 
-  // Extract all unique categories
-  const categories = ['ALL', ...Array.from(new Set(projects.map((p) => p.category.toUpperCase())))];
+  // Extract all unique categories (memoized to avoid recomputation on every clock tick)
+  const categories = useMemo(
+    () => ['ALL', ...Array.from(new Set(projects.map((p) => p.category.toUpperCase())))],
+    [projects]
+  );
 
-  // Filter projects based on choice
-  const filteredProjects = selectedCategory === 'ALL'
-    ? projects
-    : projects.filter((p) => p.category.toUpperCase() === selectedCategory);
+  // Filter projects based on choice (memoized)
+  const filteredProjects = useMemo(
+    () => selectedCategory === 'ALL'
+      ? projects
+      : projects.filter((p) => p.category.toUpperCase() === selectedCategory),
+    [projects, selectedCategory]
+  );
 
   return (
     <div className="space-y-12">
@@ -65,7 +73,6 @@ export default function MasonryGrid({ projects, onSelectProject, currentLocalTim
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8 lg:gap-x-8 lg:gap-y-10 items-start">
         {filteredProjects.map((proj, idx) => (
           <motion.div
-            layout
             key={proj.id}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -137,5 +144,3 @@ export default function MasonryGrid({ projects, onSelectProject, currentLocalTim
     </div>
   );
 }
-
-

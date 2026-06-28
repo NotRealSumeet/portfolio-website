@@ -8,24 +8,38 @@
 import { Project } from './types';
 import dimensions from './assets/dimensions.json';
 
-import project2thumb from './assets/projects/chickenlogo/SLIDE 1.jpg';
+// CHICKEN LOGO (glob pattern — consistent with other projects)
+const chickenLogoMediaFiles = (Object.values(
+  import.meta.glob('./assets/projects/chickenlogo/*.{jpg,jpeg,png,webp}', {
+    eager: true,
+    import: 'default',
+  })
+) as string[]).sort((a, b) => {
+  const matchA = a.match(/SLIDE\s*(\d+)/i);
+  const matchB = b.match(/SLIDE\s*(\d+)/i);
+  const numA = matchA ? parseInt(matchA[1], 10) : 0;
+  const numB = matchB ? parseInt(matchB[1], 10) : 0;
+  return numA - numB;
+});
 
-import project2image1 from './assets/projects/chickenlogo/SLIDE 2.jpg';
-import project2image2 from './assets/projects/chickenlogo/SLIDE 3.jpg';
-import project2image3 from './assets/projects/chickenlogo/SLIDE 4.jpg';
-import project2image4 from './assets/projects/chickenlogo/SLIDE 5.jpg';
-import project2image5 from './assets/projects/chickenlogo/SLIDE 6.jpg';
+const project2thumb = chickenLogoMediaFiles[0] || '';
 
-// WUKONG 
-import thumb from './assets/projects/wukongtshirt/1-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
+// WUKONG (glob pattern — consistent with other projects)
+const wukongMediaFiles = (Object.values(
+  import.meta.glob('./assets/projects/wukongtshirt/*.{jpg,jpeg,png,webp}', {
+    eager: true,
+    import: 'default',
+  })
+) as string[]).sort((a, b) => {
+  // Sort by the leading number prefix (1-, 9-, 17-, 25-, 33-, 41-, 49-)
+  const matchA = a.match(/(\d+)-indian/i);
+  const matchB = b.match(/(\d+)-indian/i);
+  const numA = matchA ? parseInt(matchA[1], 10) : 0;
+  const numB = matchB ? parseInt(matchB[1], 10) : 0;
+  return numA - numB;
+});
 
-import image1 from './assets/projects/wukongtshirt/1-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
-import image2 from './assets/projects/wukongtshirt/9-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
-import image3 from './assets/projects/wukongtshirt/17-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
-import image4 from './assets/projects/wukongtshirt/25-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
-import image5 from './assets/projects/wukongtshirt/33-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
-import image6 from './assets/projects/wukongtshirt/41-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
-import image7 from './assets/projects/wukongtshirt/49-indian-streetwear-branding-nosfera-wukong-drop-1920.jpg';
+const wukongThumb = wukongMediaFiles[0] || '';
 
 // THUMBNAIL
 
@@ -382,41 +396,13 @@ const RAW_PROJECTS_DATA: Project[] = [
         caption: '',
         ...lookupDimensions('chickenlogo', project2thumb)
       },
-      {
-        id: 'p-1',
-        type: 'image',
-        url: project2image1,
+      ...chickenLogoMediaFiles.slice(1).map((img, index) => ({
+        id: `p-${index + 1}`,
+        type: 'image' as const,
+        url: img,
         caption: '',
-        ...lookupDimensions('chickenlogo', project2image1)
-      },
-      {
-        id: 'p-2',
-        type: 'image',
-        url: project2image2,
-        caption: '',
-        ...lookupDimensions('chickenlogo', project2image2)
-      },
-      {
-        id: 'p-3',
-        type: 'image',
-        url: project2image3,
-        caption: '',
-        ...lookupDimensions('chickenlogo', project2image3)
-      },
-      {
-        id: 'p-4',
-        type: 'image',
-        url: project2image4,
-        caption: '',
-        ...lookupDimensions('chickenlogo', project2image4)
-      },
-      {
-        id: 'p-5',
-        type: 'image',
-        url: project2image5,
-        caption: '',
-        ...lookupDimensions('chickenlogo', project2image5)
-      }
+        ...lookupDimensions('chickenlogo', img)
+      }))
     ]
   },
 
@@ -447,61 +433,17 @@ const RAW_PROJECTS_DATA: Project[] = [
 
     about: 'Designed for Nosfera, this project explored mythological storytelling through gothic streetwear aesthetics. The project included apparel design, posters, packaging, fashion edits, and social-ready campaign visuals built around a dark editorial identity.',
 
-    thumbnailUrl: thumb,
+    thumbnailUrl: wukongThumb,
 
     aspectRatio: 'aspect-square',
 
-    media: [
-      {
-        id: 'p-1',
-        type: 'image',
-        url: image1,
-        caption: '',
-        ...lookupDimensions('wukongtshirt', image1)
-      },
-      {
-        id: 'p-2',
-        type: 'image',
-        url: image2,
-        caption: '',
-        ...lookupDimensions('wukongtshirt', image2)
-      },
-      {
-        id: 'p-3',
-        type: 'image',
-        url: image3,
-        caption: '',
-        ...lookupDimensions('wukongtshirt', image3)
-      },
-      {
-        id: 'p-4',
-        type: 'image',
-        url: image4,
-        caption: '',
-        ...lookupDimensions('wukongtshirt', image4)
-      },
-      {
-        id: 'p-5',
-        type: 'image',
-        url: image5,
-        caption: '',
-        ...lookupDimensions('wukongtshirt', image5)
-      },
-      {
-        id: 'p-6',
-        type: 'image',
-        url: image6,
-        caption: '',
-        ...lookupDimensions('wukongtshirt', image6)
-      },
-      {
-        id: 'p-7',
-        type: 'image',
-        url: image7,
-        caption: '',
-        ...lookupDimensions('wukongtshirt', image7)
-      }
-    ]
+    media: wukongMediaFiles.map((img, index) => ({
+      id: `p-${index + 1}`,
+      type: 'image' as const,
+      url: img,
+      caption: '',
+      ...lookupDimensions('wukongtshirt', img)
+    }))
   }
 ];
 

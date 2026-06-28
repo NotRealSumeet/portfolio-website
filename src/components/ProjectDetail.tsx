@@ -146,9 +146,7 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
   useEffect(() => {
     if (!autoPlay || !isIntersected) return;
 
-    let rAFId: number;
-
-    const checkLoop = () => {
+    const handleTimeUpdate = () => {
       const video = videoRef.current;
       if (video && video.duration && !isNaN(video.duration)) {
         // Seek to 0 just slightly before the video ends (e.g. 0.08 seconds)
@@ -156,11 +154,10 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
         if (video.currentTime >= video.duration - 0.08) {
           video.currentTime = 0;
           video.play().catch((err) => {
-            console.log('rAF loop playback failed:', err.message);
+            console.log('timeupdate loop playback failed:', err.message);
           });
         }
       }
-      rAFId = requestAnimationFrame(checkLoop);
     };
 
     const playbackObserver = new IntersectionObserver(
@@ -169,17 +166,14 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
         if (!video) return;
 
         if (entries[0].isIntersecting) {
+          video.addEventListener('timeupdate', handleTimeUpdate);
           video.play()
-            .then(() => {
-              cancelAnimationFrame(rAFId);
-              rAFId = requestAnimationFrame(checkLoop);
-            })
             .catch((err) => {
               console.log('Autoplay play interrupted or blocked:', err.message);
             });
         } else {
+          video.removeEventListener('timeupdate', handleTimeUpdate);
           video.pause();
-          cancelAnimationFrame(rAFId);
         }
       },
       { threshold: 0.05 }
@@ -194,7 +188,11 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
       if (currentContainer) {
         playbackObserver.unobserve(currentContainer);
       }
-      cancelAnimationFrame(rAFId);
+      // Clean up timeupdate listener
+      const video = videoRef.current;
+      if (video) {
+        video.removeEventListener('timeupdate', handleTimeUpdate);
+      }
     };
   }, [isIntersected, autoPlay]);
 

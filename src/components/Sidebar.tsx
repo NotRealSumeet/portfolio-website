@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowUpRight, Menu, X, Mail, Globe, Clock } from 'lucide-react';
 import { Project } from '../types';
@@ -23,16 +23,6 @@ export default function Sidebar({
 }: SidebarProps) {
   const [hoveredProjectId, setHoveredProjectId] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Preload project thumbnails on mount to avoid hover preview lag
-  useEffect(() => {
-    projects.forEach((proj) => {
-      if (proj.thumbnailUrl) {
-        const img = new Image();
-        img.src = proj.thumbnailUrl;
-      }
-    });
-  }, [projects]);
 
   // Format as Indian Standard Time (Asia/Kolkata timezone)
   const formattedTime = currentLocalTime.toLocaleTimeString('en-US', {
