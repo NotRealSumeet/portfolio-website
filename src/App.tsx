@@ -1,7 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -14,6 +10,7 @@ import AmbientBackground from './components/AmbientBackground';
 import BlackMarketPage from './components/BlackMarketPage';
 import BlackMarketDetail from './components/BlackMarketDetail';
 import { BLACK_MARKET_SERVICES } from './blackMarketData';
+import { preloadProjectMedia } from './utils/preload';
 
 function PortfolioView() {
   const { projectId, serviceId } = useParams();
@@ -73,6 +70,13 @@ function PortfolioView() {
 
   // Handle page scrolling reset when navigating
   const selectProject = (id: string | null) => {
+    if (id && id !== 'about' && id !== 'black-market') {
+      const targetProj = PROJECTS_DATA.find((p) => p.id === id);
+      if (targetProj) {
+        preloadProjectMedia(targetProj);
+      }
+    }
+
     if (id === null) {
       navigate('/');
     } else if (id === 'about') {

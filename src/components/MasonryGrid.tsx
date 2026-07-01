@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, Clock } from 'lucide-react';
 import { Project } from '../types';
+import { preloadProjectMedia } from '../utils/preload';
 
 interface MasonryGridProps {
   projects: Project[];
@@ -79,6 +80,7 @@ export default function MasonryGrid({ projects, onSelectProject, currentLocalTim
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.5, delay: idx * 0.05 }}
             onClick={() => onSelectProject(proj.id)}
+            onMouseEnter={() => preloadProjectMedia(proj)}
             className="group cursor-pointer flex flex-col w-full"
           >
             {/* Image Frame with different aspect ratios for rhythm */}

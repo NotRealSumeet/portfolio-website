@@ -1,13 +1,9 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { Project } from '../types';
 import Lightbox from './Lightbox';
+import { loadedImagesCache, loadedVideosCache } from '../utils/preload';
 
 // Hook to track the active columns count responsively (mimicking media queries)
 function useColumnCount() {
@@ -42,11 +38,14 @@ interface LazyMediaProps {
 }
 
 function LazyMedia({ url, type, aspectRatioNumber, alt = '', className = '', onClick, priority = false }: LazyMediaProps) {
-  const [isIntersected, setIsIntersected] = useState(priority);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const isCached = loadedImagesCache.has(url);
+  const [isIntersected, setIsIntersected] = useState(priority || isCached);
+  const [isLoaded, setIsLoaded] = useState(priority || isCached);
   const ref = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
+    if (isIntersected && isLoaded) return;
     if (priority) return;
 
     const observer = new IntersectionObserver(
@@ -66,7 +65,20 @@ function LazyMedia({ url, type, aspectRatioNumber, alt = '', className = '', onC
     return () => {
       observer.disconnect();
     };
-  }, [priority]);
+  }, [priority, isIntersected, isLoaded]);
+
+  // Sync state if image loaded instantly from cache
+  useEffect(() => {
+    if (isIntersected && imgRef.current && imgRef.current.complete) {
+      setIsLoaded(true);
+      loadedImagesCache.add(url);
+    }
+  }, [isIntersected, url]);
+
+  const handleLoad = () => {
+    setIsLoaded(true);
+    loadedImagesCache.add(url);
+  };
 
   // Remove aspectRatio style once image is loaded to collapse any subpixel rendering discrepancies
   const style: React.CSSProperties = aspectRatioNumber && !isLoaded
@@ -82,7 +94,7 @@ function LazyMedia({ url, type, aspectRatioNumber, alt = '', className = '', onC
     >
       {/* Subtle dark skeleton placeholder that cross-fades */}
       <div
-        className={`absolute inset-0 bg-[#070707] transition-opacity duration-700 ease-in-out pointer-events-none z-10 ${
+        className={`absolute inset-0 bg-[#070707] transition-opacity duration-500 ease-in-out pointer-events-none z-10 ${
           isLoaded ? 'opacity-0' : 'opacity-100'
         }`}
       >
@@ -90,11 +102,12 @@ function LazyMedia({ url, type, aspectRatioNumber, alt = '', className = '', onC
       </div>
       {isIntersected && (
         <img
+          ref={imgRef}
           src={url}
           alt={alt}
-          onLoad={() => setIsLoaded(true)}
+          onLoad={handleLoad}
           decoding="async"
-          className={`w-full h-auto block transition-opacity duration-700 ease-in-out ${
+          className={`w-full h-auto block transition-opacity duration-500 ease-in-out ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           referrerPolicy="no-referrer"
@@ -114,13 +127,15 @@ interface LazyVideoProps {
 }
 
 function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClick, autoPlay = true, priority = false }: LazyVideoProps) {
-  const [isIntersected, setIsIntersected] = useState(priority);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const isCached = loadedVideosCache.has(url);
+  const [isIntersected, setIsIntersected] = useState(priority || isCached);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(priority || isCached);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // Defer mounting of video until close to viewport
   useEffect(() => {
+    if (isIntersected && isVideoLoaded) return;
     if (priority) return;
 
     const observer = new IntersectionObserver(
@@ -140,7 +155,7 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
     return () => {
       observer.disconnect();
     };
-  }, [priority]);
+  }, [priority, isIntersected, isVideoLoaded]);
 
   // Viewport observer to play when visible, pause when offscreen
   useEffect(() => {
@@ -196,6 +211,11 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
     };
   }, [isIntersected, autoPlay]);
 
+  const handleVideoLoad = () => {
+    setIsVideoLoaded(true);
+    loadedVideosCache.add(url);
+  };
+
   const style: React.CSSProperties = {
     aspectRatio: String(aspectRatioNumber),
     contain: 'paint' // Isolate video layout and painting
@@ -210,7 +230,7 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
     >
       {/* Subtle dark skeleton placeholder that cross-fades */}
       <div
-        className={`absolute inset-0 bg-[#070707] transition-opacity duration-700 ease-in-out pointer-events-none z-10 ${
+        className={`absolute inset-0 bg-[#070707] transition-opacity duration-500 ease-in-out pointer-events-none z-10 ${
           isVideoLoaded ? 'opacity-0' : 'opacity-100'
         }`}
       >
@@ -224,8 +244,8 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
           preload="auto"
           muted
           playsInline
-          onLoadedData={() => setIsVideoLoaded(true)}
-          onCanPlay={() => setIsVideoLoaded(true)}
+          onLoadedData={handleVideoLoad}
+          onCanPlay={handleVideoLoad}
           onEnded={() => {
             const video = videoRef.current;
             if (video) {
@@ -235,7 +255,7 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
               });
             }
           }}
-          className={`w-full h-full object-cover block transition-opacity duration-700 ease-in-out ${
+          className={`w-full h-full object-cover block transition-opacity duration-500 ease-in-out ${
             isVideoLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           style={{

@@ -1,12 +1,8 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowUpRight, Menu, X, Mail, Globe, Clock } from 'lucide-react';
 import { Project } from '../types';
+import { preloadProjectMedia } from '../utils/preload';
 
 interface SidebarProps {
   projects: Project[];
@@ -100,6 +96,7 @@ export default function Sidebar({
                           onSelectProject(proj.id);
                           setMobileMenuOpen(false);
                         }}
+                        onMouseEnter={() => preloadProjectMedia(proj)}
                         className={`w-full text-left font-sans text-[15px] font-bold tracking-tight uppercase flex items-start justify-between py-3 border-b border-[#111111] transition-colors ${
                           isActive ? 'text-[#FF205A]' : 'text-[#666666] active:text-white'
                         }`}
@@ -239,7 +236,10 @@ export default function Sidebar({
                 return (
                   <div
                     key={proj.id}
-                    onMouseEnter={() => setHoveredProjectId(proj.id)}
+                    onMouseEnter={() => {
+                      setHoveredProjectId(proj.id);
+                      preloadProjectMedia(proj);
+                    }}
                     onMouseLeave={() => setHoveredProjectId(null)}
                     className="relative flex items-center"
                   >
