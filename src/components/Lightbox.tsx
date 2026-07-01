@@ -116,7 +116,7 @@ export default function Lightbox({
             </div>
             <button
               onClick={onClose}
-              className="group p-2 cursor-pointer border border-white/10 hover:border-[#742DE1] hover:bg-[#742DE1] transition-all bg-black/50 hover:text-white text-zinc-400 z-30 pointer-events-auto"
+              className="group p-2 cursor-pointer border border-white/10 hover:border-[#FF205A] hover:bg-[#FF205A] transition-all bg-black/50 hover:text-white text-zinc-400 z-30 pointer-events-auto"
               title="Close Gallery (Esc)"
             >
               <X size={14} className="transition-transform group-hover:rotate-90" />
@@ -173,7 +173,7 @@ export default function Lightbox({
                 e.stopPropagation();
                 handlePrev();
               }}
-              className="p-3 border border-white/10 hover:border-[#742DE1] hover:bg-[#742DE1]/20 backdrop-blur-sm transition-all bg-black/40 text-white cursor-pointer hover:scale-105 active:scale-95 pointer-events-auto"
+              className="p-3 border border-white/10 hover:border-[#FF205A] hover:bg-[#FF205A]/20 backdrop-blur-sm transition-all bg-black/40 text-white cursor-pointer hover:scale-105 active:scale-95 pointer-events-auto"
               title="Previous Image (Left Arrow)"
             >
               <ChevronLeft size={16} />
@@ -186,7 +186,7 @@ export default function Lightbox({
                 e.stopPropagation();
                 handleNext();
               }}
-              className="p-3 border border-white/10 hover:border-[#742DE1] hover:bg-[#742DE1]/20 backdrop-blur-sm transition-all bg-black/40 text-white cursor-pointer hover:scale-105 active:scale-95 pointer-events-auto"
+              className="p-3 border border-white/10 hover:border-[#FF205A] hover:bg-[#FF205A]/20 backdrop-blur-sm transition-all bg-black/40 text-white cursor-pointer hover:scale-105 active:scale-95 pointer-events-auto"
               title="Next Image (Right Arrow)"
             >
               <ChevronRight size={16} />

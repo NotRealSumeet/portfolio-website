@@ -33,12 +33,12 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #742DE1;
+  background: #FF205A;
 }
 
 /* High contrast editorial selection */
 ::selection {
-  background-color: #742DE1;
+  background-color: #FF205A;
   color: #ffffff;
 }
 
@@ -117,7 +117,7 @@ html, body {
   background: #000;
   border: 1px solid transparent;
   background-clip: padding-box;
-  box-shadow: 0 0 10px rgba(116, 45, 225, 0.08);
+  box-shadow: 0 0 10px rgba(255, 32, 90, 0.08);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -130,7 +130,7 @@ html, body {
   bottom: -1px;
   z-index: -1;
   border-radius: inherit;
-  background: linear-gradient(90deg, #1a1a1a 0%, #742DE1 25%, #3b0764 50%, #742DE1 75%, #1a1a1a 100%);
+  background: linear-gradient(90deg, #1a1a1a 0%, #FF205A 25%, #7a1030 50%, #FF205A 75%, #1a1a1a 100%);
   background-size: 200% 100%;
   animation: premium-glow-flow 6s linear infinite;
   opacity: 0.6;
@@ -138,7 +138,7 @@ html, body {
 }
 
 .premium-glow-button:hover {
-  box-shadow: 0 0 18px rgba(116, 45, 225, 0.3);
+  box-shadow: 0 0 18px rgba(255, 32, 90, 0.25);
 }
 
 .premium-glow-button:hover::before {
@@ -232,11 +232,11 @@ html, body {
 }
 
 .luxury-glow-purple {
-  box-shadow: 0 0 40px -5px rgba(116, 45, 225, 0.12);
+  box-shadow: 0 0 40px -5px rgba(255, 32, 90, 0.10);
 }
 
 .luxury-glow-green {
-  box-shadow: 0 0 40px -5px rgba(29, 185, 84, 0.12);
+  box-shadow: 0 0 40px -5px rgba(43, 130, 82, 0.12);
 }
 
 .animate-eq-bar-1 {
@@ -394,7 +394,7 @@ html, body {
   will-change: transform;
 }
 
-/* LAYER 1: Large purple */
+/* LAYER 1: Primary pink glow */
 .mesh-blob-1 {
   width: 70vw;
   height: 70vw;
@@ -404,15 +404,15 @@ html, body {
   right: -10%;
   background: radial-gradient(
     ellipse at 40% 50%,
-    rgba(116, 45, 225, 0.7) 0%,
-    rgba(88, 28, 180, 0.4) 40%,
-    rgba(60, 15, 120, 0.15) 70%,
+    rgba(255, 32, 90, 0.55) 0%,
+    rgba(200, 20, 70, 0.3) 40%,
+    rgba(140, 10, 50, 0.12) 70%,
     transparent 100%
   );
   animation: meshDrift1 25s infinite ease-in-out;
 }
 
-/* LAYER 2: Soft violet */
+/* LAYER 2: Secondary green ambient */
 .mesh-blob-2 {
   width: 60vw;
   height: 60vw;
@@ -422,16 +422,16 @@ html, body {
   left: -5%;
   background: radial-gradient(
     ellipse at 60% 40%,
-    rgba(139, 92, 246, 0.6) 0%,
-    rgba(116, 45, 225, 0.3) 45%,
-    rgba(75, 25, 160, 0.1) 75%,
+    rgba(43, 130, 82, 0.45) 0%,
+    rgba(30, 100, 60, 0.22) 45%,
+    rgba(20, 70, 45, 0.08) 75%,
     transparent 100%
   );
   animation: meshDrift2 35s infinite ease-in-out;
   mix-blend-mode: screen;
 }
 
-/* LAYER 3: Magenta accent */
+/* LAYER 3: Warm ivory ambient highlight */
 .mesh-blob-3 {
   width: 55vw;
   height: 55vw;
@@ -441,15 +441,15 @@ html, body {
   left: 20%;
   background: radial-gradient(
     ellipse at 50% 60%,
-    rgba(200, 40, 150, 0.5) 0%,
-    rgba(160, 30, 130, 0.25) 40%,
-    rgba(116, 45, 225, 0.1) 70%,
+    rgba(252, 252, 221, 0.2) 0%,
+    rgba(252, 252, 221, 0.1) 40%,
+    rgba(255, 32, 90, 0.06) 70%,
     transparent 100%
   );
   animation: meshDrift3 45s infinite ease-in-out;
 }
 
-/* CORE: Luminous white-violet center */
+/* CORE: Luminous warm-pink center */
 .mesh-blob-core {
   position: absolute;
   bottom: -5vh;
@@ -459,9 +459,9 @@ html, body {
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    rgba(224, 200, 255, 0.35) 0%,
-    rgba(139, 92, 246, 0.2) 40%,
-    rgba(116, 45, 225, 0.08) 65%,
+    rgba(252, 252, 221, 0.25) 0%,
+    rgba(255, 32, 90, 0.15) 40%,
+    rgba(43, 130, 82, 0.06) 65%,
     transparent 90%
   );
   animation: meshDriftCore 20s infinite ease-in-out;

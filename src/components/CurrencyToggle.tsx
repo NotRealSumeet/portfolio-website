@@ -14,7 +14,7 @@ export default function CurrencyToggle({ currency, onChange }: CurrencyTogglePro
       <div className="relative flex items-center bg-[#07070a]/80 border border-zinc-800/80 p-[3px] rounded-full w-32 h-8 backdrop-blur-md shadow-inner">
         {/* Animated Sliding Background Capsule */}
         <motion.div
-          className="absolute top-[2px] bottom-[2px] rounded-full bg-gradient-to-r from-[#742DE1] to-[#9c4df7] shadow-[0_0_12px_rgba(116,45,225,0.4)]"
+          className="absolute top-[2px] bottom-[2px] rounded-full bg-gradient-to-r from-[#FF205A] to-[#FF4D7A] shadow-[0_0_12px_rgba(255,32,90,0.35)]"
           initial={false}
           animate={{
             left: currency === 'USD' ? '3px' : '61px',

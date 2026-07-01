@@ -315,10 +315,10 @@ export default function ProjectDetail({
       <div className="flex items-center justify-between border-b border-[#111111] pb-6">
         <button
           onClick={onBack}
-          className="group flex items-center gap-2 font-mono text-xs text-[#666666] hover:text-[#742DE1] transition-colors cursor-pointer py-2 px-1"
+          className="group flex items-center gap-2 font-mono text-xs text-[#666666] hover:text-[#FF205A] transition-colors cursor-pointer py-2 px-1"
           style={{ minHeight: '44px' }}
         >
-          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform text-[#742DE1]" />
+          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform text-[#FF205A]" />
           <span className="hidden sm:inline">[ RETURN TO INDEX ARCHIVE ]</span>
           <span className="inline sm:hidden">[ BACK ]</span>
         </button>
@@ -326,7 +326,7 @@ export default function ProjectDetail({
         <div className="flex items-center gap-2 sm:gap-4">
           <button
             onClick={onPrevProject}
-            className="font-mono text-[10px] text-[#666666] hover:text-[#742DE1] transition-colors p-2"
+            className="font-mono text-[10px] text-[#666666] hover:text-[#FF205A] transition-colors p-2"
             style={{ minHeight: '44px', minWidth: '44px' }}
           >
             ← PREV
@@ -334,7 +334,7 @@ export default function ProjectDetail({
           <span className="font-mono text-[10px] text-[#333333]">/</span>
           <button
             onClick={onNextProject}
-            className="font-mono text-[10px] text-[#666666] hover:text-[#742DE1] transition-colors p-2"
+            className="font-mono text-[10px] text-[#666666] hover:text-[#FF205A] transition-colors p-2"
             style={{ minHeight: '44px', minWidth: '44px' }}
           >
             NEXT →
@@ -580,10 +580,10 @@ export default function ProjectDetail({
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 sm:pt-6">
         <button
           onClick={onBack}
-          className="group flex items-center gap-2 font-mono text-xs text-[#666666] hover:text-[#742DE1] transition-colors cursor-pointer w-full sm:w-auto justify-center py-3 sm:py-2 border border-[#111111] sm:border-transparent"
+          className="group flex items-center gap-2 font-mono text-xs text-[#666666] hover:text-[#FF205A] transition-colors cursor-pointer w-full sm:w-auto justify-center py-3 sm:py-2 border border-[#111111] sm:border-transparent"
           style={{ minHeight: '44px' }}
         >
-          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform text-[#742DE1]" />
+          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform text-[#FF205A]" />
           <span className="hidden sm:inline">[ RETURN TO ALL WORKS ]</span>
           <span className="inline sm:hidden">[ BACK TO ARCHIVE ]</span>
         </button>
@@ -591,7 +591,7 @@ export default function ProjectDetail({
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <button
             onClick={onPrevProject}
-            className="group flex items-center justify-center gap-2 font-mono text-xs text-[#666666] hover:text-[#742DE1] transition-colors cursor-pointer py-3 px-4 border border-[#111111] sm:border-transparent flex-1 sm:flex-initial"
+            className="group flex items-center justify-center gap-2 font-mono text-xs text-[#666666] hover:text-[#FF205A] transition-colors cursor-pointer py-3 px-4 border border-[#111111] sm:border-transparent flex-1 sm:flex-initial"
             style={{ minHeight: '44px' }}
           >
             <span>[ ← PREV ]</span>
@@ -599,7 +599,7 @@ export default function ProjectDetail({
           
           <button
             onClick={onNextProject}
-            className="group flex items-center justify-center gap-2 font-mono text-xs text-[#666666] hover:text-[#742DE1] transition-colors cursor-pointer py-3 px-4 border border-[#111111] sm:border-transparent flex-1 sm:flex-initial"
+            className="group flex items-center justify-center gap-2 font-mono text-xs text-[#666666] hover:text-[#FF205A] transition-colors cursor-pointer py-3 px-4 border border-[#111111] sm:border-transparent flex-1 sm:flex-initial"
             style={{ minHeight: '44px' }}
           >
             <span>[ NEXT → ]</span>

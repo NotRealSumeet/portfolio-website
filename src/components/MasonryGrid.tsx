@@ -64,7 +64,7 @@ export default function MasonryGrid({ projects, onSelectProject, currentLocalTim
         <div className="hidden md:flex items-center gap-x-6 font-mono text-[9px] text-[#555555] tracking-widest select-none uppercase">
           <span>© 2026 // NAVI MUMBAI</span>
           <span className="flex items-center gap-1.5 tabular-nums">
-            <Clock size={10} className="text-[#742DE1]" /> INDIAN TIME {formattedTime}
+            <Clock size={10} className="text-[#FF205A]" /> INDIAN TIME {formattedTime}
           </span>
         </div>
       </div>
@@ -99,14 +99,14 @@ export default function MasonryGrid({ projects, onSelectProject, currentLocalTim
                   <h4 className="font-sans font-bold text-white text-base lg:text-lg tracking-tight uppercase leading-none">
                     {proj.title}
                   </h4>
-                  <span className="font-mono text-[12px] font-semibold text-[#a78bfa] uppercase tracking-wider block opacity-0 translate-y-1.5 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:translate-y-0 delay-75">
+                  <span className="font-mono text-[12px] font-semibold text-[#FF6B8A] uppercase tracking-wider block opacity-0 translate-y-1.5 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:translate-y-0 delay-75">
                     [{proj.category}]
                   </span>
                 </div>
                 
                 <div className="mt-auto self-end">
                   <span className="font-mono text-[9px] text-white/50 border border-white/20 px-2 py-0.5 bg-black/60 flex items-center gap-1.5">
-                    VIEW RECORD <ArrowUpRight size={10} className="text-[#742DE1]" />
+                    VIEW RECORD <ArrowUpRight size={10} className="text-[#FF205A]" />
                   </span>
                 </div>
               </div>
@@ -115,7 +115,7 @@ export default function MasonryGrid({ projects, onSelectProject, currentLocalTim
             {/* Title Block: Stark Swiss Typesetting */}
             <div className="mt-3.5 flex items-start justify-between">
               <div>
-                <h3 className="font-sans font-bold text-sm lg:text-base tracking-tight text-white group-hover:text-[#742DE1] transition-colors uppercase leading-tight">
+                <h3 className="font-sans font-bold text-sm lg:text-base tracking-tight text-white group-hover:text-[#FF205A] transition-colors uppercase leading-tight">
                   {proj.title}
                 </h3>
                 <p className="font-mono text-[#666666] text-[9px] mt-0.5 tracking-tight">

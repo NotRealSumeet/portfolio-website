@@ -103,7 +103,7 @@ function PortfolioView() {
   };
 
   return (
-    <div id="portfolio-root" className="min-h-screen bg-black text-zinc-100 flex flex-col md:flex-row selection:bg-[#742DE1] selection:text-white antialiased">
+    <div id="portfolio-root" className="min-h-screen bg-black text-zinc-100 flex flex-col md:flex-row selection:bg-[#FF205A] selection:text-white antialiased">
 
       {/* LEFT COLUMN: Fixed Sticky Sidebar */}
       <Sidebar
@@ -211,7 +211,7 @@ function PortfolioView() {
               <span className="font-mono text-[9px] tracking-[0.35em] text-zinc-600 block uppercase select-none">
                 — More Projects
               </span>
-              <h2 className="font-sans font-extrabold text-3xl sm:text-4xl tracking-tighter text-white select-none uppercase hover:text-[#742DE1] transition-colors duration-700">
+              <h2 className="font-sans font-extrabold text-3xl sm:text-4xl tracking-tighter text-white select-none uppercase hover:text-[#FF205A] transition-colors duration-700">
                 Coming Soon
               </h2>
               <div className="h-[1px] w-8 bg-zinc-900 mx-auto my-4" />
@@ -227,7 +227,7 @@ function PortfolioView() {
           <div className="w-full max-w-7xl mx-auto mt-20 flex justify-center items-center relative z-10">
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="group font-mono text-[#666666] hover:text-[#742DE1] cursor-pointer flex flex-col items-center gap-1 transition-colors duration-500 uppercase select-none"
+              className="group font-mono text-[#666666] hover:text-[#FF205A] cursor-pointer flex flex-col items-center gap-1 transition-colors duration-500 uppercase select-none"
             >
               <span className="text-xl font-light transform group-hover:-translate-y-1 transition-transform duration-300">↑</span>
               <span className="text-[9px] tracking-[0.25em] font-light">Back to Top</span>

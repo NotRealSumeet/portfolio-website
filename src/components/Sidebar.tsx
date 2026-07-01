@@ -42,7 +42,7 @@ export default function Sidebar({
             onSelectProject(null);
             setMobileMenuOpen(false);
           }}
-          className="font-neue font-bold text-base tracking-tight text-white hover:text-[#742DE1] active:opacity-75 transition-all uppercase"
+          className="font-neue font-bold text-base tracking-tight text-white hover:text-[#FF205A] active:opacity-75 transition-all uppercase"
         >
           SUMIT SHAH
         </button>
@@ -82,7 +82,7 @@ export default function Sidebar({
                       setMobileMenuOpen(false);
                     }}
                     className={`w-full text-left font-sans text-[15px] font-bold tracking-tight uppercase py-3 border-b border-[#111111] flex items-center justify-between transition-colors ${
-                      activeProjectId === null ? 'text-[#742DE1]' : 'text-[#666666] active:text-white'
+                      activeProjectId === null ? 'text-[#FF205A]' : 'text-[#666666] active:text-white'
                     }`}
                     style={{ minHeight: '44px' }}
                   >
@@ -101,7 +101,7 @@ export default function Sidebar({
                           setMobileMenuOpen(false);
                         }}
                         className={`w-full text-left font-sans text-[15px] font-bold tracking-tight uppercase flex items-start justify-between py-3 border-b border-[#111111] transition-colors ${
-                          isActive ? 'text-[#742DE1]' : 'text-[#666666] active:text-white'
+                          isActive ? 'text-[#FF205A]' : 'text-[#666666] active:text-white'
                         }`}
                         style={{ minHeight: '44px' }}
                       >
@@ -149,7 +149,7 @@ export default function Sidebar({
                     className={`py-3 px-4 font-mono text-[11px] uppercase tracking-widest text-center border cursor-pointer transition-all ${
                       activeProjectId === 'about'
                         ? 'bg-white text-black border-white'
-                        : 'bg-black text-[#888888] border-[#1a1a1a] hover:border-white hover:text-[#742DE1] hover:bg-[#070707]'
+                        : 'bg-black text-[#888888] border-[#1a1a1a] hover:border-white hover:text-[#FF205A] hover:bg-[#070707]'
                     }`}
                     style={{ minHeight: '44px' }}
                   >
@@ -204,7 +204,7 @@ export default function Sidebar({
               onClick={() => onSelectProject(null)}
               className="group text-left block cursor-pointer"
             >
-              <h1 className="font-neue font-bold text-[32px] lg:text-[38px] tracking-tighter text-white uppercase leading-none transition-colors group-hover:text-[#742DE1]">
+              <h1 className="font-neue font-bold text-[32px] lg:text-[38px] tracking-tighter text-white uppercase leading-none transition-colors group-hover:text-[#FF205A]">
                 SUMIT<br/>SHAH
               </h1>
               <p className="font-mono text-[10px] text-[#666666] mt-2 tracking-[0.2em] uppercase group-hover:text-white transition-colors">
@@ -268,8 +268,8 @@ export default function Sidebar({
                       onClick={() => onSelectProject(proj.id)}
                       className={`group w-full text-left font-sans text-xs xl:text-sm font-bold tracking-tight uppercase py-2 flex items-start justify-between transition-all duration-300 relative ${
                         isActive
-                          ? 'text-[#742DE1] pl-0 xl:pl-2'
-                          : 'text-[#666666] hover:text-[#742DE1] hover:pl-2'
+                          ? 'text-[#FF205A] pl-0 xl:pl-2'
+                          : 'text-[#666666] hover:text-[#FF205A] hover:pl-2'
                       }`}
                     >
                       <span className="flex items-start gap-2 min-w-0">
@@ -283,7 +283,7 @@ export default function Sidebar({
                       {isActive && (
                         <motion.div
                           layoutId="activeIndicator"
-                          className="w-[5px] h-[5px] bg-[#742DE1] rounded-full ml-2 mt-[6px] xl:mt-[8px] shrink-0"
+                          className="w-[5px] h-[5px] bg-[#FF205A] rounded-full ml-2 mt-[6px] xl:mt-[8px] shrink-0"
                         />
                       )}
                     </button>
@@ -319,7 +319,7 @@ export default function Sidebar({
                   className={`w-full py-2.5 px-4 font-mono text-[12px] uppercase tracking-widest text-center border cursor-pointer transition-all ${
                     activeProjectId === 'about'
                       ? 'bg-white text-black border-white'
-                      : 'bg-black text-[#888888] border-[#1a1a1a] hover:border-white hover:text-[#742DE1] hover:bg-[#070707]'
+                      : 'bg-black text-[#888888] border-[#1a1a1a] hover:border-white hover:text-[#FF205A] hover:bg-[#070707]'
                   }`}
                 >
                   [ PLAYER INFO ]

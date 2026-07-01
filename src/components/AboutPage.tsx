@@ -18,10 +18,10 @@ const FALLBACK_IMAGE_URL = '/spotify/bully.png';
 
 const Equalizer = () => (
   <div className="flex items-end gap-[2px] h-3 w-3.5 shrink-0" aria-hidden="true">
-    <div className="w-[2px] bg-[#1DB954] rounded-t-xs h-[3px] animate-eq-bar-1" />
-    <div className="w-[2px] bg-[#1DB954] rounded-t-xs h-[4px] animate-eq-bar-2" />
-    <div className="w-[2px] bg-[#1DB954] rounded-t-xs h-[2px] animate-eq-bar-3" />
-    <div className="w-[2px] bg-[#1DB954] rounded-t-xs h-[3px] animate-eq-bar-4" />
+    <div className="w-[2px] bg-[#2B8252] rounded-t-xs h-[3px] animate-eq-bar-1" />
+    <div className="w-[2px] bg-[#2B8252] rounded-t-xs h-[4px] animate-eq-bar-2" />
+    <div className="w-[2px] bg-[#2B8252] rounded-t-xs h-[2px] animate-eq-bar-3" />
+    <div className="w-[2px] bg-[#2B8252] rounded-t-xs h-[3px] animate-eq-bar-4" />
   </div>
 );
 
@@ -157,7 +157,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
           repeat: Infinity, 
           ease: "easeInOut" 
         }}
-        className="absolute top-10 left-10 w-[450px] h-[450px] rounded-full bg-[#742DE1] blur-[130px] pointer-events-none select-none z-0" 
+        className="absolute top-10 left-10 w-[450px] h-[450px] rounded-full bg-[#FF205A] blur-[130px] pointer-events-none select-none z-0" 
       />
       <motion.div 
         animate={{ 
@@ -171,7 +171,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
           repeat: Infinity, 
           ease: "easeInOut" 
         }}
-        className="absolute top-32 right-10 w-[400px] h-[400px] rounded-full bg-[#1DB954] blur-[125px] pointer-events-none select-none z-0" 
+        className="absolute top-32 right-10 w-[400px] h-[400px] rounded-full bg-[#2B8252] blur-[125px] pointer-events-none select-none z-0" 
       />
       <motion.div 
         animate={{ 
@@ -185,7 +185,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
           repeat: Infinity, 
           ease: "easeInOut" 
         }}
-        className="absolute bottom-10 left-1/3 w-[350px] h-[350px] rounded-full bg-[#1e1b4b] blur-[110px] pointer-events-none select-none z-0" 
+        className="absolute bottom-10 left-1/3 w-[350px] h-[350px] rounded-full bg-[#1a1510] blur-[110px] pointer-events-none select-none z-0" 
       />
 
       {/* HEADER: Return action */}
@@ -198,8 +198,8 @@ export default function AboutPage({ onBack }: AboutPageProps) {
           <span className="group-hover:-translate-x-1 transition-transform duration-300">←</span>
           <span>[ BACK TO INDEX ARCHIVE ]</span>
         </button>
-        <span className="font-mono text-xs text-[#742DE1] uppercase tracking-widest font-bold flex items-center gap-1.5">
-          <span className="inline-block w-1 h-1 bg-[#742DE1] rounded-full" />
+        <span className="font-mono text-xs text-[#FF205A] uppercase tracking-widest font-bold flex items-center gap-1.5">
+          <span className="inline-block w-1 h-1 bg-[#FF205A] rounded-full" />
           PLAYER INFO
         </span>
       </div>
@@ -215,7 +215,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
             {/* Identity Title */}
             <div>
               <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight text-white leading-[1.15]">
-                I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8c47e8] via-[#ab76f2] to-[#c084fc] drop-shadow-[0_2px_10px_rgba(140,71,232,0.22)] relative font-extrabold">Sumit Shah</span>
+                I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF205A] via-[#FF6B8A] to-[#FF9DB0] drop-shadow-[0_2px_10px_rgba(255,32,90,0.22)] relative font-extrabold">Sumit Shah</span>
               </h1>
             </div>
 
@@ -234,8 +234,8 @@ export default function AboutPage({ onBack }: AboutPageProps) {
           {/* Premium Glassmorphic Info Table Card (Luxury SaaS Panel) */}
           <div className="luxury-glass-panel luxury-glow-purple rounded-xl relative overflow-hidden group/card transition-all duration-500 hover:border-zinc-700/40">
             {/* Ambient background glows inside card */}
-            <div className="absolute -left-20 -bottom-20 w-48 h-48 rounded-full bg-[#742DE1]/8 blur-3xl pointer-events-none" />
-            <div className="absolute -right-20 -top-20 w-48 h-48 rounded-full bg-[#1DB954]/[0.02] blur-3xl pointer-events-none" />
+              <div className="absolute -left-20 -bottom-20 w-48 h-48 rounded-full bg-[#FF205A]/8 blur-3xl pointer-events-none" />
+             <div className="absolute -right-20 -top-20 w-48 h-48 rounded-full bg-[#2B8252]/[0.02] blur-3xl pointer-events-none" />
             
             <div className="divide-y divide-zinc-900/90 relative z-10">
               {/* Header Title Row */}
@@ -250,7 +250,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
 
               {/* Based In Row */}
               <div className="group/row flex justify-between items-center py-5 px-6 hover:bg-white/[0.02] transition-colors duration-300 relative overflow-hidden">
-                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#8c47e8] to-[#ab76f2] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
+                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#FF205A] to-[#FF6B8A] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
                 <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.2em] font-medium transition-colors group-hover/row:text-zinc-400">
                   BASED IN
                 </span>
@@ -261,7 +261,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
 
               {/* Tools Badges Row */}
               <div className="group/row flex justify-between items-center py-5 px-6 hover:bg-white/[0.02] transition-colors duration-300 relative overflow-hidden">
-                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#8c47e8] to-[#ab76f2] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
+                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#FF205A] to-[#FF6B8A] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
                 <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.2em] font-medium transition-colors group-hover/row:text-zinc-400">
                   TOOLS
                 </span>
@@ -327,7 +327,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
 
               {/* Available For Row */}
               <div className="group/row flex justify-between items-center py-5 px-6 hover:bg-white/[0.02] transition-colors duration-300 relative overflow-hidden">
-                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#8c47e8] to-[#ab76f2] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
+                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#FF205A] to-[#FF6B8A] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
                 <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.2em] font-medium transition-colors group-hover/row:text-zinc-400">
                   AVAILABLE FOR
                 </span>
@@ -338,26 +338,26 @@ export default function AboutPage({ onBack }: AboutPageProps) {
 
               {/* Mail Copy Row */}
               <div className="group/row flex justify-between items-center py-5 px-6 hover:bg-white/[0.02] transition-colors duration-300 relative overflow-hidden">
-                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#8c47e8] to-[#ab76f2] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
+                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#FF205A] to-[#FF6B8A] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
                 <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.2em] font-medium transition-colors group-hover/row:text-zinc-400">
                   MAIL
                 </span>
                 <button
                   onClick={copyEmail}
-                  className="font-sans text-sm font-medium text-zinc-100 hover:text-[#a78bfa] transition-colors flex items-center gap-1.5 group/link cursor-pointer"
+                  className="font-sans text-sm font-medium text-zinc-100 hover:text-[#FF6B8A] transition-colors flex items-center gap-1.5 group/link cursor-pointer"
                 >
                   <span>sumeetshah24@gmail.com</span>
                   {copyStatus === 'copied' ? (
                     <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-wider ml-1">[ COPIED ]</span>
                   ) : (
-                    <ArrowUpRight size={13} className="text-[#742DE1] opacity-60 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all duration-300" />
+                    <ArrowUpRight size={13} className="text-[#FF205A] opacity-60 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all duration-300" />
                   )}
                 </button>
               </div>
 
               {/* Instagram Row */}
               <div className="group/row flex justify-between items-center py-5 px-6 hover:bg-white/[0.02] transition-colors duration-300 relative overflow-hidden">
-                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#8c47e8] to-[#ab76f2] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
+                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#FF205A] to-[#FF6B8A] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
                 <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.2em] font-medium transition-colors group-hover/row:text-zinc-400">
                   INSTAGRAM
                 </span>
@@ -365,10 +365,10 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                   href="https://www.instagram.com/sumeetism/"
                   target="_blank"
                   rel="noreferrer"
-                  className="font-sans text-sm font-medium text-zinc-100 hover:text-[#a78bfa] transition-colors flex items-center gap-1.5 group/link cursor-pointer"
+                  className="font-sans text-sm font-medium text-zinc-100 hover:text-[#FF6B8A] transition-colors flex items-center gap-1.5 group/link cursor-pointer"
                 >
                   <span>@sumeetism</span>
-                  <ArrowUpRight size={13} className="text-[#742DE1] opacity-60 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all duration-300" />
+                  <ArrowUpRight size={13} className="text-[#FF205A] opacity-60 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all duration-300" />
                 </a>
               </div>
             </div>
@@ -381,7 +381,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
             /* SKELETON LOADING CARD */
             <div className="luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl shadow-2xl overflow-hidden min-h-[480px] border-zinc-800/80 animate-pulse">
               {/* Glows */}
-              <div className="absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none bg-[#742DE1]/4" />
+              <div className="absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none bg-[#FF205A]/4" />
               
               <div className="space-y-6 w-full relative z-10">
                 {/* Header */}
@@ -443,30 +443,30 @@ export default function AboutPage({ onBack }: AboutPageProps) {
             /* REAL MUSIC CARD (Only after data is fetched successfully) */
             <div className={`luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl transition-all duration-1000 shadow-2xl overflow-hidden min-h-[480px] ${
               tracks[0].currentlyPlaying 
-                ? 'shadow-[0_0_50px_-12px_rgba(29,185,84,0.12)] border-emerald-900/30' 
+                ? 'shadow-[0_0_50px_-12px_rgba(43,130,82,0.12)] border-emerald-900/30' 
                 : 'border-zinc-800/80'
             } hover:border-zinc-700/50`}>
               
               {/* Ambient background glows inside card */}
               <div className={`absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none transition-all duration-1000 ${
                 tracks[0].currentlyPlaying 
-                  ? 'bg-[#1DB954]/8' 
-                  : 'bg-[#742DE1]/6'
+                  ? 'bg-[#2B8252]/8' 
+                  : 'bg-[#FF205A]/6'
               }`} />
               <div className={`absolute -left-24 -bottom-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none transition-all duration-1000 ${
                 tracks[0].currentlyPlaying 
-                  ? 'bg-[#742DE1]/5' 
-                  : 'bg-[#1DB954]/1'
+                  ? 'bg-[#FF205A]/5' 
+                  : 'bg-[#2B8252]/1'
               }`} />
 
               <div className="space-y-6 w-full relative z-10">
                 {/* Top Header Badge */}
                 <div className="flex items-center justify-between border-b border-zinc-950 pb-4 select-none">
                   {tracks[0].currentlyPlaying ? (
-                    <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-[#1DB954] uppercase">
+                    <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-[#2B8252] uppercase">
                       <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1DB954] opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1DB954] shadow-[0_0_6px_#1DB954]"></span>
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2B8252] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#2B8252] shadow-[0_0_6px_#2B8252]"></span>
                       </span>
                       <span>LISTENING IN REAL-TIME</span>
                     </div>
@@ -489,7 +489,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                     rel="noopener noreferrer"
                     className={`group block relative aspect-square w-full rounded-xl overflow-hidden border transition-all duration-700 shadow-2xl cursor-pointer ${
                       tracks[0].currentlyPlaying 
-                        ? 'border-emerald-500/25 shadow-[0_0_35px_-5px_rgba(29,185,84,0.15)] hover:shadow-[0_0_40px_-2px_rgba(29,185,84,0.25)]' 
+                        ? 'border-emerald-500/25 shadow-[0_0_35px_-5px_rgba(43,130,82,0.15)] hover:shadow-[0_0_40px_-2px_rgba(43,130,82,0.25)]' 
                         : 'border-zinc-900/80 hover:border-zinc-800'
                     }`}
                   >
@@ -515,7 +515,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                     <div className="absolute bottom-5 left-5 right-5 text-left z-10">
                       <span className={`font-mono text-[9px] tracking-wider uppercase px-2.5 py-1 rounded-md backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] inline-flex items-center gap-2 transition-colors duration-500 ${
                         tracks[0].currentlyPlaying 
-                          ? 'text-[#1DB954] bg-[#1DB954]/10 border border-[#1DB954]/25' 
+                          ? 'text-[#2B8252] bg-[#2B8252]/10 border border-[#2B8252]/25' 
                           : 'text-zinc-400 bg-zinc-950/60 border border-zinc-800/30'
                       }`}>
                         {tracks[0].currentlyPlaying ? (
@@ -535,7 +535,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                       </p>
                     </div>
                     
-                    <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-black/65 border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-[#1DB954] group-hover:border-[#1DB954]/45 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm z-20">
+                    <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-black/65 border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-[#2B8252] group-hover:border-[#2B8252]/45 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm z-20">
                       <ArrowUpRight size={14} />
                     </div>
 
@@ -550,7 +550,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                             repeat: Infinity, 
                             ease: "easeInOut" 
                           }}
-                          className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#1DB954] to-transparent opacity-90" 
+                          className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#2B8252] to-transparent opacity-90" 
                         />
                       </div>
                     )}
@@ -568,7 +568,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                         rel="noopener noreferrer"
                         className="group/row flex items-center gap-4 py-4 px-4 hover:bg-white/[0.015] transition-all duration-300 relative overflow-hidden block cursor-pointer"
                       >
-                        <div className="absolute left-0 top-1/4 bottom-1/4 w-[2.5px] bg-[#1DB954] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r shadow-[0_0_8px_#1DB954]" />
+                        <div className="absolute left-0 top-1/4 bottom-1/4 w-[2.5px] bg-[#2B8252] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r shadow-[0_0_8px_#2B8252]" />
                         <div className="w-11 h-11 rounded overflow-hidden shrink-0 border border-zinc-900/50 bg-zinc-950 relative">
                           <img 
                             src={track.albumImageUrl} 
@@ -582,7 +582,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                             <h4 className="font-sans font-medium text-sm text-zinc-200 truncate group-hover/row:text-white transition-colors">
                               {track.title}
                             </h4>
-                            <span className="font-mono text-[8px] text-[#742DE1] group-hover/row:text-[#a78bfa] tracking-wider shrink-0 uppercase select-none transition-colors">
+                            <span className="font-mono text-[8px] text-[#FF205A] group-hover/row:text-[#FF6B8A] tracking-wider shrink-0 uppercase select-none transition-colors">
                               {formatRelativeTime(track.playedAt)}
                             </span>
                           </div>
@@ -590,7 +590,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                             {track.artist}
                           </p>
                         </div>
-                        <div className="text-zinc-700 group-hover/row:text-[#1DB954] transition-colors shrink-0 duration-300">
+                        <div className="text-zinc-700 group-hover/row:text-[#2B8252] transition-colors shrink-0 duration-300">
                           <ArrowUpRight size={13} />
                         </div>
                       </a>
@@ -607,7 +607,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
           ) : (
             /* EMPTY/OFFLINE STATE */
             <div className="luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl border-zinc-800/80 shadow-2xl overflow-hidden min-h-[480px]">
-              <div className="absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none bg-[#742DE1]/3" />
+              <div className="absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none bg-[#FF205A]/3" />
               
               <div className="space-y-6 w-full relative z-10">
                 {/* Header */}
