@@ -71,7 +71,7 @@ export default function MasonryGrid({ projects, onSelectProject, currentLocalTim
       </div>
 
       {/* RHYTHMIC ASYMMETRIC GRID: Curated Editorial CSS Grid System */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8 lg:gap-x-8 lg:gap-y-10 items-start">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-6 lg:gap-x-7 lg:gap-y-8 items-start">
         {filteredProjects.map((proj, idx) => (
           <motion.div
             key={proj.id}
@@ -115,14 +115,11 @@ export default function MasonryGrid({ projects, onSelectProject, currentLocalTim
             </div>
 
             {/* Title Block: Stark Swiss Typesetting */}
-            <div className="mt-3.5 flex items-start justify-between">
+            <div className="mt-2.5 flex items-start justify-between">
               <div>
                 <h3 className="font-sans font-bold text-sm lg:text-base tracking-tight text-white group-hover:text-[#FF205A] transition-colors uppercase leading-tight">
                   {proj.title}
                 </h3>
-                <p className="font-mono text-[#666666] text-[9px] mt-0.5 tracking-tight">
-                  {proj.subtitle}
-                </p>
               </div>
               
               <div className="text-right">

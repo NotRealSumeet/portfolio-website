@@ -210,16 +210,21 @@ function PortfolioView() {
 
         {/* BOTTOM DECORATIVE STAMP: Minimal Evolving Design Archive Coming Soon */}
         {activeProjectId === null && (
-          <div className="w-full max-w-7xl mx-auto border-t border-[#111111] mt-32 pt-20 pb-10 flex flex-col items-center justify-center text-center relative z-10">
-            <div className="space-y-3 max-w-md">
-              <span className="font-mono text-[9px] tracking-[0.35em] text-zinc-600 block uppercase select-none">
-                — More Projects
-              </span>
-              <h2 className="font-sans font-extrabold text-3xl sm:text-4xl tracking-tighter text-white select-none uppercase hover:text-[#FF205A] transition-colors duration-700">
+          <div className="w-full max-w-7xl mx-auto border-t border-[#111111] mt-12 pt-10 pb-6 flex flex-col items-center justify-center text-center relative z-10">
+            <div className="max-w-[440px] flex flex-col items-center select-none">
+              {/* Quiet editorial divider label */}
+              <div className="flex items-center gap-2.5 justify-center mb-3">
+                <span className="h-[2px] w-5 bg-[#FF205A] shrink-0" />
+                <span className="font-mono text-[11px] tracking-[0.15em] text-white/80 uppercase font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">
+                  More Projects
+                </span>
+              </div>
+              
+              <h2 className="font-sans font-extrabold text-2xl sm:text-3xl tracking-tighter text-white uppercase hover:text-[#FF205A] transition-colors duration-700 mt-0">
                 Coming Soon
               </h2>
-              <div className="h-[1px] w-8 bg-zinc-900 mx-auto my-4" />
-              <p className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest max-w-xs mx-auto leading-relaxed select-none">
+              
+              <p className="font-mono text-[10px] text-zinc-300 uppercase tracking-[0.15em] leading-relaxed mt-5 px-4">
                 This visual journal is a constantly evolving chromatic file archive. Updates committed build-by-build.
               </p>
             </div>
@@ -228,15 +233,20 @@ function PortfolioView() {
 
         {/* BACK TO TOP BUTTON: Centered inline in page flow */}
         {activeProjectId !== 'about' && (
-          <div className="w-full max-w-7xl mx-auto mt-20 flex justify-center items-center relative z-10">
+          <div className="w-full max-w-7xl mx-auto mt-6 mb-4 flex justify-center items-center relative z-10">
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="group font-mono text-[#666666] hover:text-[#FF205A] cursor-pointer flex flex-col items-center gap-1 transition-colors duration-500 uppercase select-none"
+              className="group font-mono text-zinc-400 hover:text-[#FF205A] cursor-pointer flex flex-col items-center gap-1 transition-all duration-300 uppercase select-none hover:-translate-y-1 hover:drop-shadow-[0_0_8px_rgba(255,32,90,0.45)]"
             >
-              <span className="text-xl font-light transform group-hover:-translate-y-1 transition-transform duration-300">↑</span>
-              <span className="text-[9px] tracking-[0.25em] font-light">Back to Top</span>
+              <span className="text-2xl font-light leading-none transform group-hover:scale-110 transition-transform duration-300">↑</span>
+              <span className="text-[10px] tracking-[0.3em] font-medium">Back to Top</span>
             </button>
           </div>
+        )}
+
+        {/* Graced portfolio closing gradient overlay */}
+        {activeProjectId === null && (
+          <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-[#FF205A]/[0.025] via-transparent to-transparent pointer-events-none z-0" />
         )}
 
       </main>
