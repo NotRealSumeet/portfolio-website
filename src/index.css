@@ -493,4 +493,193 @@ html, body {
     animation: meshDriftCoreMobile 15s infinite ease-in-out;
   }
 }
+/* =============================================
+   BLACK MARKET — Premium Blueprint Design System
+   ============================================= */
+
+/* ── Service Blueprint Card ── */
+.bm-card {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(14, 14, 18, 0.75) 0%,
+    rgba(8, 8, 10, 0.85) 100%
+  );
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid transparent;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 12px 36px -8px rgba(0, 0, 0, 0.5);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bm-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.03) 40%,
+    rgba(255, 32, 90, 0.08) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bm-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 32, 90, 0.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 16px 48px -8px rgba(0, 0, 0, 0.6),
+    0 0 30px -10px rgba(255, 32, 90, 0.06);
+}
+
+/* ── Interactive Add-on Rows ── */
+.bm-addon-row {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bm-addon-row:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.06);
+  transform: translateX(4px);
+}
+
+/* ── Accordion FAQ ── */
+.bm-accordion-trigger {
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: background-color 0.25s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.bm-accordion-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.bm-accordion-chevron {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.bm-accordion-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* ── Timeline CTA Card ── */
+.bm-card-cta {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(16, 12, 22, 0.8) 0%,
+    rgba(10, 8, 14, 0.9) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid transparent;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 20px 50px -12px rgba(0, 0, 0, 0.6);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.bm-card-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 32, 90, 0.25) 0%,
+    rgba(255, 32, 90, 0.05) 50%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bm-card-cta:hover {
+  border-color: rgba(255, 32, 90, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 24px 60px -12px rgba(0, 0, 0, 0.7),
+    0 0 40px -15px rgba(255, 32, 90, 0.15);
+}
+
+/* ── CTA Button ── */
+.bm-cta-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bm-cta-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.bm-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 30px rgba(255, 32, 90, 0.35),
+    0 8px 24px -4px rgba(255, 32, 90, 0.2);
+}
+
+.bm-cta-btn:hover::before {
+  transform: translateX(100%);
+}
+
+/* ── Subtle Ambient Light ── */
+.bm-ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.3;
+  z-index: 0;
+}
 

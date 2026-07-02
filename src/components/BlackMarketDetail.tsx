@@ -1,5 +1,6 @@
-import { motion } from 'motion/react';
-import { ArrowLeft } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowLeft, ChevronDown } from 'lucide-react';
 import { BlackMarketService } from '../blackMarketData';
 import CurrencyToggle from './CurrencyToggle';
 import { formatPrice } from './PriceFormatter';
@@ -17,6 +18,8 @@ export default function BlackMarketDetail({
   onCurrencyChange,
   onBack
 }: BlackMarketDetailProps) {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
   const startingPrice = currency === 'USD' ? service.startingPriceUsd : service.startingPriceInr;
   const portfolioEmail = "sumeetshah24@gmail.com";
   
@@ -25,16 +28,22 @@ export default function BlackMarketDetail({
   const mailtoBody = encodeURIComponent(`Hi Sumit,\n\nI am looking to commission a contract for "${service.title}".\n\nSelected Currency: ${currency}\nStarting Price: ${startingPrice}\n\nLet's coordinate on creative details.`);
   const mailtoUrl = `mailto:${portfolioEmail}?subject=${mailtoSubject}&body=${mailtoBody}`;
 
+  const toggleFaq = (idx: number) => setOpenFaq(openFaq === idx ? null : idx);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
       transition={{ duration: 0.45, ease: 'easeOut' }}
-      className="space-y-10 pb-24"
+      className="space-y-16 pb-24 relative"
     >
-      {/* HEADER ACTIONS: Return & Currency Toggle */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 border-b border-zinc-900 pb-6 sm:pb-8 pt-4">
+      {/* Ambient background glows */}
+      <div className="bm-ambient-glow w-96 h-96 bg-[#FF205A]/[0.02] top-20 right-10" />
+      <div className="bm-ambient-glow w-80 h-80 bg-[#2b8252]/[0.015] bottom-40 left-10" />
+
+      {/* ── HEADER ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 border-b border-zinc-900 pb-6 sm:pb-8 pt-4 relative z-10">
         <button
           onClick={onBack}
           className="group flex items-center gap-3 font-mono text-xs text-[#666666] hover:text-[#FF205A] transition-colors cursor-pointer py-1 self-start"
@@ -49,8 +58,8 @@ export default function BlackMarketDetail({
         </div>
       </div>
 
-      {/* SERVICE CORE DETAILS HERO */}
-      <div className="space-y-6 max-w-4xl">
+      {/* ── HERO ── */}
+      <div className="space-y-6 max-w-4xl relative z-10">
         <div className="space-y-3">
           <span className="font-mono text-xs text-[#FF205A] uppercase tracking-[0.25em] block font-semibold">
             SERVICE ARCHIVE
@@ -71,40 +80,40 @@ export default function BlackMarketDetail({
         </p>
       </div>
 
-      <div className="h-[1px] bg-zinc-900/60 w-full" />
+      <div className="h-px bg-gradient-to-r from-transparent via-zinc-800/40 to-transparent relative z-10" />
 
-      {/* SECTION 2: INCLUDES (Full-Width, stretched horizontally) */}
-      <div className="relative bg-[#07070a]/40 backdrop-blur-md border border-zinc-900/80 p-8 sm:p-10 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(255,32,90,0.02)] space-y-6">
-        <div className="absolute top-0 right-0 w-44 h-44 bg-[#FF205A]/5 blur-3xl rounded-full pointer-events-none" />
-        <h3 className="font-sans font-extrabold text-xl sm:text-2xl text-white uppercase tracking-tight">
+      {/* ── INCLUDES ── */}
+      <div className="bm-card p-8 sm:p-10 relative z-10">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF205A]/[0.015] blur-2xl pointer-events-none" />
+        <h3 className="font-sans font-bold text-lg sm:text-xl text-zinc-400 uppercase tracking-wider mb-8">
           Includes
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-6">
           {service.includes.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-3 text-base text-zinc-300 font-light">
-              <span className="w-2 h-2 rounded-full bg-[#FF205A] shrink-0" />
-              <span>{item}</span>
+            <div key={idx} className="flex items-start gap-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF205A] mt-2.5 shrink-0" />
+              <span className="text-base text-zinc-100 font-normal leading-snug">{item}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* SECTION 3: AVAILABLE ADD-ONS (Full-Width, clean stretched section) */}
-      <div className="relative bg-[#07070a]/40 backdrop-blur-md border border-zinc-900/80 p-8 sm:p-10 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(255,32,90,0.02)] space-y-6">
-        <div className="absolute top-0 right-0 w-44 h-44 bg-[#FF205A]/5 blur-3xl rounded-full pointer-events-none" />
-        <h3 className="font-sans font-extrabold text-xl sm:text-2xl text-white uppercase tracking-tight">
+      {/* ── AVAILABLE ADD-ONS ── */}
+      <div className="bm-card p-8 sm:p-10 relative z-10">
+        <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#2b8252]/[0.01] blur-2xl pointer-events-none" />
+        <h3 className="font-sans font-bold text-lg sm:text-xl text-zinc-400 uppercase tracking-wider mb-8">
           Available Add-Ons
         </h3>
-        <div className="space-y-1 divide-y divide-zinc-900/60 pt-2">
+        <div className="divide-y divide-zinc-900/60">
           {service.addOns.map((addon, idx) => {
             const price = currency === 'USD' ? addon.usd : addon.inr;
             return (
-              <div key={idx} className="flex items-center justify-between py-4 sm:py-5 hover:bg-zinc-900/30 px-4 -mx-4 rounded-lg transition-colors duration-200">
+              <div key={idx} className="bm-addon-row flex items-center justify-between py-4.5 px-4 -mx-2">
                 <span className="text-zinc-200 text-sm sm:text-base font-light flex items-center gap-3">
-                  <span className="text-[#FF205A] text-lg font-light select-none">+</span>
+                  <span className="text-[#FF205A]/60 text-base font-light select-none">+</span>
                   {addon.name}
                 </span>
-                <span className="font-sans font-bold text-sm sm:text-base text-white">
+                <span className="font-sans font-semibold text-sm sm:text-base text-white tabular-nums">
                   {formatPrice(price)}
                 </span>
               </div>
@@ -113,88 +122,122 @@ export default function BlackMarketDetail({
         </div>
       </div>
 
-      {/* SECTION 4: SMART 3-CARD LAYOUT (Process, FAQ, Terms) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Process Timeline Card */}
-        <div className="relative bg-[#07070a]/40 backdrop-blur-md border border-zinc-900/80 p-8 sm:p-10 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(255,32,90,0.02)] space-y-6">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF205A]/5 blur-2xl rounded-full pointer-events-none" />
-          <h3 className="font-sans font-extrabold text-xl sm:text-2xl text-white uppercase tracking-tight">
-            Our Process
-          </h3>
-          <div className="space-y-6 pt-2">
-            {service.process.map((step, idx) => (
-              <div key={idx} className="flex gap-4 items-start">
-                <span className="font-mono text-xl sm:text-2xl text-[#FF205A]/60 font-light leading-none select-none">
-                  0{idx + 1}
-                </span>
-                <span className="text-sm sm:text-base text-zinc-300 font-light leading-snug">
-                  {step}
-                </span>
-              </div>
-            ))}
+      {/* ── MY PROCESS & FAQ (Double-column Grid) ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
+
+        {/* My Process */}
+        <div className="bm-card p-8 sm:p-10 flex flex-col justify-between">
+          <div>
+            <h3 className="font-sans font-bold text-lg sm:text-xl text-zinc-400 uppercase tracking-wider mb-10">
+              My Process
+            </h3>
+            <div className="space-y-8 pl-2 relative">
+              {/* Timeline Connector Line */}
+              <div className="absolute left-5 top-2 bottom-2 w-px bg-zinc-800" />
+
+              {service.process.map((step, idx) => (
+                <div key={idx} className="flex gap-6 items-start relative z-10">
+                  <span className="font-mono text-xs w-6 h-6 rounded-full bg-zinc-950 border border-zinc-800 text-[#FF205A] flex items-center justify-center shrink-0 select-none">
+                    {idx + 1}
+                  </span>
+                  <span className="text-base text-zinc-200 font-light leading-relaxed pt-0.5">
+                    {step}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* FAQ Card */}
-        <div className="relative bg-[#07070a]/40 backdrop-blur-md border border-zinc-900/80 p-8 sm:p-10 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(255,32,90,0.02)] space-y-6">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF205A]/5 blur-2xl rounded-full pointer-events-none" />
-          <h3 className="font-sans font-extrabold text-xl sm:text-2xl text-white uppercase tracking-tight">
+        {/* FAQ (Without payment terms) */}
+        <div className="bm-card p-8 sm:p-10">
+          <h3 className="font-sans font-bold text-lg sm:text-xl text-zinc-400 uppercase tracking-wider mb-8">
             FAQ
           </h3>
-          <div className="space-y-6 pt-2">
+          <div className="divide-y divide-zinc-900/60">
             {service.faq.map((item, idx) => (
-              <div key={idx} className="space-y-2">
-                <h4 className="font-sans font-semibold text-sm sm:text-base text-zinc-200">
-                  {item.question}
-                </h4>
-                <p className="font-sans font-light text-sm text-zinc-400 leading-relaxed">
-                  {item.answer}
-                </p>
+              <div key={idx} className="py-2">
+                {/* Trigger */}
+                <div
+                  onClick={() => toggleFaq(idx)}
+                  className="bm-accordion-trigger flex items-center justify-between gap-4 py-4 px-2 -mx-2"
+                >
+                  <h4 className="font-sans font-medium text-sm sm:text-[15px] text-zinc-200 leading-snug">
+                    {item.question}
+                  </h4>
+                  <ChevronDown
+                    size={16}
+                    className={`bm-accordion-chevron text-zinc-500 ${openFaq === idx ? 'open text-[#FF205A]' : ''}`}
+                  />
+                </div>
+
+                {/* Answer */}
+                <AnimatePresence initial={false}>
+                  {openFaq === idx && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <p className="text-sm text-zinc-400 font-light leading-relaxed pb-4 px-2 -mx-2 pt-0.5">
+                        {item.answer}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Terms Card */}
-        <div className="relative bg-[#07070a]/40 backdrop-blur-md border border-zinc-900/80 p-8 sm:p-10 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(255,32,90,0.02)] space-y-6">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF205A]/5 blur-2xl rounded-full pointer-events-none" />
-          <h3 className="font-sans font-extrabold text-xl sm:text-2xl text-white uppercase tracking-tight">
-            Terms
-          </h3>
-          <ul className="space-y-3.5 text-xs sm:text-sm text-zinc-500 font-sans font-light pl-4 list-disc leading-relaxed pt-2">
-            {service.terms.map((term, idx) => (
-              <li key={idx}>
-                {term}
-              </li>
-            ))}
-          </ul>
         </div>
 
       </div>
 
-      {/* SECTION 5: DELIVERY TIMELINE & CTA (Full-Width Conversion Banner) */}
-      <div className="relative bg-[#0a0a0f]/60 backdrop-blur-md border border-[#FF205A]/20 hover:border-[#FF205A]/40 hover:shadow-[0_0_35px_rgba(255,32,90,0.06)] p-8 sm:p-10 rounded-2xl overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-8 transition-all duration-500">
-        <div className="absolute top-0 right-0 w-44 h-44 bg-[#FF205A]/8 blur-2xl rounded-full pointer-events-none" />
-        
-        <div className="space-y-4 max-w-2xl">
-          <div className="flex items-center gap-3 text-zinc-400">
-            <span className="font-mono text-xs uppercase tracking-widest text-[#FF205A] font-semibold">Timeline & Milestones</span>
-            <span className="text-zinc-600">—</span>
-            <span className="text-sm font-semibold text-white">Estimated {service.deliveryTime}</span>
-          </div>
-          <p className="font-sans text-sm text-zinc-300 leading-relaxed font-light">
-            Ready to commission this contract? Send an email inquiry below. We will coordinate on your creative brief, timelines, and establish the contract milestones.
-          </p>
+      {/* ── TERMS & CONDITIONS (Premium Numbered Card Layout) ── */}
+      <div className="space-y-8 relative z-10">
+        <h3 className="font-sans font-bold text-lg sm:text-xl text-zinc-400 uppercase tracking-wider pl-1">
+          Terms & Conditions
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {service.terms.map((term, idx) => (
+            <div key={idx} className="bm-card p-6 flex flex-col justify-between min-h-[140px]">
+              <span className="font-mono text-[11px] text-[#FF205A] tracking-widest font-bold">
+                {String(idx + 1).padStart(2, '0')}
+              </span>
+              <p className="text-zinc-300 text-[13px] sm:text-sm font-light mt-4 leading-relaxed">
+                {term}
+              </p>
+            </div>
+          ))}
         </div>
+      </div>
 
-        <div className="shrink-0 w-full md:w-auto relative z-10">
-          <a
-            href={mailtoUrl}
-            className="flex items-center justify-center gap-2 py-4 px-8 bg-white text-black hover:bg-[#FF205A] hover:text-white hover:shadow-[0_0_30px_rgba(255,32,90,0.35)] font-sans text-xs font-bold tracking-widest uppercase transition-all duration-300 rounded-lg cursor-pointer text-center whitespace-nowrap"
-          >
-            Initiate Contract
-          </a>
+      {/* ── CTA ── */}
+      <div className="bm-card-cta p-8 sm:p-10 lg:p-12 relative z-10">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+          {/* Left content */}
+          <div className="space-y-4 max-w-2xl">
+            <span className="font-mono text-[10px] text-[#FF205A] uppercase tracking-[0.25em] block font-semibold">
+              Timeline — Estimated {service.deliveryTime}
+            </span>
+            <h3 className="font-sans font-extrabold text-2xl sm:text-3xl text-white tracking-tight uppercase">
+              Ready to Commission?
+            </h3>
+            <p className="font-sans text-sm sm:text-base text-zinc-400 leading-relaxed font-light">
+              Send an email inquiry to get started. We will coordinate on your creative brief, timelines, and establish contract milestones.
+            </p>
+          </div>
+
+          {/* CTA Button */}
+          <div className="shrink-0 w-full lg:w-auto">
+            <a
+              href={mailtoUrl}
+              className="bm-cta-btn flex items-center justify-center gap-2 py-4 px-8 bg-white text-black hover:bg-[#FF205A] hover:text-white font-sans text-xs font-bold tracking-widest uppercase transition-colors duration-300 rounded-lg cursor-pointer text-center whitespace-nowrap"
+            >
+              Initiate Contract
+            </a>
+          </div>
         </div>
       </div>
 
