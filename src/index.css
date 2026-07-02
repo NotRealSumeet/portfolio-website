@@ -683,3 +683,13 @@ html, body {
   z-index: 0;
 }
 
+/* ── Terms Row ── */
+.bm-term-row {
+  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 0.5rem;
+}
+
+.bm-term-row:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+

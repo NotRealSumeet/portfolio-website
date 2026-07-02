@@ -92,7 +92,7 @@ export default function BlackMarketDetail({
           {service.includes.map((item, idx) => (
             <div key={idx} className="flex items-start gap-4">
               <span className="w-1.5 h-1.5 rounded-full bg-[#FF205A] mt-2.5 shrink-0" />
-              <span className="text-base text-zinc-100 font-normal leading-snug">{item}</span>
+              <span className="text-[17px] text-zinc-100 font-normal leading-snug">{item}</span>
             </div>
           ))}
         </div>
@@ -109,11 +109,11 @@ export default function BlackMarketDetail({
             const price = currency === 'USD' ? addon.usd : addon.inr;
             return (
               <div key={idx} className="bm-addon-row flex items-center justify-between py-4.5 px-4 -mx-2">
-                <span className="text-zinc-200 text-sm sm:text-base font-light flex items-center gap-3">
-                  <span className="text-[#FF205A]/60 text-base font-light select-none">+</span>
+                <span className="text-zinc-100 text-base sm:text-[18px] font-normal flex items-center gap-3">
+                  <span className="text-[#FF205A]/60 text-lg font-light select-none">+</span>
                   {addon.name}
                 </span>
-                <span className="font-sans font-semibold text-sm sm:text-base text-white tabular-nums">
+                <span className="font-sans font-semibold text-base sm:text-[18px] text-white tabular-nums">
                   {formatPrice(price)}
                 </span>
               </div>
@@ -140,7 +140,7 @@ export default function BlackMarketDetail({
                   <span className="font-mono text-xs w-6 h-6 rounded-full bg-zinc-950 border border-zinc-800 text-[#FF205A] flex items-center justify-center shrink-0 select-none">
                     {idx + 1}
                   </span>
-                  <span className="text-base text-zinc-200 font-light leading-relaxed pt-0.5">
+                  <span className="text-[17px] text-zinc-100 font-light leading-relaxed pt-0.5">
                     {step}
                   </span>
                 </div>
@@ -162,7 +162,7 @@ export default function BlackMarketDetail({
                   onClick={() => toggleFaq(idx)}
                   className="bm-accordion-trigger flex items-center justify-between gap-4 py-4 px-2 -mx-2"
                 >
-                  <h4 className="font-sans font-medium text-sm sm:text-[15px] text-zinc-200 leading-snug">
+                  <h4 className="font-sans font-semibold text-base sm:text-[17px] text-zinc-100 leading-snug">
                     {item.question}
                   </h4>
                   <ChevronDown
@@ -181,7 +181,7 @@ export default function BlackMarketDetail({
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
-                      <p className="text-sm text-zinc-400 font-light leading-relaxed pb-4 px-2 -mx-2 pt-0.5">
+                      <p className="text-[15px] sm:text-base text-zinc-300 font-light leading-relaxed pb-4 px-2 -mx-2 pt-0.5">
                         {item.answer}
                       </p>
                     </motion.div>
@@ -194,22 +194,24 @@ export default function BlackMarketDetail({
 
       </div>
 
-      {/* ── TERMS & CONDITIONS (Premium Numbered Card Layout) ── */}
-      <div className="space-y-8 relative z-10">
+      {/* ── TERMS & CONDITIONS (ONE Premium Full-Width Card) ── */}
+      <div className="space-y-6 relative z-10">
         <h3 className="font-sans font-bold text-lg sm:text-xl text-zinc-400 uppercase tracking-wider pl-1">
           Terms & Conditions
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {service.terms.map((term, idx) => (
-            <div key={idx} className="bm-card p-6 flex flex-col justify-between min-h-[140px]">
-              <span className="font-mono text-[11px] text-[#FF205A] tracking-widest font-bold">
-                {String(idx + 1).padStart(2, '0')}
-              </span>
-              <p className="text-zinc-300 text-[13px] sm:text-sm font-light mt-4 leading-relaxed">
-                {term}
-              </p>
-            </div>
-          ))}
+        <div className="bm-card p-8 sm:p-10 lg:p-12">
+          <div className="divide-y divide-zinc-900/60">
+            {service.terms.map((term, idx) => (
+              <div key={idx} className="bm-term-row flex items-baseline gap-6 py-5 px-4 -mx-4">
+                <span className="font-mono text-base sm:text-lg text-[#FF205A] font-bold shrink-0 w-12 text-left select-none">
+                  {String(idx + 1).padStart(2, '0')}
+                </span>
+                <p className="text-zinc-100 text-base sm:text-[17px] font-light leading-relaxed" style={{ lineHeight: '1.75' }}>
+                  {term}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
