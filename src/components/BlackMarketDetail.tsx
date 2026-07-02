@@ -36,7 +36,7 @@ export default function BlackMarketDetail({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
       transition={{ duration: 0.45, ease: 'easeOut' }}
-      className="space-y-16 pb-24 relative"
+      className="space-y-11 pb-24 relative"
     >
       {/* Ambient background glows */}
       <div className="bm-ambient-glow w-96 h-96 bg-[#FF205A]/[0.02] top-20 right-10" />
@@ -216,26 +216,23 @@ export default function BlackMarketDetail({
       </div>
 
       {/* ── CTA ── */}
-      <div className="bm-card-cta p-8 sm:p-10 lg:p-12 relative z-10">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+      <div className="bm-card-cta p-10 sm:p-12 lg:p-16 relative z-10">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
           {/* Left content */}
-          <div className="space-y-4 max-w-2xl">
-            <span className="font-mono text-[10px] text-[#FF205A] uppercase tracking-[0.25em] block font-semibold">
+          <div className="space-y-3">
+            <span className="font-mono text-xs text-[#FF205A] uppercase tracking-[0.25em] block font-semibold">
               Timeline — Estimated {service.deliveryTime}
             </span>
-            <h3 className="font-sans font-extrabold text-2xl sm:text-3xl text-white tracking-tight uppercase">
+            <h3 className="font-sans font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight uppercase leading-none">
               Ready to Commission?
             </h3>
-            <p className="font-sans text-sm sm:text-base text-zinc-400 leading-relaxed font-light">
-              Send an email inquiry to get started. We will coordinate on your creative brief, timelines, and establish contract milestones.
-            </p>
           </div>
 
           {/* CTA Button */}
           <div className="shrink-0 w-full lg:w-auto">
             <a
               href={mailtoUrl}
-              className="bm-cta-btn flex items-center justify-center gap-2 py-4 px-8 bg-white text-black hover:bg-[#FF205A] hover:text-white font-sans text-xs font-bold tracking-widest uppercase transition-colors duration-300 rounded-lg cursor-pointer text-center whitespace-nowrap"
+              className="bm-cta-btn flex items-center justify-center gap-2 py-4.5 px-10 sm:py-5 sm:px-12 bg-white text-black hover:bg-[#FF205A] hover:text-white font-sans text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 rounded-lg cursor-pointer text-center whitespace-nowrap"
             >
               Initiate Contract
             </a>
