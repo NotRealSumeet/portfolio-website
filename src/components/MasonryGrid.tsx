@@ -1,14 +1,26 @@
+/* =========================================================
+   Imports
+========================================================= */
+
 import { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, Clock } from 'lucide-react';
 import { Project } from '../types';
 import { preloadProjectMedia } from '../utils/preload';
 
+/* =========================================================
+   Types
+========================================================= */
+
 interface MasonryGridProps {
   projects: Project[];
   onSelectProject: (id: string) => void;
   currentLocalTime?: Date;
 }
+
+/* =========================================================
+   Component
+========================================================= */
 
 export default function MasonryGrid({ projects, onSelectProject, currentLocalTime }: MasonryGridProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');

@@ -1,7 +1,6 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
+/* =========================================================
+   Imports
+========================================================= */
 
 import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
@@ -9,12 +8,20 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MediaItem } from '../types';
 
+/* =========================================================
+   Types
+========================================================= */
+
 interface LightboxProps {
   isOpen: boolean;
   mediaList: MediaItem[];
   initialIndex: number;
   onClose: () => void;
 }
+
+/* =========================================================
+   Component
+========================================================= */
 
 export default function Lightbox({
   isOpen,

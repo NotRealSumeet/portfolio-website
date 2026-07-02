@@ -1,7 +1,6 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
+/* =========================================================
+   Types
+========================================================= */
 
 export type MediaType = 'image' | 'video' | 'gif';
 
@@ -28,6 +27,6 @@ export interface Project {
   summary: string;
   about: string;
   thumbnailUrl: string;
-  aspectRatio: string; // Tailwinds aspect ratio string, e.g. 'aspect-video', 'aspect-square', 'aspect-[4/5]', 'aspect-[2/3]'
+  aspectRatio: string; // Tailwind aspect ratio string, e.g. 'aspect-video', 'aspect-square', 'aspect-[4/5]', 'aspect-[2/3]'
   media: MediaItem[];
 }

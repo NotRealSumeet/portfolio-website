@@ -1,9 +1,21 @@
+/* =========================================================
+   Imports
+========================================================= */
+
 import { motion } from 'motion/react';
+
+/* =========================================================
+   Types
+========================================================= */
 
 interface CurrencyToggleProps {
   currency: 'USD' | 'INR';
   onChange: (currency: 'USD' | 'INR') => void;
 }
+
+/* =========================================================
+   Component
+========================================================= */
 
 export default function CurrencyToggle({ currency, onChange }: CurrencyToggleProps) {
   return (

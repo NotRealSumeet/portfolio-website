@@ -1,3 +1,7 @@
+/* =========================================================
+   Types
+========================================================= */
+
 export interface ServiceAddOn {
   name: string;
   usd: string;
@@ -22,6 +26,10 @@ export interface BlackMarketService {
   faq: ServiceFAQ[];
   terms: string[];
 }
+
+/* =========================================================
+   Constants
+========================================================= */
 
 export const BLACK_MARKET_SERVICES: BlackMarketService[] = [
   {
@@ -137,7 +145,7 @@ export const BLACK_MARKET_SERVICES: BlackMarketService[] = [
     addOns: [
       { name: "Additional Slide", usd: "$10", inr: "₹700" },
       { name: "Source File", usd: "$50", inr: "₹4,000" },
-      { name: "Content Assistance", usd: "$25", inr: "₹2,000" },
+      { name: "Content Assistance", usd: "$5", inr: "₹480" },
       { name: "Multi-Platform Resizing", usd: "$20", inr: "₹1,500" }
     ],
     process: [
@@ -188,7 +196,7 @@ export const BLACK_MARKET_SERVICES: BlackMarketService[] = [
       { name: "Source File Package", usd: "$50", inr: "₹5,000" },
       { name: "Social Media Brand Kit", usd: "$40", inr: "₹3,000" },
       { name: "Full Brand Identity", usd: "Custom Pricing", inr: "Custom Pricing" },
-      { name: "Stationery Mockups", usd: "$25", inr: "₹2,000" }
+      { name: "Stationery Mockups", usd: "$10", inr: "₹700" }
     ],
     process: [
       "Brand Discovery",
@@ -234,8 +242,8 @@ export const BLACK_MARKET_SERVICES: BlackMarketService[] = [
       "Commercial Usage Rights"
     ],
     addOns: [
-      { name: "Source File", usd: "$45", inr: "₹3,500" },
-      { name: "Alternate Version", usd: "$20", inr: "Starting at ₹1,500" }, // Note: starting price mapped as string
+      { name: "Source File", usd: "$35", inr: "₹3,000" },
+      { name: "Alternate Version", usd: "$20", inr: "Starting at ₹1,500" },
       { name: "Social Promo Assets", usd: "$25", inr: "₹2,000" }
     ],
     process: [
@@ -272,8 +280,8 @@ export const BLACK_MARKET_SERVICES: BlackMarketService[] = [
     id: "pitch-deck-design",
     title: "Pitch Deck Design",
     description: "Professional pitch deck presentations designed for startups, agencies, and brands with a focus on clarity and visual storytelling.",
-    startingPriceUsd: "$120 – $400",
-    startingPriceInr: "₹8,000 – ₹30,000",
+    startingPriceUsd: "$100 – $350",
+    startingPriceInr: "₹9,500 – ₹33,000",
     includes: [
       "Up to 10 Slides",
       "Presentation Design",

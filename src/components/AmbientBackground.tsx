@@ -1,9 +1,12 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
+/* =========================================================
+   Imports
+========================================================= */
 
 import { useEffect, useRef } from 'react';
+
+/* =========================================================
+   Component
+========================================================= */
 
 export default function AmbientBackground() {
   const containerRef = useRef<HTMLDivElement>(null);

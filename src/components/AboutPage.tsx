@@ -1,6 +1,14 @@
-import React, { useState, useEffect } from 'react';
+/* =========================================================
+   Imports
+========================================================= */
+
+import { useState, useEffect, SyntheticEvent } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
+
+/* =========================================================
+   Types
+========================================================= */
 
 interface SpotifyTrack {
   title: string;
@@ -12,9 +20,21 @@ interface SpotifyTrack {
   currentlyPlaying?: boolean;
 }
 
+interface AboutPageProps {
+  onBack: () => void;
+}
+
+/* =========================================================
+   Constants
+========================================================= */
+
 const LASTFM_USERNAME = import.meta.env.VITE_LASTFM_USERNAME || 'Sumit_shah';
 const LASTFM_API_KEY = import.meta.env.VITE_LASTFM_API_KEY || '2bed1944f3a074be318fed728e990ffe';
 const FALLBACK_IMAGE_URL = '/spotify/bully.png';
+
+/* =========================================================
+   Helper Components & Functions
+========================================================= */
 
 const Equalizer = () => (
   <div className="flex items-end gap-[2px] h-3 w-3.5 shrink-0" aria-hidden="true">
@@ -38,11 +58,9 @@ const formatRelativeTime = (timestamp: number) => {
   return `${days}D AGO`;
 };
 
-
-
-interface AboutPageProps {
-  onBack: () => void;
-}
+/* =========================================================
+   Component
+========================================================= */
 
 export default function AboutPage({ onBack }: AboutPageProps) {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
@@ -55,7 +73,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
     setTimeout(() => setCopyStatus('idle'), 2000);
   };
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+  const handleImageError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = FALLBACK_IMAGE_URL;
   };
 
@@ -234,8 +252,8 @@ export default function AboutPage({ onBack }: AboutPageProps) {
           {/* Premium Glassmorphic Info Table Card (Luxury SaaS Panel) */}
           <div className="luxury-glass-panel luxury-glow-purple rounded-xl relative overflow-hidden group/card transition-all duration-500 hover:border-zinc-700/40">
             {/* Ambient background glows inside card */}
-              <div className="absolute -left-20 -bottom-20 w-48 h-48 rounded-full bg-[#FF205A]/8 blur-3xl pointer-events-none" />
-             <div className="absolute -right-20 -top-20 w-48 h-48 rounded-full bg-[#2B8252]/[0.02] blur-3xl pointer-events-none" />
+            <div className="absolute -left-20 -bottom-20 w-48 h-48 rounded-full bg-[#FF205A]/8 blur-3xl pointer-events-none" />
+            <div className="absolute -right-20 -top-20 w-48 h-48 rounded-full bg-[#2B8252]/[0.02] blur-3xl pointer-events-none" />
             
             <div className="divide-y divide-zinc-900/90 relative z-10">
               {/* Header Title Row */}
@@ -629,7 +647,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                   <div className="space-y-2">
                     <h3 className="font-sans font-medium text-sm text-zinc-300">Live Soundfeed Offline</h3>
                     <p className="font-mono text-[10px] text-zinc-500 max-w-[200px] leading-relaxed mx-auto">
-                      Unable to connect to Last.fm stream. Check back later.
+                       Unable to connect to Last.fm stream. Check back later.
                     </p>
                   </div>
                 </div>

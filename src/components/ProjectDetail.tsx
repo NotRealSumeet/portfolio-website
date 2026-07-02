@@ -1,9 +1,47 @@
+/* =========================================================
+   Imports
+========================================================= */
+
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { Project } from '../types';
 import Lightbox from './Lightbox';
 import { loadedImagesCache, loadedVideosCache } from '../utils/preload';
+
+/* =========================================================
+   Types
+========================================================= */
+
+interface LazyMediaProps {
+  url: string;
+  type: 'image' | 'gif';
+  aspectRatioNumber?: number;
+  alt?: string;
+  className?: string;
+  onClick?: () => void;
+  priority?: boolean;
+}
+
+interface LazyVideoProps {
+  url: string;
+  aspectRatioNumber?: number;
+  className?: string;
+  onClick?: () => void;
+  autoPlay?: boolean;
+  priority?: boolean;
+}
+
+interface ProjectDetailProps {
+  project: Project;
+  onBack: () => void;
+  onNextProject: () => void;
+  onPrevProject: () => void;
+}
+
+/* =========================================================
+   Hooks
+========================================================= */
 
 // Hook to track the active columns count responsively (mimicking media queries)
 function useColumnCount() {
@@ -27,15 +65,9 @@ function useColumnCount() {
   return columns;
 }
 
-interface LazyMediaProps {
-  url: string;
-  type: 'image' | 'gif';
-  aspectRatioNumber?: number;
-  alt?: string;
-  className?: string;
-  onClick?: () => void;
-  priority?: boolean;
-}
+/* =========================================================
+   Helper Components
+========================================================= */
 
 function LazyMedia({ url, type, aspectRatioNumber, alt = '', className = '', onClick, priority = false }: LazyMediaProps) {
   const isCached = loadedImagesCache.has(url);
@@ -115,15 +147,6 @@ function LazyMedia({ url, type, aspectRatioNumber, alt = '', className = '', onC
       )}
     </div>
   );
-}
-
-interface LazyVideoProps {
-  url: string;
-  aspectRatioNumber?: number;
-  className?: string;
-  onClick?: () => void;
-  autoPlay?: boolean;
-  priority?: boolean;
 }
 
 function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClick, autoPlay = true, priority = false }: LazyVideoProps) {
@@ -268,12 +291,9 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
   );
 }
 
-interface ProjectDetailProps {
-  project: Project;
-  onBack: () => void;
-  onNextProject: () => void;
-  onPrevProject: () => void;
-}
+/* =========================================================
+   Component: ProjectDetail
+========================================================= */
 
 export default function ProjectDetail({
   project,

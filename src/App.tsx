@@ -1,3 +1,7 @@
+/* =========================================================
+   Imports
+========================================================= */
+
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -11,6 +15,10 @@ import BlackMarketPage from './components/BlackMarketPage';
 import BlackMarketDetail from './components/BlackMarketDetail';
 import { BLACK_MARKET_SERVICES } from './blackMarketData';
 import { preloadProjectMedia } from './utils/preload';
+
+/* =========================================================
+   Component: PortfolioView
+========================================================= */
 
 function PortfolioView() {
   const { projectId, serviceId } = useParams();
@@ -254,6 +262,10 @@ function PortfolioView() {
     </div>
   );
 }
+
+/* =========================================================
+   Export
+========================================================= */
 
 export default function App() {
   return (

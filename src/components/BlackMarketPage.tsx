@@ -1,3 +1,7 @@
+/* =========================================================
+   Imports
+========================================================= */
+
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
@@ -5,11 +9,19 @@ import { BLACK_MARKET_SERVICES } from '../blackMarketData';
 import CurrencyToggle from './CurrencyToggle';
 import { formatPrice } from './PriceFormatter';
 
+/* =========================================================
+   Types
+========================================================= */
+
 interface BlackMarketPageProps {
   currency: 'USD' | 'INR';
   onCurrencyChange: (currency: 'USD' | 'INR') => void;
   onSelectService: (id: string) => void;
 }
+
+/* =========================================================
+   Component
+========================================================= */
 
 export default function BlackMarketPage({
   currency,

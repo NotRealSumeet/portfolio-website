@@ -1,8 +1,20 @@
+/* =========================================================
+   Imports
+========================================================= */
+
 import { Project } from '../types';
+
+/* =========================================================
+   Constants
+========================================================= */
 
 export const loadedImagesCache = new Set<string>();
 export const loadedVideosCache = new Set<string>();
 export const preloadedUrls = new Set<string>();
+
+/* =========================================================
+   Helper Functions
+========================================================= */
 
 export function preloadImage(url: string) {
   if (!url || preloadedUrls.has(url)) return;

@@ -1,8 +1,16 @@
+/* =========================================================
+   Imports
+========================================================= */
+
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowUpRight, Menu, X, Mail, Globe, Clock } from 'lucide-react';
 import { Project } from '../types';
 import { preloadProjectMedia } from '../utils/preload';
+
+/* =========================================================
+   Types
+========================================================= */
 
 interface SidebarProps {
   projects: Project[];
@@ -10,6 +18,10 @@ interface SidebarProps {
   onSelectProject: (id: string | null) => void;
   currentLocalTime: Date;
 }
+
+/* =========================================================
+   Component
+========================================================= */
 
 export default function Sidebar({
   projects,
