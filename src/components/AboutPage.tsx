@@ -4,7 +4,8 @@
 
 import { useState, useEffect, SyntheticEvent } from 'react';
 import { motion } from 'motion/react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, FileText, Download } from 'lucide-react';
+import resumePdf from '../assets/Resume/SumitShah_Resume (2).pdf';
 
 /* =========================================================
    Types
@@ -246,6 +247,33 @@ export default function AboutPage({ onBack }: AboutPageProps) {
               <p className="text-sm sm:text-[15px] text-zinc-400 leading-[1.7] font-light tracking-wide">
                 I enjoy balancing structured design systems with raw expressive visuals, constructing interactive experiences, and developing atmospheric digital systems.
               </p>
+            </div>
+
+            {/* Resume Action Group */}
+            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4">
+              {/* Primary CTA: View Resume */}
+              <a
+                href={resumePdf}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Sumit Shah's Resume in a new browser tab"
+                className="group relative flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-xs font-mono font-medium tracking-wider text-white hover:text-white transition-all duration-300 cursor-pointer shadow-lg hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF205A] focus-visible:ring-offset-2 focus-visible:ring-offset-black resume-primary-glow w-full sm:w-auto select-none"
+              >
+                <FileText size={15} className="text-[#FF205A] group-hover:scale-110 transition-transform duration-300 shrink-0" />
+                <span className="uppercase tracking-widest">VIEW RESUME</span>
+                <ArrowUpRight size={14} className="text-[#FF205A] opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 shrink-0" />
+              </a>
+
+              {/* Secondary CTA: Download Resume */}
+              <a
+                href={resumePdf}
+                download="Sumit_Shah_Resume.pdf"
+                aria-label="Download Sumit Shah's Resume PDF directly"
+                className="group relative flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-zinc-950/40 border border-zinc-800/80 hover:border-[#FF205A]/50 hover:bg-[#FF205A]/[0.06] text-xs font-mono font-medium tracking-wider text-zinc-300 hover:text-white transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.4)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF205A] focus-visible:ring-offset-2 focus-visible:ring-offset-black w-full sm:w-auto select-none"
+              >
+                <Download size={15} className="text-zinc-400 group-hover:text-[#FF205A] group-hover:translate-y-0.5 transition-all duration-300 shrink-0" />
+                <span className="uppercase tracking-widest">DOWNLOAD RESUME</span>
+              </a>
             </div>
           </div>
 
