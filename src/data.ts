@@ -172,7 +172,79 @@ const nemoAlbumArtRemaining = nemoAlbumArtMediaFiles
     return numA - numB;
   });
 
+// ED CRYPTO CAROUSELS
+const carouselProjectMediaFiles = (Object.values(
+  import.meta.glob('./assets/projects/carouselproject/*.{jpg,jpeg,png,webp}', {
+    eager: true,
+    import: 'default',
+  })
+) as string[]);
+
+const sortByIndex = (files: string[]) => {
+  return files.sort((a, b) => {
+    const matchA = getBaseFilename(a).match(/\((\d+)\)/);
+    const matchB = getBaseFilename(b).match(/\((\d+)\)/);
+    const numA = matchA ? parseInt(matchA[1], 10) : 0;
+    const numB = matchB ? parseInt(matchB[1], 10) : 0;
+    return numA - numB;
+  });
+};
+
+const cara1Files = sortByIndex(carouselProjectMediaFiles.filter((f) => getBaseFilename(f).startsWith('cara1')));
+const cara2Files = sortByIndex(carouselProjectMediaFiles.filter((f) => getBaseFilename(f).startsWith('cara2')));
+const cara3Files = sortByIndex(carouselProjectMediaFiles.filter((f) => getBaseFilename(f).startsWith('cara3')));
+const cara4Files = sortByIndex(carouselProjectMediaFiles.filter((f) => getBaseFilename(f).startsWith('cara4') && getBaseFilename(f) !== 'cara4 (1).jpg'));
+const cara5Files = sortByIndex(carouselProjectMediaFiles.filter((f) => getBaseFilename(f).startsWith('cara5')));
+
+const carouselGroupFiles = [
+  { title: 'CAROUSEL 01', files: cara1Files },
+  { title: 'CAROUSEL 02', files: cara2Files },
+  { title: 'CAROUSEL 03', files: cara3Files },
+  ...(cara4Files.length > 0 ? [{ title: 'CAROUSEL 04', files: cara4Files }] : []),
+  ...(cara5Files.length > 0 ? [{ title: 'CAROUSEL 05', files: cara5Files }] : []),
+].filter((group) => group.files.length > 0);
+
+const cryptoCarouselsGroups = carouselGroupFiles.map((group, groupIdx) => ({
+  id: `carousel-group-${groupIdx + 1}`,
+  title: group.title,
+  slides: group.files.map((file, fileIdx) => ({
+    id: `crypto-carousel-${groupIdx + 1}-${fileIdx + 1}`,
+    type: 'image' as const,
+    url: file,
+    caption: '',
+    ...lookupDimensions('carouselproject' as any, file),
+  })),
+}));
+
+const cryptoCarouselsAllMedia = cryptoCarouselsGroups.flatMap((g) => g.slides);
+const cryptoCarouselsThumb = cara1Files[0] || cryptoCarouselsAllMedia[0]?.url || '';
+
 const RAW_PROJECTS_DATA: Project[] = [
+  // ED CRYPTO CAROUSELS
+  {
+    id: 'crypto-carousels',
+    title: 'ED CRYPTO CAROUSELS',
+    subtitle: 'SAAS EDUCATION & SOCIAL DESIGN',
+    category: 'CAROUSEL DESIGN',
+    year: '2026',
+    client: 'KoinX',
+    role: 'Graphic Designer',
+    services: [
+      'Carousel Design',
+      'Social Media Design',
+      'Visual Storytelling',
+      'Information Design'
+    ],
+    summary:
+      'A series of modern SaaS carousels simplifying complex crypto and tax concepts through clean layouts, strong visual hierarchy, and educational storytelling.',
+    about:
+      'Designed for KoinX, this project focused on creating educational carousel content covering cryptocurrency, taxation, regulations, and product features. Each carousel was crafted to transform complex financial topics into clear, engaging, and visually accessible content using modern SaaS aesthetics, structured layouts, and data-driven visual communication.',
+    thumbnailUrl: cryptoCarouselsThumb,
+    aspectRatio: 'aspect-square',
+    media: cryptoCarouselsAllMedia,
+    carousels: cryptoCarouselsGroups,
+  },
+
   // 2TONE EP COVER ART
   {
     id: '2tone-ep',

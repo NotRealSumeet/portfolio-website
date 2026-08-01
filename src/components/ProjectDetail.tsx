@@ -7,6 +7,7 @@ import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { Project } from '../types';
 import Lightbox from './Lightbox';
+import InstagramCarousel from './InstagramCarousel';
 import { loadedImagesCache, loadedVideosCache } from '../utils/preload';
 
 /* =========================================================
@@ -403,8 +404,26 @@ export default function ProjectDetail({
         </div>
       </div>
 
-      {/* 2. PROJECT IMAGES FLOW (HERO + GALLERY STREAM) */}
-      {project.id === 'thumbnail-project' ? (
+      {/* 2. PROJECT IMAGES FLOW (HERO + GALLERY STREAM / MULTI-CAROUSEL) */}
+      {project.carousels && project.carousels.length > 0 ? (
+        /* SPECIAL INSTAGRAM CAROUSEL MULTI-SLIDER LAYOUT */
+        <div className="w-full flex flex-col pt-2 space-y-8 sm:space-y-12">
+          {project.carousels.map((group, groupIdx) => {
+            let offset = 0;
+            for (let i = 0; i < groupIdx; i++) {
+              offset += project.carousels![i].slides.length;
+            }
+            return (
+              <InstagramCarousel
+                key={group.id}
+                title={group.title}
+                slides={group.slides}
+                onSlideClick={(slideIdx) => setLightboxIndex(offset + slideIdx)}
+              />
+            );
+          })}
+        </div>
+      ) : project.id === 'thumbnail-project' ? (
         /* SPECIAL PINTEREST-STYLE SHOWCASE FOR THUMBNAIL ARCHIVE */
         <div className="w-full flex flex-col pt-2">
           {/* HERO IMAGE: Cinematic showcase style */}

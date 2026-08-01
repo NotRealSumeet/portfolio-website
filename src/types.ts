@@ -15,6 +15,12 @@ export interface MediaItem {
   aspectRatioNumber?: number;
 }
 
+export interface CarouselGroup {
+  id: string;
+  title: string;
+  slides: MediaItem[];
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -29,4 +35,6 @@ export interface Project {
   thumbnailUrl: string;
   aspectRatio: string; // Tailwind aspect ratio string, e.g. 'aspect-video', 'aspect-square', 'aspect-[4/5]', 'aspect-[2/3]'
   media: MediaItem[];
+  carousels?: CarouselGroup[];
 }
+
