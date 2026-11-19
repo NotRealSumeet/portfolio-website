@@ -1,10 +1,47 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
+
+@font-face {
+  font-family: 'Geist Pixel Circle';
+  src: url('/fonts/GeistPixel-Circle.woff2') format('woff2'),
+       url('../node_modules/geist/dist/fonts/geist-pixel/GeistPixel-Circle.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 @theme {
   --font-sans: "SF Pro Display", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Plus Jakarta Sans", sans-serif;
   --font-neue: "Neue Montreal", "Helvetica Neue", "Arial", "Plus Jakarta Sans", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-pixel: "Geist Pixel Circle", monospace;
+}
+
+/* =========================================================
+   Geist Pixel Typography & Left-To-Right Ticker Animation
+========================================================= */
+
+.font-geist-pixel {
+  font-family: 'Geist Pixel Circle', monospace;
+}
+
+@keyframes ticker-ltr {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+.animate-ticker-ltr {
+  animation: ticker-ltr 32s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ticker-ltr {
+    animation-duration: 65s;
+  }
 }
 
 /* =========================================================

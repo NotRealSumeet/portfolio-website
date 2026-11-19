@@ -2,9 +2,9 @@
    Imports
 ========================================================= */
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowUpRight, Menu, X, Mail, Globe, Clock } from 'lucide-react';
+import { ArrowUpRight, Menu, X, Mail, Globe, SlidersHorizontal } from 'lucide-react';
 import { Project } from '../types';
 import { preloadProjectMedia } from '../utils/preload';
 
@@ -16,7 +16,9 @@ interface SidebarProps {
   projects: Project[];
   activeProjectId: string | null;
   onSelectProject: (id: string | null) => void;
-  currentLocalTime: Date;
+  categories: string[];
+  selectedCategory: string;
+  onSelectCategory: (category: string) => void;
 }
 
 /* =========================================================
@@ -27,78 +29,180 @@ export default function Sidebar({
   projects,
   activeProjectId,
   onSelectProject,
-  currentLocalTime
+  categories,
+  selectedCategory,
+  onSelectCategory
 }: SidebarProps) {
   const [hoveredProjectId, setHoveredProjectId] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [popoverCoords, setPopoverCoords] = useState<{ top: number; left: number } | null>(null);
 
-  // Format as Indian Standard Time (Asia/Kolkata timezone)
-  const formattedTime = currentLocalTime.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-    timeZone: 'Asia/Kolkata'
-  });
+  const filterButtonRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Calculate popover position to the right of the sidebar in the gallery area
+  useEffect(() => {
+    if (!filterOpen) return;
+
+    const updatePosition = () => {
+      if (filterButtonRef.current) {
+        const btnRect = filterButtonRef.current.getBoundingClientRect();
+        const aside = filterButtonRef.current.closest('aside');
+        const sidebarRight = aside ? aside.getBoundingClientRect().right : btnRect.right;
+        setPopoverCoords({
+          top: Math.max(12, btnRect.top),
+          left: sidebarRight + 12
+        });
+      }
+    };
+
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    window.addEventListener('scroll', updatePosition, true);
+
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
+    };
+  }, [filterOpen]);
+
+  // Close floating popover when clicking outside or pressing Escape
+  useEffect(() => {
+    if (!filterOpen) return;
+
+    const handlePointerDown = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as Node;
+      if (filterButtonRef.current && filterButtonRef.current.contains(target)) {
+        return;
+      }
+      if (popoverRef.current && !popoverRef.current.contains(target)) {
+        setFilterOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setFilterOpen(false);
+        filterButtonRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [filterOpen]);
 
   return (
     <>
-      {/* MOBILE HEADER: Minimal, modern, and aligned with Swiss grid principles */}
-      <header className="md:hidden fixed top-0 left-0 right-0 h-16 bg-black/90 backdrop-blur-md border-b border-[#111111] z-50 flex items-center justify-between px-6 select-none">
+      {/* MOBILE HEADER: Clean, compact editorial bar */}
+      <header className="md:hidden fixed top-0 left-0 right-0 h-14 bg-black/95 backdrop-blur-md border-b-2 border-zinc-900 z-50 flex items-center justify-between px-5 select-none">
         <button
           onClick={() => {
+            onSelectCategory('ALL');
             onSelectProject(null);
             setMobileMenuOpen(false);
           }}
-          className="font-neue font-bold text-base tracking-tight text-white hover:text-[#FF205A] active:opacity-75 transition-all uppercase"
+          className="text-left cursor-pointer"
         >
-          SUMIT SHAH
+          <span className="font-sans font-bold text-sm tracking-tight text-white uppercase hover:text-[#FF205A] transition-colors block">
+            SUMIT SHAH
+          </span>
+          <span className="font-mono text-[9px] text-zinc-400 tracking-wider uppercase block">
+            Graphic Designer
+          </span>
         </button>
         
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="text-white hover:text-zinc-400 p-2 cursor-pointer transition-colors flex items-center justify-center"
-          style={{ minWidth: '44px', minHeight: '44px' }}
+          style={{ minWidth: '40px', minHeight: '40px' }}
           aria-label="Toggle menu"
         >
-          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
       </header>
 
-      {/* MOBILE DRAWER MENU: Cinematic slide-in with rich backdrop */}
+      {/* MOBILE DRAWER MENU: Simplified, structured navigation */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ x: '100%', opacity: 0.95 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: '100%', opacity: 0.95 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden fixed top-16 left-0 right-0 bottom-0 bg-black/98 backdrop-blur-lg z-40 overflow-y-auto px-6 py-8 flex flex-col justify-between"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="md:hidden fixed top-14 left-0 right-0 bottom-0 bg-black/98 backdrop-blur-lg z-40 overflow-y-auto px-5 py-6 flex flex-col justify-between"
           >
-            <div className="space-y-8">
-              {/* Category label */}
-              <div>
-                <span className="font-mono text-[9px] uppercase text-[#555555] tracking-[0.25em] block mb-2 select-none">
-                  QUEST LOG INDEX
-                </span>
-                
-                <nav className="flex flex-col">
-                  {/* Show all / reset trigger */}
+            <div className="space-y-6">
+              {/* Category Filter on Mobile */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase text-zinc-400 tracking-wider">
+                    Category Filter
+                  </span>
+                  {selectedCategory !== 'ALL' && (
+                    <button
+                      onClick={() => onSelectCategory('ALL')}
+                      className="font-mono text-[9px] text-[#FF205A] hover:underline uppercase"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {categories.map((cat) => {
+                    const isSelected = selectedCategory === cat;
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => {
+                          onSelectCategory(cat);
+                          if (activeProjectId !== null) {
+                            onSelectProject(null);
+                          }
+                          setMobileMenuOpen(false);
+                        }}
+                        className={`font-mono text-[10px] uppercase px-2.5 py-1 rounded transition-colors ${
+                          isSelected
+                            ? 'bg-white text-black font-semibold'
+                            : 'bg-zinc-900 text-zinc-400 hover:text-white'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Projects List */}
+              <div className="space-y-2 pt-2 border-t border-zinc-900">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase text-zinc-400 tracking-wider flex items-center gap-1.5">
+                    <span>QUEST LOG</span>
+                    <span className="text-zinc-500">[{projects.length.toString().padStart(2, '0')}]</span>
+                  </span>
                   <button
                     onClick={() => {
+                      onSelectCategory('ALL');
                       onSelectProject(null);
                       setMobileMenuOpen(false);
                     }}
-                    className={`w-full text-left font-sans text-[15px] font-bold tracking-tight uppercase py-3 border-b border-[#111111] flex items-center justify-between transition-colors ${
-                      activeProjectId === null ? 'text-[#FF205A]' : 'text-[#666666] active:text-white'
+                    className={`font-mono text-[9px] uppercase transition-colors ${
+                      activeProjectId === null ? 'text-[#FF205A]' : 'text-zinc-500 hover:text-white'
                     }`}
-                    style={{ minHeight: '44px' }}
                   >
-                    <span>— SHOW ALL CATALOG</span>
-                    <span className="text-[9px] font-mono text-[#444444]">INDEX</span>
+                    All Works
                   </button>
-
-                  {/* Projects List with seamless mobile design */}
+                </div>
+                
+                <nav className="flex flex-col divide-y divide-zinc-900/60">
                   {projects.map((proj, idx) => {
                     const isActive = activeProjectId === proj.id;
                     return (
@@ -109,18 +213,17 @@ export default function Sidebar({
                           setMobileMenuOpen(false);
                         }}
                         onMouseEnter={() => preloadProjectMedia(proj)}
-                        className={`w-full text-left font-sans text-[15px] font-bold tracking-tight uppercase flex items-start justify-between py-3 border-b border-[#111111] transition-colors ${
-                          isActive ? 'text-[#FF205A]' : 'text-[#666666] active:text-white'
+                        className={`w-full text-left font-sans text-sm font-semibold tracking-tight uppercase flex items-center justify-between py-2.5 transition-colors ${
+                          isActive ? 'text-[#FF205A]' : 'text-zinc-400 active:text-white'
                         }`}
-                        style={{ minHeight: '44px' }}
                       >
-                        <span className="flex items-start gap-3 min-w-0">
-                          <span className="font-mono text-[9px] text-[#444444] mt-[4px] shrink-0">
+                        <span className="flex items-center gap-2.5 min-w-0">
+                          <span className="font-mono text-[9px] text-zinc-400 shrink-0">
                             {(idx + 1).toString().padStart(2, '0')}
                           </span>
-                          <span className="whitespace-normal break-words text-balance leading-tight">{proj.title}</span>
+                          <span className="truncate">{proj.title}</span>
                         </span>
-                        <span className="text-[9px] font-mono text-[#555555] mt-[4px] shrink-0 ml-4">
+                        <span className="text-[9px] font-mono text-zinc-400 ml-3 shrink-0">
                           {proj.year}
                         </span>
                       </button>
@@ -129,121 +232,204 @@ export default function Sidebar({
                 </nav>
               </div>
 
-              {/* Special Navigation Sections */}
-              <div className="space-y-3 pt-2">
-                <span className="font-mono text-[9px] uppercase text-[#555555] tracking-[0.25em] block select-none">
-                  SPECIAL NAVIGATION
-                </span>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => {
-                      onSelectProject('black-market');
-                      setMobileMenuOpen(false);
-                    }}
-                    className={`py-3 px-4 font-mono text-[11px] uppercase tracking-widest text-center cursor-pointer transition-all ${
-                      activeProjectId === 'black-market'
-                        ? 'bg-white text-black border border-white'
-                        : 'premium-glow-button text-zinc-300 hover:text-white'
-                    }`}
-                    style={{ minHeight: '44px' }}
-                  >
-                    [ BLACK MARKET ]
-                  </button>
-                  
+              {/* Secondary Navigation & Hierarchy */}
+              <div className="pt-3 border-t-2 border-zinc-900 space-y-3">
+                {/* PLAYER INFO on its own row */}
+                <div>
                   <button
                     onClick={() => {
                       onSelectProject('about');
                       setMobileMenuOpen(false);
                     }}
-                    className={`py-3 px-4 font-mono text-[11px] uppercase tracking-widest text-center border cursor-pointer transition-all ${
+                    className={`w-full py-2 px-3 font-mono text-xs uppercase tracking-wider text-left rounded border transition-colors flex items-center justify-between ${
                       activeProjectId === 'about'
-                        ? 'bg-white text-black border-white'
-                        : 'bg-black text-[#888888] border-[#1a1a1a] hover:border-white hover:text-[#FF205A] hover:bg-[#070707]'
+                        ? 'bg-white text-black border-white font-semibold'
+                        : 'bg-zinc-950 text-zinc-300 border-zinc-800 hover:text-white hover:border-zinc-700'
                     }`}
-                    style={{ minHeight: '44px' }}
                   >
-                    [ PLAYER INFO ]
+                    <span>Player Info</span>
+                    <ArrowUpRight size={12} className={activeProjectId === 'about' ? 'text-black' : 'text-zinc-500'} />
                   </button>
                 </div>
-              </div>
 
-              {/* Connected Links grid for easy mobile activation */}
-              <div className="space-y-3">
-                <span className="font-mono text-[9px] uppercase text-[#555555] tracking-[0.25em] block select-none">
-                  COMMUNICATION CHANNELS
-                </span>
-                <div className="grid grid-cols-2 gap-3">
+                {/* Full-width Divider */}
+                <div className="h-[2px] bg-zinc-900 w-full" />
+
+                {/* COMMISSIONS EMAIL INSTAGRAM */}
+                <div className="grid grid-cols-3 gap-2 text-center font-mono text-[10px] uppercase tracking-wider">
+                  <button
+                    onClick={() => {
+                      onSelectProject('black-market');
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`py-2 px-1 rounded border transition-colors truncate ${
+                      activeProjectId === 'black-market'
+                        ? 'bg-white text-black border-white font-semibold'
+                        : 'bg-zinc-950 text-zinc-300 border-zinc-800 hover:text-white'
+                    }`}
+                  >
+                    Commissions
+                  </button>
                   <a
                     href="mailto:sumeetshah24@gmail.com"
-                    className="flex items-center justify-center text-center py-3.5 bg-[#050505] border border-[#111111] font-mono text-xs text-zinc-400 active:text-white active:bg-zinc-950 hover:text-white transition-all select-none"
-                    style={{ minHeight: '44px' }}
+                    className="py-2 px-1 bg-zinc-950 border border-zinc-800 rounded text-zinc-300 hover:text-white transition-colors truncate flex items-center justify-center"
                   >
-                    <Mail size={12} className="mr-2" /> EMAIL DIRECT
+                    Email
                   </a>
                   <a
                     href="https://www.instagram.com/sumeetism/"
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center justify-center text-center py-3.5 bg-[#050505] border border-[#111111] font-mono text-xs text-zinc-400 active:text-white active:bg-zinc-950 hover:text-white transition-all select-none flex-nowrap"
-                    style={{ minHeight: '44px' }}
+                    className="py-2 px-1 bg-zinc-950 border border-zinc-800 rounded text-zinc-300 hover:text-white transition-colors truncate flex items-center justify-center"
                   >
-                    <Globe size={12} className="mr-2" /> @SUMEETISM
+                    Instagram
                   </a>
                 </div>
-              </div>
-            </div>
 
-            {/* Micro branding stamp and time */}
-            <div className="mt-12 border-t border-[#111111] pt-6 flex flex-col sm:flex-row gap-2 justify-between items-center font-mono text-[9px] text-[#444444] select-none uppercase">
-              <span>CREATED IN NAVI MUMBAI</span>
-              <span className="flex items-center gap-1.5">
-                <Clock size={10} /> INDIAN TIME {formattedTime}
-              </span>
+                {/* Full-width Divider */}
+                <div className="h-[2px] bg-zinc-900 w-full" />
+
+                {/* Clean location and copyright stamp */}
+                <div className="text-center font-mono text-[9px] text-zinc-400 uppercase tracking-widest pt-1">
+                  © 2026 · NAVI MUMBAI
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* DESKTOP SIDEBAR: Sticky, Left aligned */}
-      <aside className="hidden md:flex flex-col justify-between w-[25%] lg:w-[20%] h-screen fixed top-0 left-0 bg-black border-r border-[#1a1a1a] z-30 p-8 pt-10 select-none">
-        {/* TOP SECTION: Logo & Role */}
-        <div className="space-y-6">
-          <div>
+      {/* DESKTOP SIDEBAR: Editorial, Compact, Left-aligned */}
+      <aside className="hidden md:flex flex-col justify-between w-[25%] lg:w-[20%] h-screen fixed top-0 left-0 bg-black border-r-2 border-zinc-900 z-30 p-6 lg:p-7 select-none overflow-y-auto">
+        {/* TOP SECTION: Identity, Filter & Project List */}
+        <div>
+          {/* Identity Section */}
+          <div className="mb-5">
             <button
-              onClick={() => onSelectProject(null)}
-              className="group text-left block cursor-pointer"
+              onClick={() => {
+                onSelectCategory('ALL');
+                onSelectProject(null);
+              }}
+              className="text-left group cursor-pointer block"
             >
-              <h1 className="font-neue font-bold text-[32px] lg:text-[38px] tracking-tighter text-white uppercase leading-none transition-colors group-hover:text-[#FF205A]">
-                SUMIT<br/>SHAH
+              <h1 className="font-sans font-bold text-xl lg:text-2xl tracking-tight text-white uppercase group-hover:text-[#FF205A] transition-colors leading-tight">
+                SUMIT SHAH
               </h1>
-              <p className="font-mono text-[10px] text-[#666666] mt-2 tracking-[0.2em] uppercase group-hover:text-white transition-colors">
+              <p className="font-mono text-[10px] text-zinc-400 mt-1 tracking-[0.2em] uppercase">
                 Graphic Designer
               </p>
             </button>
           </div>
 
-          <div className="h-[1px] bg-[#1a1a1a] w-full" />
+          <div className="h-[2px] bg-zinc-900 w-full mb-4" />
 
-          {/* MID SECTION: Interactive Project Lists with nested previews */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <span className="font-mono text-[10px] uppercase text-[#666666] tracking-wider">
+          {/* SECTION HEADING & FILTER ROW */}
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="font-mono text-[10px] uppercase text-zinc-400 tracking-wider shrink-0 font-medium">
                 QUEST LOG
               </span>
-              <button
-                onClick={() => onSelectProject(null)}
-                className={`font-mono text-[9px] hover:underline uppercase transition-colors ${
-                  activeProjectId === null ? 'text-white' : 'text-[#666666] hover:text-white'
-                }`}
-              >
-                [ RESET ALL ]
-              </button>
+              <span className="font-mono text-[10px] text-zinc-500 shrink-0 tabular-nums">
+                [{projects.length.toString().padStart(2, '0')}]
+              </span>
             </div>
 
-            <nav className="flex flex-col space-y-[4px]">
+            <button
+              ref={filterButtonRef}
+              onClick={() => setFilterOpen((prev) => !prev)}
+              aria-haspopup="dialog"
+              aria-expanded={filterOpen}
+              className={`flex items-center gap-1.5 py-1 px-2.5 rounded font-mono text-[10px] uppercase tracking-wider transition-all border cursor-pointer shrink-0 ${
+                selectedCategory !== 'ALL'
+                  ? 'bg-zinc-900 border-[#FF205A]/40 text-white'
+                  : 'bg-zinc-950 border-zinc-800/80 text-zinc-300 hover:text-white hover:border-zinc-700'
+              }`}
+            >
+              <SlidersHorizontal size={11} className={selectedCategory !== 'ALL' ? 'text-[#FF205A]' : 'text-zinc-400'} />
+              <span className="font-medium">Filter</span>
+              {selectedCategory !== 'ALL' && (
+                <span className="text-[9px] text-[#FF205A] max-w-[70px] truncate">
+                  [{selectedCategory}]
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* FLOATING POPOVER: Extends horizontally to the RIGHT into the gallery area */}
+          <AnimatePresence>
+            {filterOpen && popoverCoords && (
+              <motion.div
+                ref={popoverRef}
+                initial={{ opacity: 0, x: -8, scale: 0.98 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -8, scale: 0.98 }}
+                transition={{ duration: 0.15, ease: 'easeOut' }}
+                style={{
+                  position: 'fixed',
+                  top: popoverCoords.top,
+                  left: popoverCoords.left,
+                  zIndex: 50
+                }}
+                className="w-56 bg-[#0c0c0e] border border-zinc-800 rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.95)] p-2 backdrop-blur-md"
+                role="dialog"
+                aria-label="Category filter"
+              >
+                <div className="flex items-center justify-between pb-1.5 px-2 border-b-2 border-zinc-900 mb-1 select-none">
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-zinc-500">
+                    Category Filter
+                  </span>
+                  {selectedCategory !== 'ALL' && (
+                    <button
+                      onClick={() => {
+                        onSelectCategory('ALL');
+                        if (activeProjectId !== null) onSelectProject(null);
+                        setFilterOpen(false);
+                      }}
+                      className="font-mono text-[9px] uppercase text-[#FF205A] hover:underline cursor-pointer"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+
+                <div className="space-y-0.5">
+                  {categories.map((cat) => {
+                    const isSelected = selectedCategory === cat;
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => {
+                          onSelectCategory(cat);
+                          if (activeProjectId !== null) {
+                            onSelectProject(null);
+                          }
+                          setFilterOpen(false);
+                        }}
+                        className={`w-full text-left font-mono text-[10px] uppercase tracking-wider py-1.5 px-2 rounded transition-colors flex items-center justify-between cursor-pointer ${
+                          isSelected
+                            ? 'bg-zinc-800 text-white font-semibold'
+                            : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                        }`}
+                      >
+                        <span className="truncate">{cat}</span>
+                        {isSelected && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#FF205A] shrink-0 ml-1.5" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* PROJECTS NAVIGATION: Preserved project list */}
+          <div>
+            <nav className="flex flex-col space-y-0.5">
               {projects.map((proj, idx) => {
                 const isActive = activeProjectId === proj.id;
                 const isHovered = hoveredProjectId === proj.id;
+                const isMatch = selectedCategory === 'ALL' || proj.category.toUpperCase() === selectedCategory;
 
                 return (
                   <div
@@ -255,47 +441,48 @@ export default function Sidebar({
                     onMouseLeave={() => setHoveredProjectId(null)}
                     className="relative flex items-center"
                   >
-                    {/* Thumbnail preview beside the title (sliding & scale effect) */}
+                    {/* Tooltip thumbnail placed safely in main canvas margin to prevent clipping */}
                     <AnimatePresence>
-                      {(isHovered || isActive) && (
+                      {isHovered && (
                         <motion.div
-                          initial={{ opacity: 0, x: -10, scale: 0.8 }}
+                          initial={{ opacity: 0, x: -6, scale: 0.95 }}
                           animate={{ opacity: 1, x: 0, scale: 1 }}
-                          exit={{ opacity: 0, x: -10, scale: 0.8 }}
-                          transition={{ duration: 0.2, ease: 'easeOut' }}
-                          className="absolute -left-12 lg:-left-16 w-10 h-10 lg:w-12 lg:h-12 border border-[#1a1a1a] bg-[#0d0d0d] overflow-hidden pointer-events-none rounded-none hidden xl:block"
+                          exit={{ opacity: 0, x: -6, scale: 0.95 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute left-full ml-3 top-1/2 -translate-y-1/2 w-16 h-16 bg-zinc-950 border border-zinc-800 overflow-hidden pointer-events-none rounded shadow-2xl hidden xl:block z-50"
                         >
                           <img
                             src={proj.thumbnailUrl}
-                            alt=""
-                            className="w-full h-full object-cover scale-105 active:scale-110"
+                            alt={proj.title}
+                            className="w-full h-full object-cover"
                             referrerPolicy="no-referrer"
                           />
                         </motion.div>
                       )}
                     </AnimatePresence>
 
-                    {/* Left padding offset for thumbnails on desktop */}
                     <button
                       onClick={() => onSelectProject(proj.id)}
-                      className={`group w-full text-left font-sans text-xs xl:text-sm font-bold tracking-tight uppercase py-2 flex items-start justify-between transition-all duration-300 relative ${
+                      className={`group w-full text-left font-sans text-xs font-semibold tracking-tight uppercase py-1.5 px-2 rounded transition-colors flex items-center justify-between ${
                         isActive
-                          ? 'text-[#FF205A] pl-0 xl:pl-2'
-                          : 'text-[#666666] hover:text-[#FF205A] hover:pl-2'
+                          ? 'bg-zinc-900 text-[#FF205A]'
+                          : isMatch
+                          ? 'text-zinc-400 hover:text-white hover:bg-zinc-950'
+                          : 'text-zinc-500 hover:text-zinc-300'
                       }`}
                     >
-                      <span className="flex items-start gap-2 min-w-0">
-                        <span className="font-mono text-[10px] text-[#444444] group-hover:text-[#666666] transition-colors mt-[2px] xl:mt-[3px] shrink-0">
+                      <span className="flex items-center gap-2 min-w-0">
+                        <span className="font-mono text-[9px] text-zinc-400 group-hover:text-zinc-300 shrink-0">
                           {(idx + 1).toString().padStart(2, '0')}
                         </span>
-                        <span className="whitespace-normal break-words text-balance leading-tight">{proj.title}</span>
+                        <span className="truncate leading-tight">{proj.title}</span>
                       </span>
 
                       {/* Accent marker for active status */}
                       {isActive && (
                         <motion.div
                           layoutId="activeIndicator"
-                          className="w-[5px] h-[5px] bg-[#FF205A] rounded-full ml-2 mt-[6px] xl:mt-[8px] shrink-0"
+                          className="w-[5px] h-[5px] bg-[#FF205A] rounded-full ml-1.5 shrink-0"
                         />
                       )}
                     </button>
@@ -306,62 +493,60 @@ export default function Sidebar({
           </div>
         </div>
 
-        {/* BOTTOM SECTION: Switzerland clock, bio and email */}
-        <div className="space-y-6">
-          <div className="h-[1px] bg-[#1a1a1a] w-full" />
-          
-          <div className="space-y-4">
-            <div className="space-y-3">
-              <div>
-                <button
-                  onClick={() => onSelectProject('black-market')}
-                  className={`w-full py-2.5 px-4 font-mono text-[12px] uppercase tracking-widest text-center cursor-pointer transition-all ${
-                    activeProjectId === 'black-market'
-                      ? 'bg-white text-black border border-white'
-                      : 'premium-glow-button text-zinc-300 hover:text-white'
-                  }`}
-                >
-                  [ BLACK MARKET ]
-                </button>
-              </div>
+        {/* BOTTOM SECTION: Reorganized Secondary Navigation & Contact */}
+        <div className="pt-4 border-t-2 border-zinc-900 mt-4 space-y-3">
+          {/* PLAYER INFO on its own row */}
+          <div>
+            <button
+              onClick={() => onSelectProject('about')}
+              className={`w-full text-left font-mono text-[11px] uppercase tracking-wider py-1.5 px-2 rounded transition-colors flex items-center justify-between cursor-pointer ${
+                activeProjectId === 'about'
+                  ? 'bg-zinc-800 text-white font-medium'
+                  : 'text-zinc-400 hover:text-white hover:bg-zinc-950'
+              }`}
+            >
+              <span>Player Info</span>
+              <ArrowUpRight size={11} className="text-zinc-500" />
+            </button>
+          </div>
 
-              <div>
-                <button
-                  onClick={() => onSelectProject('about')}
-                  className={`w-full py-2.5 px-4 font-mono text-[12px] uppercase tracking-widest text-center border cursor-pointer transition-all ${
-                    activeProjectId === 'about'
-                      ? 'bg-white text-black border-white'
-                      : 'bg-black text-[#888888] border-[#1a1a1a] hover:border-white hover:text-[#FF205A] hover:bg-[#070707]'
-                  }`}
-                >
-                  [ PLAYER INFO ]
-                </button>
-              </div>
-            </div>
+          {/* Full-width Divider */}
+          <div className="h-[2px] bg-zinc-900 w-full" />
 
-            <div className="flex flex-col space-y-2">
-              <a
-                href="mailto:sumeetshah24@gmail.com"
-                className="group flex items-center justify-between font-mono text-[10px] text-[#666666] hover:text-white transition-colors py-1"
-              >
-                <span className="flex items-center gap-1.5">
-                  <Mail size={10} /> sumeetshah24@gmail.com
-                </span>
-                <ArrowUpRight size={10} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-              </a>
+          {/* COMMISSIONS     EMAIL     INSTAGRAM */}
+          <div className="flex items-center justify-between gap-1 px-1 font-mono text-[10px] uppercase tracking-wider">
+            <button
+              onClick={() => onSelectProject('black-market')}
+              className={`hover:text-white transition-colors cursor-pointer truncate ${
+                activeProjectId === 'black-market' ? 'text-white font-medium' : 'text-zinc-400'
+              }`}
+            >
+              Commissions
+            </button>
+            <span className="text-zinc-700 text-[9px] select-none">·</span>
+            <a
+              href="mailto:sumeetshah24@gmail.com"
+              className="text-zinc-400 hover:text-white transition-colors truncate"
+            >
+              Email
+            </a>
+            <span className="text-zinc-700 text-[9px] select-none">·</span>
+            <a
+              href="https://www.instagram.com/sumeetism/"
+              target="_blank"
+              rel="noreferrer"
+              className="text-zinc-400 hover:text-white transition-colors truncate"
+            >
+              Instagram
+            </a>
+          </div>
 
-              <a
-                href="https://www.instagram.com/sumeetism/"
-                target="_blank"
-                rel="noreferrer"
-                className="group flex items-center justify-between font-mono text-[10px] text-[#666666] hover:text-white transition-colors py-1"
-              >
-                <span className="flex items-center gap-1.5">
-                  <Globe size={10} /> INSTAGRAM
-                </span>
-                <ArrowUpRight size={10} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-              </a>
-            </div>
+          {/* Full-width Divider */}
+          <div className="h-[2px] bg-zinc-900 w-full" />
+
+          {/* Copyright location line */}
+          <div className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest px-1">
+            © 2026 · NAVI MUMBAI
           </div>
         </div>
       </aside>

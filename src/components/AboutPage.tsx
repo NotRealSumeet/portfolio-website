@@ -4,8 +4,9 @@
 
 import { useState, useEffect, SyntheticEvent } from 'react';
 import { motion } from 'motion/react';
-import { ArrowUpRight, FileText, Download } from 'lucide-react';
-import resumePdf from '../assets/Resume/SumitShah_Resume (2).pdf';
+import { ArrowLeft, ArrowUpRight, FileText, Download } from 'lucide-react';
+import resumePdf from '../assets/Resume/Sumit_Shah_Resume.pdf';
+import DitherBackground from './DitherBackground';
 
 /* =========================================================
    Types
@@ -34,17 +35,63 @@ const LASTFM_API_KEY = import.meta.env.VITE_LASTFM_API_KEY || '2bed1944f3a074be3
 const FALLBACK_IMAGE_URL = '/spotify/bully.png';
 
 /* =========================================================
-   Helper Components & Functions
+   Official Software Icons (Vector SVGs)
 ========================================================= */
 
-const Equalizer = () => (
-  <div className="flex items-end gap-[2px] h-3 w-3.5 shrink-0" aria-hidden="true">
-    <div className="w-[2px] bg-[#2B8252] rounded-t-xs h-[3px] animate-eq-bar-1" />
-    <div className="w-[2px] bg-[#2B8252] rounded-t-xs h-[4px] animate-eq-bar-2" />
-    <div className="w-[2px] bg-[#2B8252] rounded-t-xs h-[2px] animate-eq-bar-3" />
-    <div className="w-[2px] bg-[#2B8252] rounded-t-xs h-[3px] animate-eq-bar-4" />
-  </div>
-);
+function PhotoshopIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden="true">
+      <rect width="24" height="24" rx="4.5" fill="#001E36" />
+      <rect x="0.5" y="0.5" width="23" height="23" rx="4" stroke="#31A8FF" strokeWidth="1" strokeOpacity="0.3" />
+      <path
+        d="M6 7h4.8c2.2 0 3.6 1.2 3.6 3s-1.4 3-3.6 3H8.2v4H6V7zm2.2 1.8v2.4h2.5c1 0 1.6-.5 1.6-1.2s-.6-1.2-1.6-1.2H8.2zM15 14.8c.3.9 1.1 1.5 2.3 1.5 1.1 0 1.9-.6 1.9-1.5 0-1.7-3.9-1.3-3.9-3.2 0-1.2 1-2.1 2.4-2.1 1.2 0 2.1.6 2.3 1.5h-1.5c-.2-.5-.7-.8-1.3-.8-.8 0-1.2.5-1.2 1 0 1.5 3.9 1.2 3.9 3.3 0 1.6-1.3 2.5-2.9 2.5-1.6 0-2.7-.9-3-2.2h1.5z"
+        fill="#31A8FF"
+      />
+    </svg>
+  );
+}
+
+function IllustratorIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden="true">
+      <rect width="24" height="24" rx="4.5" fill="#261300" />
+      <rect x="0.5" y="0.5" width="23" height="23" rx="4" stroke="#FF9A00" strokeWidth="1" strokeOpacity="0.3" />
+      <path
+        d="M5.5 17L9.4 6.8h1.8L15.1 17h-1.8l-.9-2.7H8.2L7.3 17H5.5zm3.3-4.3h3.2L10.4 8.7 8.8 12.7zM17.2 6.8h1.9v1.9h-1.9V6.8zm0 3.2h1.9V17h-1.9v-7z"
+        fill="#FF9A00"
+      />
+    </svg>
+  );
+}
+
+function AfterEffectsIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden="true">
+      <rect width="24" height="24" rx="4.5" fill="#1F143D" />
+      <rect x="0.5" y="0.5" width="23" height="23" rx="4" stroke="#9999FF" strokeWidth="1" strokeOpacity="0.3" />
+      <path
+        d="M5 17L8.9 6.8h1.8L14.6 17h-1.8l-.9-2.7H7.7L6.8 17H5zm3.3-4.3h3.2L9.9 8.7 8.3 12.7zM15.8 13.5c0-2.1 1.2-3.6 3.1-3.6 1.9 0 3 1.3 3 3.3 0 .4 0 .7-.1.9H17.4c.1 1.2.9 2 2.1 2 .9 0 1.5-.5 1.8-1.1h1.5c-.4 1.4-1.7 2.3-3.4 2.3-2.1 0-3.6-1.5-3.6-3.8zm1.6-.7h3.1c0-.9-.6-1.6-1.5-1.6-.9 0-1.5.7-1.6 1.6z"
+        fill="#9999FF"
+      />
+    </svg>
+  );
+}
+
+function FigmaIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 38 57" className={className} fill="none" aria-hidden="true">
+      <path d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z" fill="#1ABCFE" />
+      <path d="M0 47.5a9.5 9.5 0 0 1 9.5-9.5H19v9.5a9.5 9.5 0 1 1-19 0z" fill="#0ACF83" />
+      <path d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19z" fill="#FF7262" />
+      <path d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z" fill="#F24E1E" />
+      <path d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z" fill="#A259FF" />
+    </svg>
+  );
+}
+
+/* =========================================================
+   Helper Components & Functions
+========================================================= */
 
 const formatRelativeTime = (timestamp: number) => {
   if (!timestamp) return 'RECENTLY';
@@ -59,14 +106,128 @@ const formatRelativeTime = (timestamp: number) => {
   return `${days}D AGO`;
 };
 
+/**
+ * Authentic 20-column stepped pixel spectrogram (Inspired by Reference 7 CRT Monitor)
+ * Composed of discrete stacked micro-pixel blocks with simulated harmonics & peak accents.
+ */
+function PixelSpectrogram({ isPlaying = false }: { isPlaying?: boolean }) {
+  const columns = [
+    { height: 8, delay: '0ms', dur: '0.95s' },
+    { height: 15, delay: '120ms', dur: '0.85s' },
+    { height: 6, delay: '240ms', dur: '1.1s' },
+    { height: 12, delay: '60ms', dur: '0.9s' },
+    { height: 16, delay: '180ms', dur: '1.2s' },
+    { height: 7, delay: '300ms', dur: '0.8s' },
+    { height: 14, delay: '90ms', dur: '1.05s' },
+    { height: 5, delay: '210ms', dur: '0.95s' },
+    { height: 11, delay: '330ms', dur: '1.15s' },
+    { height: 16, delay: '150ms', dur: '1.0s' },
+    { height: 8, delay: '270ms', dur: '1.3s' },
+    { height: 15, delay: '40ms', dur: '0.8s' },
+    { height: 6, delay: '190ms', dur: '1.05s' },
+    { height: 13, delay: '310ms', dur: '1.25s' },
+    { height: 9, delay: '100ms', dur: '0.85s' },
+    { height: 14, delay: '230ms', dur: '0.95s' },
+    { height: 7, delay: '80ms', dur: '1.1s' },
+    { height: 12, delay: '200ms', dur: '0.9s' },
+    { height: 5, delay: '320ms', dur: '1.15s' },
+    { height: 10, delay: '140ms', dur: '1.0s' }
+  ];
+
+  return (
+    <div
+      className="flex items-end gap-[2px] h-[16px] px-0.5 select-none"
+      aria-hidden="true"
+      title={isPlaying ? "Audio stream active" : "Audio stream idle"}
+    >
+      {columns.map((col, i) => (
+        <span
+          key={i}
+          className={`w-[2px] rounded-[0.5px] transition-all duration-300 ${
+            isPlaying
+              ? col.height >= 14
+                ? 'bg-[#FF205A] animate-pulse'
+                : 'bg-zinc-200 animate-pulse'
+              : 'h-[2px] bg-zinc-800'
+          }`}
+          style={
+            isPlaying
+              ? {
+                  height: `${col.height}px`,
+                  animationDelay: col.delay,
+                  animationDuration: col.dur
+                }
+              : undefined
+          }
+        />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Structural 1-Bit Bayer Dither Rail (Inspired by Reference 1 Synthopsis)
+ * A tactile horizontal strip of discrete 1-bit pixel halftone separating tiers.
+ */
+function DitherRail() {
+  return (
+    <div className="w-full flex items-center gap-2 py-2 select-none pointer-events-none opacity-40 overflow-hidden" aria-hidden="true">
+      <span className="font-mono text-[9px] text-zinc-500 shrink-0 uppercase tracking-widest">[ + ]</span>
+      <div 
+        className="flex-1 h-[4px] opacity-40"
+        style={{
+          backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
+          backgroundSize: '4px 4px',
+          maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
+        }}
+      />
+      <span className="font-mono text-[9px] text-zinc-600 shrink-0 select-none">✕</span>
+      <div 
+        className="w-20 h-[4px] opacity-30"
+        style={{
+          backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
+          backgroundSize: '4px 4px'
+        }}
+      />
+      <span className="font-mono text-[9px] text-zinc-500 shrink-0 uppercase tracking-widest">[ + ]</span>
+    </div>
+  );
+}
+
 /* =========================================================
-   Component
+   Main Component: Concept 2 — Interlocking Monument (Refined)
 ========================================================= */
 
 export default function AboutPage({ onBack }: AboutPageProps) {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
   const [tracks, setTracks] = useState<SpotifyTrack[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Real-time IST clock ticker
+  const [currentTime, setCurrentTime] = useState<string>(() => {
+    return new Date().toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+      timeZone: 'Asia/Kolkata'
+    });
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(
+        new Date().toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true,
+          timeZone: 'Asia/Kolkata'
+        })
+      );
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const copyEmail = () => {
     navigator.clipboard.writeText("sumeetshah24@gmail.com");
@@ -80,7 +241,6 @@ export default function AboutPage({ onBack }: AboutPageProps) {
 
   const fetchRecentlyPlayed = async () => {
     try {
-      // Limit to 12 tracks to ensure we have enough unique tracks after deduplication
       const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${LASTFM_USERNAME}&api_key=${LASTFM_API_KEY}&format=json&limit=12&cb=${Date.now()}`;
       const res = await fetch(url);
       if (res.ok) {
@@ -117,13 +277,12 @@ export default function AboutPage({ onBack }: AboutPageProps) {
             };
           });
 
-          // Deduplicate scrobbles to avoid showing the same song multiple times in the history list
+          // Deduplicate scrobbles
           const uniqueTracks: SpotifyTrack[] = [];
           const seen = new Set<string>();
 
           for (const track of mappedTracks) {
             const key = `${track.title.toLowerCase().trim()} - ${track.artist.toLowerCase().trim()}`;
-            // Always keep the first track (current or most recent)
             if (uniqueTracks.length === 0) {
               uniqueTracks.push(track);
               seen.add(key);
@@ -145,7 +304,6 @@ export default function AboutPage({ onBack }: AboutPageProps) {
     }
   };
 
-  // Poll Last.fm status every 15 seconds to keep it highly dynamic and responsive
   useEffect(() => {
     fetchRecentlyPlayed();
     const pollInterval = setInterval(fetchRecentlyPlayed, 15000);
@@ -154,540 +312,361 @@ export default function AboutPage({ onBack }: AboutPageProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 15 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -15 }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="space-y-12 pb-24 relative"
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.35, ease: 'easeOut' }}
+      className="space-y-6 sm:space-y-7 pb-12 relative select-none w-full min-h-[calc(100vh-6rem)]"
     >
       {/* Dossier Procedural Film Grain Overlay */}
       <div className="dossier-grain" />
 
-      {/* Dynamic Background Atmospheric Orbs */}
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.12, 0.95, 1],
-          opacity: [0.05, 0.09, 0.07, 0.05],
-          x: [0, 10, -15, 0],
-          y: [0, -20, 10, 0]
+      {/* Interactive 1-Bit Bayer Dither Canvas (Masked to peripheral negative space & artwork atmosphere, leaving text in 100% quiet zone) */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
+        style={{
+          maskImage: 'radial-gradient(ellipse 65% 60% at 82% 28%, black 20%, transparent 75%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 65% 60% at 82% 28%, black 20%, transparent 75%)'
         }}
-        transition={{ 
-          duration: 20, 
-          repeat: Infinity, 
-          ease: "easeInOut" 
-        }}
-        className="absolute top-10 left-10 w-[450px] h-[450px] rounded-full bg-[#FF205A] blur-[130px] pointer-events-none select-none z-0" 
-      />
-      <motion.div 
-        animate={{ 
-          scale: [1, 0.9, 1.1, 1],
-          opacity: [0.02, 0.04, 0.03, 0.02],
-          x: [0, -15, 15, 0],
-          y: [0, 10, -15, 0]
-        }}
-        transition={{ 
-          duration: 25, 
-          repeat: Infinity, 
-          ease: "easeInOut" 
-        }}
-        className="absolute top-32 right-10 w-[400px] h-[400px] rounded-full bg-[#2B8252] blur-[125px] pointer-events-none select-none z-0" 
-      />
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.05, 0.95, 1],
-          opacity: [0.03, 0.06, 0.04, 0.03],
-          x: [10, -10, 5, 10],
-          y: [-10, 15, -5, -10]
-        }}
-        transition={{ 
-          duration: 28, 
-          repeat: Infinity, 
-          ease: "easeInOut" 
-        }}
-        className="absolute bottom-10 left-1/3 w-[350px] h-[350px] rounded-full bg-[#1a1510] blur-[110px] pointer-events-none select-none z-0" 
-      />
-
-      {/* HEADER: Return action */}
-      <div className="flex items-center justify-between border-b border-zinc-900 pb-6 select-none relative z-10">
-        <button
-          onClick={onBack}
-          className="group flex items-center gap-2 font-mono text-xs text-zinc-500 hover:text-white transition-colors cursor-pointer py-1"
-          style={{ minHeight: '44px' }}
-        >
-          <span className="group-hover:-translate-x-1 transition-transform duration-300">←</span>
-          <span>[ BACK TO INDEX ARCHIVE ]</span>
-        </button>
-        <span className="font-mono text-xs text-[#FF205A] uppercase tracking-widest font-bold flex items-center gap-1.5">
-          <span className="inline-block w-1 h-1 bg-[#FF205A] rounded-full" />
-          PLAYER INFO
-        </span>
+      >
+        <DitherBackground cellSize={7} influenceRadius={190} baseIntensity={0.045} />
       </div>
 
-      {/* 2-COLUMN PREMIUM EDITORIAL LAYOUT */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 pt-4 relative z-10">
+      {/* TOP HORIZON: Architectural Drafting Header with Return to Index Archive Button (Reused from ProjectDetail) */}
+      <div className="flex items-center justify-between border-b border-zinc-900 pb-3 select-none relative z-10 font-mono text-xs">
+        {/* Exact Return to Index Archive Button from ProjectDetail */}
+        <button
+          onClick={onBack}
+          className="group inline-flex items-center gap-2.5 font-mono text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer py-1.5 pr-3 pl-1.5 rounded-full border border-zinc-800/80 bg-[#0c0c0e] hover:border-[#FF205A]/50"
+        >
+          <span className="w-6 h-6 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-[#FF205A] group-hover:border-[#FF205A]/60 group-hover:bg-[#FF205A]/10 transition-colors shrink-0">
+            <ArrowLeft size={12} className="group-hover:-translate-x-0.5 transition-transform" />
+          </span>
+          <span className="tracking-wider uppercase text-[11px] font-medium hidden sm:inline">
+            RETURN TO INDEX ARCHIVE
+          </span>
+          <span className="tracking-wider uppercase text-[11px] font-medium inline sm:hidden">
+            INDEX ARCHIVE
+          </span>
+        </button>
+
+        <div className="flex items-center gap-4 text-zinc-500 uppercase tracking-widest text-[11px]">
+          <span className="hidden sm:inline-block">NAVI MUMBAI, IN</span>
+          <span className="text-[#FF205A] font-semibold flex items-center gap-1.5">
+            <span className="inline-block w-1.5 h-1.5 bg-[#FF205A] rounded-full animate-pulse" />
+            IST {currentTime}
+          </span>
+          <span className="hidden md:inline-block font-sans text-zinc-700">|</span>
+          <span className="hidden md:inline-block font-mono text-zinc-400 font-bold">PLAYER INFO</span>
+        </div>
+      </div>
+
+      {/* =========================================================
+          ASYMMETRIC EDITORIAL SPREAD (Identity Anchor + Unified Audio Player)
+      ========================================================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-14 relative z-10 items-start">
         
-        {/* LEFT COLUMN: Main identity / Biography / Info Table */}
-        <div className="lg:col-span-7 space-y-12 relative">
+        {/* =========================================================
+            LEFT CANVASES (7 cols lg, 8 cols xl): IDENTITY, MANIFESTO, ACTIONS, TOOLS
+        ========================================================= */}
+        <div className="lg:col-span-7 xl:col-span-8 space-y-6">
           
-          {/* Hero Intro Section (Cohesive Headline + Summary) */}
-          <div className="space-y-8 max-w-[580px]">
-            {/* Identity Title */}
+          {/* Integrated Typographic Identity Block */}
+          <div className="space-y-4 sm:space-y-4.5">
+            
+            {/* Monumental Stacked Headline */}
             <div>
-              <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight text-white leading-[1.15]">
-                I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF205A] via-[#FF6B8A] to-[#FF9DB0] drop-shadow-[0_2px_10px_rgba(255,32,90,0.22)] relative font-extrabold">Sumit Shah</span>
+              <h1 className="font-sans font-black text-6xl sm:text-7xl lg:text-[82px] xl:text-[90px] tracking-[-0.045em] text-white uppercase leading-[0.84] select-none">
+                Sumit<br />Shah
               </h1>
+              
+              {/* Restored Pink Rectangular Role Badge (Ref 1 inspired) */}
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#FF205A] text-white font-mono text-[11px] sm:text-xs uppercase tracking-widest font-bold mt-3 sm:mt-3.5 shadow-sm select-none">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                <span>GRAPHIC DESIGNER</span>
+              </div>
             </div>
 
-            {/* Biography Paragraphs */}
-            <div className="space-y-5">
-              <p className="text-base sm:text-[17px] text-zinc-200 leading-[1.75] font-light tracking-wide">
-                A graphic designer focused on thumbnails, posters, cover art, and visual storytelling. 
-                My work combines Swiss typography principles with experimental layouts, texture-heavy compositions, and modern internet visual culture.
-              </p>
-              <p className="text-sm sm:text-[15px] text-zinc-400 leading-[1.7] font-light tracking-wide">
-                I enjoy balancing structured design systems with raw expressive visuals, constructing interactive experiences, and developing atmospheric digital systems.
-              </p>
-            </div>
+            {/* Editorial Bio Statement */}
+            <p className="font-sans text-sm sm:text-[15px] text-zinc-300 font-normal leading-[1.65] max-w-[460px] pt-1">
+              I design across different formats, from posters and cover art to digital visuals. I enjoy experimenting with typography, imagery and layouts, and seeing where an idea can go.
+            </p>
 
-            {/* Resume Action Group */}
-            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4">
-              {/* Primary CTA: View Resume */}
+            {/* Hardware Keycap Actions (Visually secondary, preserved functionality) */}
+            <div className="flex flex-wrap items-center gap-2 pt-1.5">
+              {/* View Resume */}
               <a
                 href={resumePdf}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="View Sumit Shah's Resume in a new browser tab"
-                className="group relative flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-xs font-mono font-medium tracking-wider text-white hover:text-white transition-all duration-300 cursor-pointer shadow-lg hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF205A] focus-visible:ring-offset-2 focus-visible:ring-offset-black resume-primary-glow w-full sm:w-auto select-none"
+                className="group inline-flex items-center gap-2 px-3.5 py-1.5 bg-white text-black hover:bg-zinc-200 transition-all font-mono text-xs uppercase tracking-wider font-semibold cursor-pointer select-none active:translate-y-0.5"
+                style={{ minHeight: '38px' }}
               >
-                <FileText size={15} className="text-[#FF205A] group-hover:scale-110 transition-transform duration-300 shrink-0" />
-                <span className="uppercase tracking-widest">VIEW RESUME</span>
-                <ArrowUpRight size={14} className="text-[#FF205A] opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 shrink-0" />
+                <FileText size={12} className="text-black" />
+                <span>VIEW RESUME</span>
+                <ArrowUpRight size={12} className="opacity-70 group-hover:opacity-100 transition-opacity" />
               </a>
 
-              {/* Secondary CTA: Download Resume */}
+              {/* Download Resume */}
               <a
                 href={resumePdf}
                 download="Sumit_Shah_Resume.pdf"
                 aria-label="Download Sumit Shah's Resume PDF directly"
-                className="group relative flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-zinc-950/40 border border-zinc-800/80 hover:border-[#FF205A]/50 hover:bg-[#FF205A]/[0.06] text-xs font-mono font-medium tracking-wider text-zinc-300 hover:text-white transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.4)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF205A] focus-visible:ring-offset-2 focus-visible:ring-offset-black w-full sm:w-auto select-none"
+                className="group inline-flex items-center gap-2 px-3.5 py-1.5 bg-black border border-zinc-800 hover:border-zinc-600 text-zinc-300 hover:text-white transition-all font-mono text-xs uppercase tracking-wider font-semibold cursor-pointer select-none active:translate-y-0.5"
+                style={{ minHeight: '38px' }}
               >
-                <Download size={15} className="text-zinc-400 group-hover:text-[#FF205A] group-hover:translate-y-0.5 transition-all duration-300 shrink-0" />
-                <span className="uppercase tracking-widest">DOWNLOAD RESUME</span>
+                <Download size={12} className="text-zinc-400 group-hover:text-white transition-colors" />
+                <span>DOWNLOAD</span>
+              </a>
+
+              {/* Email Click-to-Copy */}
+              <button
+                onClick={copyEmail}
+                className="group inline-flex items-center gap-2 px-3.5 py-1.5 bg-black border border-zinc-800 hover:border-zinc-600 text-zinc-300 hover:text-white transition-all font-mono text-xs uppercase tracking-wider font-semibold cursor-pointer select-none active:translate-y-0.5"
+                style={{ minHeight: '38px' }}
+              >
+                <span>{copyStatus === 'copied' ? '[ COPIED! ]' : 'EMAIL'}</span>
+                {copyStatus !== 'copied' && (
+                  <ArrowUpRight size={11} className="text-[#FF205A] opacity-60 group-hover:opacity-100 transition-opacity" />
+                )}
+              </button>
+
+              {/* Instagram */}
+              <a
+                href="https://www.instagram.com/sumeetism/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 px-3.5 py-1.5 bg-black border border-zinc-800 hover:border-zinc-600 text-zinc-300 hover:text-white transition-all font-mono text-xs uppercase tracking-wider font-semibold cursor-pointer select-none active:translate-y-0.5"
+                style={{ minHeight: '38px' }}
+              >
+                <span>INSTAGRAM</span>
+                <ArrowUpRight size={11} className="text-[#FF205A] opacity-60 group-hover:opacity-100 transition-opacity" />
               </a>
             </div>
           </div>
 
-          {/* Premium Glassmorphic Info Table Card (Luxury SaaS Panel) */}
-          <div className="luxury-glass-panel luxury-glow-purple rounded-xl relative overflow-hidden group/card transition-all duration-500 hover:border-zinc-700/40">
-            {/* Ambient background glows inside card */}
-            <div className="absolute -left-20 -bottom-20 w-48 h-48 rounded-full bg-[#FF205A]/8 blur-3xl pointer-events-none" />
-            <div className="absolute -right-20 -top-20 w-48 h-48 rounded-full bg-[#2B8252]/[0.02] blur-3xl pointer-events-none" />
+          {/* STRUCTURAL 1-BIT DITHER RAIL */}
+          <DitherRail />
+
+          {/* CORE TOOLS: Engineered Graphic Specimen Matrix with Official Recognizable Application Icons */}
+          <div className="space-y-2.5 pt-1">
+            <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-[0.22em] font-semibold block">
+              CORE TOOLS // SPECIALIZATION
+            </span>
             
-            <div className="divide-y divide-zinc-900/90 relative z-10">
-              {/* Header Title Row */}
-              <div className="flex justify-between items-center py-5 px-6 bg-white/[0.01]">
-                <span className="font-mono text-[10px] text-zinc-400 uppercase tracking-[0.25em] font-semibold">
-                  CONTACT & INFO
-                </span>
-                <span className="font-sans text-xs text-zinc-500 uppercase tracking-widest font-mono select-none">
-                  DOSSIER // SM-01
-                </span>
-              </div>
-
-              {/* Based In Row */}
-              <div className="group/row flex justify-between items-center py-5 px-6 hover:bg-white/[0.02] transition-colors duration-300 relative overflow-hidden">
-                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#FF205A] to-[#FF6B8A] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
-                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.2em] font-medium transition-colors group-hover/row:text-zinc-400">
-                  BASED IN
-                </span>
-                <span className="font-sans text-sm font-medium text-zinc-100">
-                  Navi Mumbai, IN
-                </span>
-              </div>
-
-              {/* Tools Badges Row */}
-              <div className="group/row flex justify-between items-center py-5 px-6 hover:bg-white/[0.02] transition-colors duration-300 relative overflow-hidden">
-                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#FF205A] to-[#FF6B8A] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
-                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.2em] font-medium transition-colors group-hover/row:text-zinc-400">
-                  TOOLS
-                </span>
-                <div className="flex items-center gap-3">
-                  {/* Photoshop Badge */}
-                  <div 
-                    title="Photoshop" 
-                    className="relative p-0.5 rounded-lg bg-zinc-950/40 border border-zinc-900/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.03)] hover:border-[#00C8FF]/60 hover:shadow-[0_0_15px_rgba(0,200,255,0.25)] transition-all duration-300 group/tool overflow-hidden cursor-help hover:-translate-y-0.5"
-                  >
-                    <div className="absolute inset-0 bg-[#00C8FF]/10 opacity-0 group-hover/tool:opacity-100 transition-opacity duration-300 blur-sm" />
-                    <svg className="w-7 h-7 relative z-10 transform group-hover/tool:scale-105 transition-transform duration-300" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="32" height="32" rx="6" fill="#001C2A" stroke="#00C8FF" strokeWidth="1.2" />
-                      <text x="6" y="21" fill="#00C8FF" fontSize="12" fontFamily="var(--font-sans)" fontWeight="bold">P</text>
-                      <text x="15" y="21" fill="#00C8FF" fontSize="12" fontFamily="var(--font-sans)" fontWeight="bold">s</text>
-                    </svg>
-                  </div>
-
-                  {/* Illustrator Badge */}
-                  <div 
-                    title="Illustrator" 
-                    className="relative p-0.5 rounded-lg bg-zinc-950/40 border border-zinc-900/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.03)] hover:border-[#FF9C00]/60 hover:shadow-[0_0_15px_rgba(255,156,0,0.25)] transition-all duration-300 group/tool overflow-hidden cursor-help hover:-translate-y-0.5"
-                  >
-                    <div className="absolute inset-0 bg-[#FF9C00]/10 opacity-0 group-hover/tool:opacity-100 transition-opacity duration-300 blur-sm" />
-                    <svg className="w-7 h-7 relative z-10 transform group-hover/tool:scale-105 transition-transform duration-300" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="32" height="32" rx="6" fill="#261300" stroke="#FF9C00" strokeWidth="1.2" />
-                      <text x="6" y="21" fill="#FF9C00" fontSize="12" fontFamily="var(--font-sans)" fontWeight="bold">A</text>
-                      <text x="16" y="21" fill="#FF9C00" fontSize="12" fontFamily="var(--font-sans)" fontWeight="bold">i</text>
-                    </svg>
-                  </div>
-
-                  {/* After Effects Badge */}
-                  <div 
-                    title="After Effects" 
-                    className="relative p-0.5 rounded-lg bg-zinc-950/40 border border-zinc-900/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.03)] hover:border-[#D126FF]/60 hover:shadow-[0_0_15px_rgba(209,38,255,0.25)] transition-all duration-300 group/tool overflow-hidden cursor-help hover:-translate-y-0.5"
-                  >
-                    <div className="absolute inset-0 bg-[#D126FF]/10 opacity-0 group-hover/tool:opacity-100 transition-opacity duration-300 blur-sm" />
-                    <svg className="w-7 h-7 relative z-10 transform group-hover/tool:scale-105 transition-transform duration-300" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="32" height="32" rx="6" fill="#1C002A" stroke="#D126FF" strokeWidth="1.2" />
-                      <text x="6" y="21" fill="#D126FF" fontSize="12" fontFamily="var(--font-sans)" fontWeight="bold">A</text>
-                      <text x="15" y="21" fill="#D126FF" fontSize="12" fontFamily="var(--font-sans)" fontWeight="bold">e</text>
-                    </svg>
-                  </div>
-
-                  {/* Figma Badge */}
-                  <div 
-                    title="Figma" 
-                    className="relative p-0.5 rounded-lg bg-zinc-950/40 border border-zinc-900/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.03)] hover:border-[#F24E1E]/60 hover:shadow-[0_0_15px_rgba(242,78,30,0.25)] transition-all duration-300 group/tool overflow-hidden cursor-help hover:-translate-y-0.5"
-                  >
-                    <div className="absolute inset-0 bg-[#F24E1E]/10 opacity-0 group-hover/tool:opacity-100 transition-opacity duration-300 blur-sm" />
-                    <svg className="w-7 h-7 relative z-10 transform group-hover/tool:scale-105 transition-transform duration-300" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="32" height="32" rx="6" fill="#1E1E1E" stroke="#F24E1E" strokeWidth="1.2" />
-                      <g transform="translate(8, 4)">
-                        <path d="M0 4C0 1.8 1.8 0 4 0C6.2 0 8 1.8 8 4V8H4C1.8 8 0 6.2 0 4Z" fill="#F24E1E"/>
-                        <path d="M0 12C0 9.8 1.8 8 4 8H8V16H4C1.8 16 0 14.2 0 12Z" fill="#A259FF"/>
-                        <path d="M8 4C8 1.8 9.8 0 12 0C14.2 0 16 1.8 16 4C16 6.2 14.2 8 12 8H8V4Z" fill="#F24E1E"/>
-                        <path d="M8 8H12C14.2 8 16 9.8 16 12C16 14.2 14.2 16 12 16C9.8 16 8 14.2 8 12V8Z" fill="#0ACF83"/>
-                        <path d="M0 20C0 17.8 1.8 16 4 16H8V20C8 22.2 6.2 24 4 24C1.8 24 0 22.2 0 20Z" fill="#1ABC9C"/>
-                      </g>
-                    </svg>
-                  </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              {/* Tool 01: Photoshop */}
+              <div className="border border-zinc-900 bg-zinc-950/40 p-2.5 space-y-2 hover:border-zinc-700 transition-colors group cursor-default">
+                <div className="flex items-center justify-between font-mono text-[9px]">
+                  <span className="text-[#FF205A] font-bold">01</span>
+                  <span className="text-zinc-600 font-semibold group-hover:text-zinc-400 transition-colors">PS</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <PhotoshopIcon className="w-4 h-4 shrink-0 rounded-[3px]" />
+                  <span className="font-mono text-xs uppercase tracking-wider text-zinc-200 group-hover:text-white font-medium block truncate">
+                    Photoshop
+                  </span>
                 </div>
               </div>
 
-              {/* Available For Row */}
-              <div className="group/row flex justify-between items-center py-5 px-6 hover:bg-white/[0.02] transition-colors duration-300 relative overflow-hidden">
-                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#FF205A] to-[#FF6B8A] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
-                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.2em] font-medium transition-colors group-hover/row:text-zinc-400">
-                  AVAILABLE FOR
-                </span>
-                <span className="font-sans text-sm font-medium text-zinc-100">
-                  Freelance • Collaborations
-                </span>
+              {/* Tool 02: Illustrator */}
+              <div className="border border-zinc-900 bg-zinc-950/40 p-2.5 space-y-2 hover:border-zinc-700 transition-colors group cursor-default">
+                <div className="flex items-center justify-between font-mono text-[9px]">
+                  <span className="text-[#FF205A] font-bold">02</span>
+                  <span className="text-zinc-600 font-semibold group-hover:text-zinc-400 transition-colors">AI</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <IllustratorIcon className="w-4 h-4 shrink-0 rounded-[3px]" />
+                  <span className="font-mono text-xs uppercase tracking-wider text-zinc-200 group-hover:text-white font-medium block truncate">
+                    Illustrator
+                  </span>
+                </div>
               </div>
 
-              {/* Mail Copy Row */}
-              <div className="group/row flex justify-between items-center py-5 px-6 hover:bg-white/[0.02] transition-colors duration-300 relative overflow-hidden">
-                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#FF205A] to-[#FF6B8A] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
-                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.2em] font-medium transition-colors group-hover/row:text-zinc-400">
-                  MAIL
-                </span>
-                <button
-                  onClick={copyEmail}
-                  className="font-sans text-sm font-medium text-zinc-100 hover:text-[#FF6B8A] transition-colors flex items-center gap-1.5 group/link cursor-pointer"
-                >
-                  <span>sumeetshah24@gmail.com</span>
-                  {copyStatus === 'copied' ? (
-                    <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-wider ml-1">[ COPIED ]</span>
-                  ) : (
-                    <ArrowUpRight size={13} className="text-[#FF205A] opacity-60 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all duration-300" />
-                  )}
-                </button>
+              {/* Tool 03: After Effects */}
+              <div className="border border-zinc-900 bg-zinc-950/40 p-2.5 space-y-2 hover:border-zinc-700 transition-colors group cursor-default">
+                <div className="flex items-center justify-between font-mono text-[9px]">
+                  <span className="text-[#FF205A] font-bold">03</span>
+                  <span className="text-zinc-600 font-semibold group-hover:text-zinc-400 transition-colors">AE</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <AfterEffectsIcon className="w-4 h-4 shrink-0 rounded-[3px]" />
+                  <span className="font-mono text-xs uppercase tracking-wider text-zinc-200 group-hover:text-white font-medium block truncate">
+                    After Effects
+                  </span>
+                </div>
               </div>
 
-              {/* Instagram Row */}
-              <div className="group/row flex justify-between items-center py-5 px-6 hover:bg-white/[0.02] transition-colors duration-300 relative overflow-hidden">
-                <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-[#FF205A] to-[#FF6B8A] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r" />
-                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.2em] font-medium transition-colors group-hover/row:text-zinc-400">
-                  INSTAGRAM
-                </span>
-                <a
-                  href="https://www.instagram.com/sumeetism/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-sans text-sm font-medium text-zinc-100 hover:text-[#FF6B8A] transition-colors flex items-center gap-1.5 group/link cursor-pointer"
-                >
-                  <span>@sumeetism</span>
-                  <ArrowUpRight size={13} className="text-[#FF205A] opacity-60 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all duration-300" />
-                </a>
+              {/* Tool 04: Figma */}
+              <div className="border border-zinc-900 bg-zinc-950/40 p-2.5 space-y-2 hover:border-zinc-700 transition-colors group cursor-default">
+                <div className="flex items-center justify-between font-mono text-[9px]">
+                  <span className="text-[#FF205A] font-bold">04</span>
+                  <span className="text-zinc-600 font-semibold group-hover:text-zinc-400 transition-colors">FG</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 flex items-center justify-center shrink-0">
+                    <FigmaIcon className="h-4 w-auto shrink-0" />
+                  </div>
+                  <span className="font-mono text-xs uppercase tracking-wider text-zinc-200 group-hover:text-white font-medium block truncate">
+                    Figma
+                  </span>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
 
-        {/* RIGHT COLUMN: Live Music Presence System */}
-        <div className="lg:col-span-5 h-full">
+        {/* =========================================================
+            RIGHT CANVAS (5 cols lg, 4 cols xl): THE COHESIVE MUSIC PLAYER
+        ========================================================= */}
+        <div className="lg:col-span-5 xl:col-span-4 space-y-4">
+          
           {loading ? (
-            /* SKELETON LOADING CARD */
-            <div className="luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl shadow-2xl overflow-hidden min-h-[480px] border-zinc-800/80 animate-pulse">
-              {/* Glows */}
-              <div className="absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none bg-[#FF205A]/4" />
-              
-              <div className="space-y-6 w-full relative z-10">
-                {/* Header */}
-                <div className="flex items-center justify-between border-b border-zinc-950 pb-4 select-none">
-                  <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-zinc-500 uppercase">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-500 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-zinc-600"></span>
-                    </span>
-                    <span>LOADING LIVE SYSTEM...</span>
-                  </div>
-                  <span className="font-mono text-[9px] text-zinc-600 uppercase tracking-widest font-light">
-                    ♫ LIVE PRESENCE
-                  </span>
-                </div>
-
-                {/* Cover Skeleton */}
-                <div className="w-full relative aspect-square rounded-xl overflow-hidden border border-zinc-900/80 bg-zinc-950/40 shadow-2xl flex flex-col justify-end p-5">
-                  <div className="cd-sheen" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -translate-x-full animate-shimmer" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
-                  
-                  <div className="relative z-10 space-y-3">
-                    <div className="h-5 w-24 bg-zinc-900/80 border border-zinc-800/50 rounded-md" />
-                    <div className="h-7 w-2/3 bg-zinc-900/80 rounded" />
-                    <div className="h-3.5 w-1/3 bg-zinc-900/40 rounded" />
-                  </div>
-                </div>
-
-                {/* History Skeleton */}
-                <div className="space-y-4 w-full">
-                  <div className="divide-y divide-zinc-900/40 border border-zinc-900/30 rounded-xl bg-zinc-950/15 overflow-hidden">
-                    {[1, 2, 3].map((val) => (
-                      <div key={val} className="flex items-center gap-4 py-4 px-4 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.015] to-transparent -translate-x-full animate-shimmer" />
-                        <div className="w-11 h-11 rounded bg-zinc-950 border border-zinc-900/50 shrink-0 relative overflow-hidden">
-                          <div className="absolute inset-0 bg-zinc-900/20" />
-                        </div>
-                        <div className="flex-1 min-w-0 space-y-2">
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="h-4 w-28 bg-zinc-900/60 rounded" />
-                            <div className="h-2 w-10 bg-zinc-900/40 rounded" />
-                          </div>
-                          <div className="h-3 w-20 bg-zinc-900/30 rounded" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            /* Loading Skeleton */
+            <div className="border border-zinc-900 bg-zinc-950/40 p-3.5 space-y-3 animate-pulse">
+              <div className="flex items-center justify-between text-[10px] font-mono tracking-widest text-zinc-600 uppercase">
+                <span>CONNECTING STREAM...</span>
+                <span>♫ LAST.FM</span>
               </div>
-
-              {/* Bottom Disclaimer */}
-              <div className="border-t border-zinc-950 pt-4 flex justify-between items-center text-[10px] font-mono text-zinc-600 z-10 relative select-none">
-                <div className="h-3.5 w-20 bg-zinc-900/30 rounded" />
-                <span>♫</span>
-              </div>
+              <div className="w-full aspect-square bg-zinc-950 border border-zinc-900" />
             </div>
           ) : tracks.length > 0 ? (
-            /* REAL MUSIC CARD (Only after data is fetched successfully) */
-            <div className={`luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl transition-all duration-1000 shadow-2xl overflow-hidden min-h-[480px] ${
-              tracks[0].currentlyPlaying 
-                ? 'shadow-[0_0_50px_-12px_rgba(43,130,82,0.12)] border-emerald-900/30' 
-                : 'border-zinc-800/80'
-            } hover:border-zinc-700/50`}>
+            /* Cohesive Music Player (Ref 6 & Ref 7 inspired) */
+            <div className="border border-zinc-900/90 bg-zinc-950/40 p-3 sm:p-3.5 space-y-3.5 shadow-xl relative">
               
-              {/* Ambient background glows inside card */}
-              <div className={`absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none transition-all duration-1000 ${
-                tracks[0].currentlyPlaying 
-                  ? 'bg-[#2B8252]/8' 
-                  : 'bg-[#FF205A]/6'
-              }`} />
-              <div className={`absolute -left-24 -bottom-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none transition-all duration-1000 ${
-                tracks[0].currentlyPlaying 
-                  ? 'bg-[#FF205A]/5' 
-                  : 'bg-[#2B8252]/1'
-              }`} />
+              {/* Player Top Header: Status & Source */}
+              <div className="flex items-center justify-between text-[10px] font-mono tracking-widest uppercase select-none pb-2 border-b border-zinc-900">
+                {tracks[0].currentlyPlaying ? (
+                  <div className="flex items-center gap-2 text-[#2B8252] font-semibold">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2B8252] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#2B8252]"></span>
+                    </span>
+                    <span>NOW STREAMING LIVE</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-zinc-500">
+                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-700" />
+                    <span>LATEST ROTATION</span>
+                  </div>
+                )}
+                <span className="text-zinc-500 font-light text-[9px]">
+                  ♫ LAST.FM
+                </span>
+              </div>
 
-              <div className="space-y-6 w-full relative z-10">
-                {/* Top Header Badge */}
-                <div className="flex items-center justify-between border-b border-zinc-950 pb-4 select-none">
-                  {tracks[0].currentlyPlaying ? (
-                    <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-[#2B8252] uppercase">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2B8252] opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#2B8252] shadow-[0_0_6px_#2B8252]"></span>
+              {/* The Physical Vinyl Album Sleeve with CD Sheen & Interactive Hover Frame */}
+              <div className="relative group">
+                <a
+                  href={tracks[0].songUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block relative aspect-square w-full overflow-hidden border border-zinc-800/80 group-hover:border-zinc-600 transition-all duration-500 shadow-2xl cursor-pointer"
+                >
+                  <img 
+                    src={tracks[0].albumImageUrl} 
+                    alt={tracks[0].album} 
+                    onError={handleImageError}
+                    className="w-full h-full object-cover transform group-hover:scale-[1.02] transition-transform duration-700 select-none"
+                  />
+                  <div className="cd-sheen" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+
+                  {tracks[0].currentlyPlaying && (
+                    <div className="absolute top-2.5 left-2.5 bg-emerald-500 text-black font-mono text-[9px] font-bold tracking-widest px-2 py-0.5 shadow z-20 flex items-center gap-1.5">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-black"></span>
                       </span>
-                      <span>LISTENING IN REAL-TIME</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-zinc-500 uppercase">
-                      <span className="h-1.5 w-1.5 rounded-full bg-zinc-700" />
-                      <span>RECENTLY PLAYED</span>
+                      LIVE
                     </div>
                   )}
-                  <span className="font-mono text-[9px] text-zinc-600 uppercase tracking-widest font-light">
-                    ♫ LIVE PRESENCE
-                  </span>
+
+                  <div className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-black/70 border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-white/30 transition-all z-20">
+                    <ArrowUpRight size={12} />
+                  </div>
+                </a>
+              </div>
+
+              {/* Current Track Caption & 20-Column Stepped Spectrogram */}
+              <div className="pt-0.5 flex items-end justify-between gap-3 border-b border-zinc-900 pb-3">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-sans font-bold text-sm sm:text-base text-white tracking-tight leading-snug truncate">
+                    {tracks[0].title}
+                  </h3>
+                  <p className="font-mono text-[11px] text-zinc-400 uppercase tracking-wider truncate mt-0.5">
+                    {tracks[0].artist}
+                  </p>
                 </div>
+                
+                {/* Stepped Pixel Equalizer (Ref 7 inspired) */}
+                <div className="shrink-0 flex items-center gap-2 pb-0.5">
+                  <PixelSpectrogram isPlaying={tracks[0].currentlyPlaying} />
+                </div>
+              </div>
 
-                {/* LATEST ROTATION */}
-                <div className="w-full relative">
-                  <a
-                    href={tracks[0].songUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`group block relative aspect-square w-full rounded-xl overflow-hidden border transition-all duration-700 shadow-2xl cursor-pointer ${
-                      tracks[0].currentlyPlaying 
-                        ? 'border-emerald-500/25 shadow-[0_0_35px_-5px_rgba(43,130,82,0.15)] hover:shadow-[0_0_40px_-2px_rgba(43,130,82,0.25)]' 
-                        : 'border-zinc-900/80 hover:border-zinc-800'
-                    }`}
-                  >
-                    <img 
-                      src={tracks[0].albumImageUrl} 
-                      alt={tracks[0].album} 
-                      onError={handleImageError}
-                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 select-none"
-                    />
-                    <div className="cd-sheen" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
-
-                    {tracks[0].currentlyPlaying && (
-                      <div className="absolute top-4 left-4 bg-emerald-500/90 text-black font-mono text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded shadow-[0_4px_12px_rgba(0,0,0,0.5)] z-20 flex items-center gap-1.5 animate-pulse">
-                        <span className="relative flex h-1.5 w-1.5">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-black"></span>
-                        </span>
-                        LIVE NOW
-                      </div>
-                    )}
-
-                    <div className="absolute bottom-5 left-5 right-5 text-left z-10">
-                      <span className={`font-mono text-[9px] tracking-wider uppercase px-2.5 py-1 rounded-md backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] inline-flex items-center gap-2 transition-colors duration-500 ${
-                        tracks[0].currentlyPlaying 
-                          ? 'text-[#2B8252] bg-[#2B8252]/10 border border-[#2B8252]/25' 
-                          : 'text-zinc-400 bg-zinc-950/60 border border-zinc-800/30'
-                      }`}>
-                        {tracks[0].currentlyPlaying ? (
-                          <>
-                            <Equalizer />
-                            <span className="font-semibold tracking-widest">NOW PLAYING</span>
-                          </>
-                        ) : (
-                          <span>LATEST // {formatRelativeTime(tracks[0].playedAt)}</span>
-                        )}
-                      </span>
-                      <h3 className="font-sans font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug mt-3 drop-shadow-lg truncate">
-                        {tracks[0].title}
-                      </h3>
-                      <p className="font-mono text-[10px] text-zinc-400 tracking-widest uppercase mt-1 drop-shadow-md truncate">
-                        {tracks[0].artist}
-                      </p>
-                    </div>
-                    
-                    <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-black/65 border border-white/10 flex items-center justify-center text-zinc-400 group-hover:text-[#2B8252] group-hover:border-[#2B8252]/45 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm z-20">
-                      <ArrowUpRight size={14} />
-                    </div>
-
-                    {tracks[0].currentlyPlaying && (
-                      <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-zinc-950/60 overflow-hidden z-20">
-                        <motion.div 
-                          animate={{ 
-                            x: ['-100%', '100%']
-                          }}
-                          transition={{ 
-                            duration: 3.5, 
-                            repeat: Infinity, 
-                            ease: "easeInOut" 
-                          }}
-                          className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#2B8252] to-transparent opacity-90" 
+              {/* Connected Recent Rotation Ledger */}
+              <div className="space-y-2 pt-0.5">
+                <div className="flex items-center justify-between font-mono text-[9px] text-zinc-500 uppercase tracking-[0.2em] font-semibold">
+                  <span>RECENT ROTATION</span>
+                  <span className="text-zinc-600">[ ARCHIVE ]</span>
+                </div>
+                
+                <div className="space-y-1.5">
+                  {tracks.slice(1, 4).map((track, idx) => (
+                    <a
+                      key={idx}
+                      href={track.songUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-2.5 py-1 px-1.5 rounded hover:bg-zinc-900/40 transition-colors cursor-pointer"
+                    >
+                      {/* Small Album Thumb */}
+                      <div className="w-7 h-7 shrink-0 overflow-hidden bg-zinc-950 border border-zinc-900 relative">
+                        <img 
+                          src={track.albumImageUrl} 
+                          alt={track.album} 
+                          onError={handleImageError}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
-                    )}
-                  </a>
-                </div>
 
-                {/* RECENT MUSIC ARCHIVE LOG FEED */}
-                <div className="space-y-4 w-full">
-                  <div className="divide-y divide-zinc-900/40 border border-zinc-900/30 rounded-xl bg-zinc-950/15 overflow-hidden">
-                    {tracks.slice(1, 4).map((track, idx) => (
-                      <a
-                        key={idx}
-                        href={track.songUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/row flex items-center gap-4 py-4 px-4 hover:bg-white/[0.015] transition-all duration-300 relative overflow-hidden block cursor-pointer"
-                      >
-                        <div className="absolute left-0 top-1/4 bottom-1/4 w-[2.5px] bg-[#2B8252] scale-y-0 group-hover/row:scale-y-100 transition-transform duration-300 origin-center rounded-r shadow-[0_0_8px_#2B8252]" />
-                        <div className="w-11 h-11 rounded overflow-hidden shrink-0 border border-zinc-900/50 bg-zinc-950 relative">
-                          <img 
-                            src={track.albumImageUrl} 
-                            alt={track.album} 
-                            onError={handleImageError}
-                            className="w-full h-full object-cover transform group-hover/row:scale-105 transition-transform duration-500"
-                          />
+                      {/* Track Meta */}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <span className="font-sans text-xs text-zinc-300 group-hover:text-white font-medium truncate transition-colors">
+                            {track.title}
+                          </span>
+                          <span className="font-mono text-[8px] text-[#FF205A] tracking-wider shrink-0 uppercase select-none">
+                            {formatRelativeTime(track.playedAt)}
+                          </span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-3">
-                            <h4 className="font-sans font-medium text-sm text-zinc-200 truncate group-hover/row:text-white transition-colors">
-                              {track.title}
-                            </h4>
-                            <span className="font-mono text-[8px] text-[#FF205A] group-hover/row:text-[#FF6B8A] tracking-wider shrink-0 uppercase select-none transition-colors">
-                              {formatRelativeTime(track.playedAt)}
-                            </span>
-                          </div>
-                          <p className="font-mono text-[10px] text-zinc-500 truncate mt-1 group-hover/row:text-zinc-400 transition-colors tracking-wide">
-                            {track.artist}
-                          </p>
-                        </div>
-                        <div className="text-zinc-700 group-hover/row:text-[#2B8252] transition-colors shrink-0 duration-300">
-                          <ArrowUpRight size={13} />
-                        </div>
-                      </a>
-                    ))}
-                  </div>
+                        <span className="font-mono text-[10px] text-zinc-500 truncate block mt-0.5">
+                          {track.artist}
+                        </span>
+                      </div>
+
+                      <ArrowUpRight size={10} className="text-zinc-600 group-hover:text-[#FF205A] shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </a>
+                  ))}
                 </div>
               </div>
 
-              <div className="border-t border-zinc-950 pt-4 flex justify-between items-center text-[10px] font-mono text-zinc-500 z-10 relative select-none">
-                <span>LIVE SOUNDTRACK</span>
-                <span>♫</span>
-              </div>
             </div>
           ) : (
-            /* EMPTY/OFFLINE STATE */
-            <div className="luxury-glass-panel relative h-full flex flex-col justify-between p-6 rounded-2xl border-zinc-800/80 shadow-2xl overflow-hidden min-h-[480px]">
-              <div className="absolute -right-24 -top-24 w-60 h-60 rounded-full blur-[100px] pointer-events-none bg-[#FF205A]/3" />
-              
-              <div className="space-y-6 w-full relative z-10">
-                {/* Header */}
-                <div className="flex items-center justify-between border-b border-zinc-950 pb-4 select-none">
-                  <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-zinc-500 uppercase">
-                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-800" />
-                    <span>SYSTEM OFFLINE</span>
-                  </div>
-                  <span className="font-mono text-[9px] text-zinc-600 uppercase tracking-widest font-light">
-                    ♫ LIVE PRESENCE
-                  </span>
-                </div>
-
-                {/* Centered Offline Message */}
-                <div className="flex flex-col items-center justify-center py-20 text-center space-y-4 my-auto">
-                  <div className="w-12 h-12 rounded-full bg-zinc-950 border border-zinc-900/60 flex items-center justify-center text-zinc-500 shadow-inner">
-                    ♫
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="font-sans font-medium text-sm text-zinc-300">Live Soundfeed Offline</h3>
-                    <p className="font-mono text-[10px] text-zinc-500 max-w-[200px] leading-relaxed mx-auto">
-                       Unable to connect to Last.fm stream. Check back later.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Disclaimer */}
-              <div className="border-t border-zinc-950 pt-4 flex justify-between items-center text-[10px] font-mono text-zinc-600 z-10 relative select-none">
-                <span>OFFLINE</span>
-                <span>♫</span>
-              </div>
+            /* Stream Offline */
+            <div className="border border-zinc-900 bg-zinc-950/40 p-6 text-center space-y-2">
+              <span className="font-mono text-[10px] text-zinc-600 uppercase tracking-widest block">
+                ♫ STREAM OFFLINE
+              </span>
+              <p className="font-mono text-xs text-zinc-500">
+                Unable to connect to Last.fm stream.
+              </p>
             </div>
           )}
+
         </div>
 
       </div>

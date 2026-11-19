@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Project } from '../types';
 import Lightbox from './Lightbox';
 import InstagramCarousel from './InstagramCarousel';
@@ -127,9 +127,8 @@ function LazyMedia({ url, type, aspectRatioNumber, alt = '', className = '', onC
     >
       {/* Subtle dark skeleton placeholder that cross-fades */}
       <div
-        className={`absolute inset-0 bg-[#070707] transition-opacity duration-500 ease-in-out pointer-events-none z-10 ${
-          isLoaded ? 'opacity-0' : 'opacity-100'
-        }`}
+        className={`absolute inset-0 bg-[#070707] transition-opacity duration-500 ease-in-out pointer-events-none z-10 ${isLoaded ? 'opacity-0' : 'opacity-100'
+          }`}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-zinc-800/10 to-transparent bg-[length:200%_100%] animate-pulse" />
       </div>
@@ -140,9 +139,8 @@ function LazyMedia({ url, type, aspectRatioNumber, alt = '', className = '', onC
           alt={alt}
           onLoad={handleLoad}
           decoding="async"
-          className={`w-full h-auto block transition-opacity duration-500 ease-in-out ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`w-full h-auto block transition-opacity duration-500 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
           referrerPolicy="no-referrer"
         />
       )}
@@ -254,9 +252,8 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
     >
       {/* Subtle dark skeleton placeholder that cross-fades */}
       <div
-        className={`absolute inset-0 bg-[#070707] transition-opacity duration-500 ease-in-out pointer-events-none z-10 ${
-          isVideoLoaded ? 'opacity-0' : 'opacity-100'
-        }`}
+        className={`absolute inset-0 bg-[#070707] transition-opacity duration-500 ease-in-out pointer-events-none z-10 ${isVideoLoaded ? 'opacity-0' : 'opacity-100'
+          }`}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-zinc-800/10 to-transparent bg-[length:200%_100%] animate-pulse" />
       </div>
@@ -279,9 +276,8 @@ function LazyVideo({ url, aspectRatioNumber = 1.77777778, className = '', onClic
               });
             }
           }}
-          className={`w-full h-full object-cover block transition-opacity duration-500 ease-in-out ${
-            isVideoLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`w-full h-full object-cover block transition-opacity duration-500 ease-in-out ${isVideoLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
           style={{
             transform: 'translate3d(0, 0, 0)', // Promotion to GPU layer
             backfaceVisibility: 'hidden',
@@ -309,7 +305,7 @@ export default function ProjectDetail({
   // Progressive infinite scroll loading for Thumbnail Archive and Poster Design projects
   useEffect(() => {
     if (project.id !== 'thumbnail-project' && project.id !== 'experimental-poster-design') return;
-    
+
     // Reset visible count when project changes
     setVisibleCount(13);
 
@@ -350,55 +346,61 @@ export default function ProjectDetail({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="space-y-12 pb-24"
+      className="space-y-8 pb-12"
     >
-      {/* HEADER: Nav Actions */}
-      <div className="flex items-center justify-between border-b border-[#111111] pb-6">
+      {/* HEADER: Refined Top Nav Actions */}
+      <div className="flex items-center justify-between border-b-2 border-zinc-900 pb-4">
+        {/* Return to Index Archive Button */}
         <button
           onClick={onBack}
-          className="group flex items-center gap-2 font-mono text-xs text-[#666666] hover:text-[#FF205A] transition-colors cursor-pointer py-2 px-1"
-          style={{ minHeight: '44px' }}
+          className="group inline-flex items-center gap-2.5 font-mono text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer py-1.5 pr-3 pl-1.5 rounded-full border border-zinc-800/80 bg-[#0c0c0e] hover:border-[#FF205A]/50"
         >
-          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform text-[#FF205A]" />
-          <span className="hidden sm:inline">[ RETURN TO INDEX ARCHIVE ]</span>
-          <span className="inline sm:hidden">[ BACK ]</span>
+          <span className="w-6 h-6 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-[#FF205A] group-hover:border-[#FF205A]/60 group-hover:bg-[#FF205A]/10 transition-colors shrink-0">
+            <ArrowLeft size={12} className="group-hover:-translate-x-0.5 transition-transform" />
+          </span>
+          <span className="tracking-wider uppercase text-[11px] font-medium hidden sm:inline">
+            RETURN TO INDEX ARCHIVE
+          </span>
+          <span className="tracking-wider uppercase text-[11px] font-medium inline sm:hidden">
+            INDEX ARCHIVE
+          </span>
         </button>
 
-        <div className="flex items-center gap-2 sm:gap-4">
+        {/* Distinct Compact Prev / Next Controls */}
+        <div className="flex items-center gap-2">
           <button
             onClick={onPrevProject}
-            className="font-mono text-[10px] text-[#666666] hover:text-[#FF205A] transition-colors p-2"
-            style={{ minHeight: '44px', minWidth: '44px' }}
+            className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-zinc-800/80 bg-[#0c0c0e] hover:border-[#FF205A]/50 hover:bg-zinc-900/60 font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-zinc-400 hover:text-white transition-all cursor-pointer"
+            aria-label="Previous project"
           >
-            ← PREV
+            <ArrowLeft size={11} className="text-zinc-500 group-hover:text-[#FF205A] group-hover:-translate-x-0.5 transition-all" />
+            <span>PREV</span>
           </button>
-          <span className="font-mono text-[10px] text-[#333333]">/</span>
+
           <button
             onClick={onNextProject}
-            className="font-mono text-[10px] text-[#666666] hover:text-[#FF205A] transition-colors p-2"
-            style={{ minHeight: '44px', minWidth: '44px' }}
+            className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-zinc-800/80 bg-[#0c0c0e] hover:border-[#FF205A]/50 hover:bg-zinc-900/60 font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-zinc-400 hover:text-white transition-all cursor-pointer"
+            aria-label="Next project"
           >
-            NEXT →
+            <span>NEXT</span>
+            <ArrowRight size={11} className="text-zinc-500 group-hover:text-[#FF205A] group-hover:translate-x-0.5 transition-all" />
           </button>
         </div>
       </div>
 
-      {/* 1. PROJECT TITLE AND INTRO SECTION FIRST AT TOP */}
-      <div className="space-y-4 sm:space-y-6 max-w-4xl pt-2">
-        <div className="space-y-2">
+      {/* 1. PROJECT TITLE AND INTRO SECTION: Tight disciplined editorial spacing */}
+      <div className="max-w-4xl pt-1">
+        <div className="space-y-1 sm:space-y-1.5">
           <h2 className="font-sans font-extrabold text-2xl sm:text-4xl lg:text-5xl xl:text-6xl tracking-tight text-white uppercase leading-none break-words">
             {project.title}
           </h2>
-          <p className="font-mono text-[#666666] text-xs sm:text-sm tracking-tight uppercase">
+          <p className="font-mono text-zinc-500 text-xs sm:text-sm tracking-tight uppercase">
             {project.subtitle}
           </p>
         </div>
-        
-        <div className="space-y-3 sm:space-y-4 pt-1">
-          <p className="font-sans text-base sm:text-lg lg:text-xl text-zinc-300 leading-relaxed font-light">
-            {project.summary}
-          </p>
-          <p className="font-sans text-xs sm:text-sm text-zinc-500 leading-relaxed">
+
+        <div className="mt-3.5 sm:mt-4">
+          <p className="font-sans text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-3xl">
             {project.about}
           </p>
         </div>
@@ -427,7 +429,7 @@ export default function ProjectDetail({
         /* SPECIAL PINTEREST-STYLE SHOWCASE FOR THUMBNAIL ARCHIVE */
         <div className="w-full flex flex-col pt-2">
           {/* HERO IMAGE: Cinematic showcase style */}
-          <div 
+          <div
             onClick={() => setLightboxIndex(0)}
             className="w-full overflow-hidden cursor-zoom-in relative border border-[#1a1a1a] bg-[#0d0d0d] mb-4 lg:mb-6"
           >
@@ -444,8 +446,8 @@ export default function ProjectDetail({
           {/* 2-COLUMN MASONRY GRID (Pinterest style) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 w-full items-start">
             {project.media.slice(1, visibleCount).map((item, idx) => (
-              <div 
-                key={item.id} 
+              <div
+                key={item.id}
                 onClick={() => setLightboxIndex(idx + 1)}
                 className="overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-[border-color] duration-300 hover:border-[#333]"
               >
@@ -483,7 +485,7 @@ export default function ProjectDetail({
         <div className="w-full flex flex-col pt-2">
           {/* HERO VIDEO: Cinematic motion opener */}
           {project.media[0] && (
-            <div 
+            <div
               onClick={() => setLightboxIndex(0)}
               className="w-full overflow-hidden cursor-zoom-in relative border border-[#1a1a1a] bg-[#0d0d0d] mb-4 lg:mb-6"
             >
@@ -508,7 +510,7 @@ export default function ProjectDetail({
           )}
 
           {/* Stable responsive CSS grid utilizing react-controlled flex columns */}
-          <div 
+          <div
             className="grid gap-6 lg:gap-8 items-start w-full"
             style={{
               gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`
@@ -517,8 +519,8 @@ export default function ProjectDetail({
             {cols.map((colItems, colIdx) => (
               <div key={colIdx} className="flex flex-col gap-6 lg:gap-8">
                 {colItems.map(({ item, originalIdx }) => (
-                  <div 
-                    key={item.id} 
+                  <div
+                    key={item.id}
                     onClick={() => setLightboxIndex(originalIdx)}
                     className="overflow-hidden bg-[#0d0d0d] border border-[#1a1a1a] relative cursor-zoom-in group transition-[border-color] duration-300 hover:border-[#333]"
                   >
@@ -557,8 +559,8 @@ export default function ProjectDetail({
         /* SPECIAL SEAMLESS BEHANCE-STYLE STACKED GALLERY FOR MUSIC COVER ART (excludes THUMB, renders all media continuously) */
         <div className="w-full flex flex-col pt-2 gap-0">
           {project.media.map((item, idx) => (
-            <div 
-              key={item.id} 
+            <div
+              key={item.id}
               onClick={() => setLightboxIndex(idx)}
               className="w-full relative cursor-zoom-in overflow-hidden"
             >
@@ -589,7 +591,7 @@ export default function ProjectDetail({
         /* DEFAULT BEHANCE-STYLE SEAMLESS STACKED GALLERY */
         <div className="w-full flex flex-col pt-2 gap-0">
           {/* HERO IMAGE */}
-          <div 
+          <div
             onClick={() => setLightboxIndex(0)}
             className="w-full overflow-hidden cursor-zoom-in relative"
           >
@@ -605,8 +607,8 @@ export default function ProjectDetail({
 
           {/* GALLERY IMAGES */}
           {project.media.slice(1).map((item, idx) => (
-            <div 
-              key={item.id} 
+            <div
+              key={item.id}
               onClick={() => setLightboxIndex(idx + 1)}
               className="w-full relative cursor-zoom-in overflow-hidden"
             >
@@ -632,39 +634,6 @@ export default function ProjectDetail({
           ))}
         </div>
       )}
-
-      {/* FOOTER NAV CONTROLS FOR DIRECT CATALOG EXPLORING */}
-      <div className="h-[1px] bg-[#111111] w-full pt-1" />
-      
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 sm:pt-6">
-        <button
-          onClick={onBack}
-          className="group flex items-center gap-2 font-mono text-xs text-[#666666] hover:text-[#FF205A] transition-colors cursor-pointer w-full sm:w-auto justify-center py-3 sm:py-2 border border-[#111111] sm:border-transparent"
-          style={{ minHeight: '44px' }}
-        >
-          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform text-[#FF205A]" />
-          <span className="hidden sm:inline">[ RETURN TO ALL WORKS ]</span>
-          <span className="inline sm:hidden">[ BACK TO ARCHIVE ]</span>
-        </button>
-
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <button
-            onClick={onPrevProject}
-            className="group flex items-center justify-center gap-2 font-mono text-xs text-[#666666] hover:text-[#FF205A] transition-colors cursor-pointer py-3 px-4 border border-[#111111] sm:border-transparent flex-1 sm:flex-initial"
-            style={{ minHeight: '44px' }}
-          >
-            <span>[ ← PREV ]</span>
-          </button>
-          
-          <button
-            onClick={onNextProject}
-            className="group flex items-center justify-center gap-2 font-mono text-xs text-[#666666] hover:text-[#FF205A] transition-colors cursor-pointer py-3 px-4 border border-[#111111] sm:border-transparent flex-1 sm:flex-initial"
-            style={{ minHeight: '44px' }}
-          >
-            <span>[ NEXT → ]</span>
-          </button>
-        </div>
-      </div>
 
       <Lightbox
         isOpen={lightboxIndex !== null}

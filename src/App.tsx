@@ -2,9 +2,10 @@
    Imports
 ========================================================= */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { ArrowUpRight } from 'lucide-react';
 import { PROJECTS_DATA } from './data';
 import Sidebar from './components/Sidebar';
 import MasonryGrid from './components/MasonryGrid';
@@ -13,6 +14,8 @@ import AboutPage from './components/AboutPage';
 import AmbientBackground from './components/AmbientBackground';
 import BlackMarketPage from './components/BlackMarketPage';
 import BlackMarketDetail from './components/BlackMarketDetail';
+import FooterDitherBackground from './components/FooterDitherBackground';
+import FooterTicker from './components/FooterTicker';
 import { BLACK_MARKET_SERVICES } from './blackMarketData';
 import { preloadProjectMedia } from './utils/preload';
 
@@ -25,9 +28,6 @@ function PortfolioView() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Real-time UTC/IST clock ticker
-  const [currentLocalTime, setCurrentLocalTime] = useState<Date>(new Date());
-
   // State for currency (USD vs INR)
   const [currency, setCurrency] = useState<'USD' | 'INR'>(() => {
     return (sessionStorage.getItem('currency') as 'USD' | 'INR') || 'USD';
@@ -38,12 +38,13 @@ function PortfolioView() {
     sessionStorage.setItem('currency', newCurrency);
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentLocalTime(new Date());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  // Category filter state for gallery and sidebar
+  const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+
+  const categories = useMemo(
+    () => ['ALL', ...Array.from(new Set(PROJECTS_DATA.map((p) => p.category.toUpperCase())))],
+    []
+  );
 
   // Determine active project id based on params and path
   let activeProjectId: string | null = null;
@@ -122,17 +123,19 @@ function PortfolioView() {
         projects={PROJECTS_DATA}
         activeProjectId={activeProjectId}
         onSelectProject={selectProject}
-        currentLocalTime={currentLocalTime}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
       />
 
-      {/* RIGHT COLUMN: Asymmetric Responsive Page Content */}
-      <main className="relative z-10 overflow-hidden w-full md:ml-[25%] lg:ml-[20%] md:w-[75%] lg:w-[80%] min-h-screen pt-20 md:pt-10 pb-20 px-6 sm:px-8 lg:px-12 xl:px-16 flex flex-col justify-between">
+      {/* RIGHT COLUMN: Asymmetric Responsive Page Content with Disciplined Spacing */}
+      <main className="relative z-10 overflow-x-hidden w-full md:ml-[25%] lg:ml-[20%] md:w-[75%] lg:w-[80%] min-h-screen pt-16 md:pt-8 flex flex-col justify-between">
 
         {/* Animated Cinematic Ambient Background Background ONLY behind projects */}
-        <AmbientBackground />
+        {activeProjectId !== 'about' && <AmbientBackground />}
 
         {/* UPPER ANCHOR: Interactive Container */}
-        <div className="w-full max-w-7xl mx-auto space-y-10 relative z-10">
+        <div className="w-full max-w-7xl mx-auto space-y-6 relative z-10 px-4 sm:px-6 lg:px-8 xl:px-10 flex-1 pb-16 sm:pb-20">
 
           <AnimatePresence mode="wait">
             {activeProjectId === 'about' ? (
@@ -208,7 +211,8 @@ function PortfolioView() {
                 <MasonryGrid
                   projects={PROJECTS_DATA}
                   onSelectProject={(id) => selectProject(id)}
-                  currentLocalTime={currentLocalTime}
+                  selectedCategory={selectedCategory}
+                  onSelectCategory={setSelectedCategory}
                 />
               </motion.div>
             )}
@@ -216,45 +220,39 @@ function PortfolioView() {
 
         </div>
 
-        {/* BOTTOM DECORATIVE STAMP: Minimal Evolving Design Archive Coming Soon */}
+        {/* HOMEPAGE FOOTER: Full-bleed Editorial Closing Section */}
         {activeProjectId === null && (
-          <div className="w-full max-w-7xl mx-auto border-t border-[#111111] mt-12 pt-10 pb-6 flex flex-col items-center justify-center text-center relative z-10">
-            <div className="max-w-[440px] flex flex-col items-center select-none">
-              {/* Quiet editorial divider label */}
-              <div className="flex items-center gap-2.5 justify-center mb-3">
-                <span className="h-[2px] w-5 bg-[#FF205A] shrink-0" />
-                <span className="font-mono text-[11px] tracking-[0.15em] text-white/80 uppercase font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">
-                  More Projects
-                </span>
+          <footer className="w-full border-t-2 border-zinc-900 bg-black relative z-10 select-none overflow-hidden">
+            {/* Interactive Monochrome Dither Background */}
+            <FooterDitherBackground />
+
+            {/* Main Editorial Content Row: Subtly narrowed and centered within available content area */}
+            <div className="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16 flex flex-col md:flex-row md:items-center md:justify-between gap-8 lg:gap-12">
+              {/* Left Column: Heading and Supporting Copy */}
+              <div className="max-w-xl">
+                <h2 className="font-sans font-bold text-2xl sm:text-3xl lg:text-[32px] tracking-tight text-white uppercase leading-[1.15]">
+                  GOT AN <span className="text-[#FF205A]">IDEA</span>?<br className="hidden sm:inline" /> LET&apos;S PUT IT ON DISPLAY.
+                </h2>
+                <p className="font-sans text-sm sm:text-base text-zinc-400 font-normal tracking-wide mt-3">
+                  Let&apos;s turn your idea into something worth showing off.
+                </p>
               </div>
-              
-              <h2 className="font-sans font-extrabold text-2xl sm:text-3xl tracking-tighter text-white uppercase hover:text-[#FF205A] transition-colors duration-700 mt-0">
-                Coming Soon
-              </h2>
-              
-              <p className="font-mono text-[10px] text-zinc-300 uppercase tracking-[0.15em] leading-relaxed mt-5 px-4">
-                This visual journal is a constantly evolving chromatic file archive. Updates committed build-by-build.
-              </p>
+
+              {/* Right Column: CTA Action */}
+              <div className="shrink-0">
+                <a
+                  href="mailto:sumeetshah24@gmail.com"
+                  className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-[#FF205A] hover:bg-[#e0164b] text-white font-mono text-xs uppercase tracking-widest font-semibold transition-all duration-200 cursor-pointer shadow-sm hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  <span>GET IN TOUCH</span>
+                  <ArrowUpRight size={15} className="text-white shrink-0" />
+                </a>
+              </div>
             </div>
-          </div>
-        )}
 
-        {/* BACK TO TOP BUTTON: Centered inline in page flow */}
-        {activeProjectId !== 'about' && (
-          <div className="w-full max-w-7xl mx-auto mt-6 mb-4 flex justify-center items-center relative z-10">
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="group font-mono text-zinc-400 hover:text-[#FF205A] cursor-pointer flex flex-col items-center gap-1 transition-all duration-300 uppercase select-none hover:-translate-y-1 hover:drop-shadow-[0_0_8px_rgba(255,32,90,0.45)]"
-            >
-              <span className="text-2xl font-light leading-none transform group-hover:scale-110 transition-transform duration-300">↑</span>
-              <span className="text-[10px] tracking-[0.3em] font-medium">Back to Top</span>
-            </button>
-          </div>
-        )}
-
-        {/* Graced portfolio closing gradient overlay */}
-        {activeProjectId === null && (
-          <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-[#FF205A]/[0.025] via-transparent to-transparent pointer-events-none z-0" />
+            {/* Bottom Moving Text Ticker */}
+            <FooterTicker />
+          </footer>
         )}
 
       </main>
