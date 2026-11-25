@@ -86,6 +86,64 @@ const wukongMediaFiles = (Object.values(
 
 const wukongThumb = wukongMediaFiles[0] || '';
 
+// CLOTHING ARCHIVE (Nosfera)
+const clothingArchiveMediaFiles = (Object.values(
+  import.meta.glob('./assets/projects/clothingarchive/*.{jpg,jpeg,png,webp,mp4}', {
+    eager: true,
+    import: 'default',
+  })
+) as string[]);
+
+const clothingArchiveThumb = clothingArchiveMediaFiles.find(
+  (file) => getBaseFilename(file) === 'cover image.png'
+) || '';
+
+const clothingArchiveVideo = clothingArchiveMediaFiles.find(
+  (file) => getBaseFilename(file) === 'animation.mp4'
+) || '';
+
+const clothingArchiveImages = clothingArchiveMediaFiles
+  .filter((file) => {
+    const filename = getBaseFilename(file);
+    return filename !== 'cover image.png' && filename !== 'animation.mp4';
+  })
+  .sort((a, b) => {
+    const matchA = getBaseFilename(a).match(/\((\d+)\)/);
+    const matchB = getBaseFilename(b).match(/\((\d+)\)/);
+    const numA = matchA ? parseInt(matchA[1], 10) : 0;
+    const numB = matchB ? parseInt(matchB[1], 10) : 0;
+    return numA - numB;
+  });
+
+// ADOBE EXPRESS TEMPLATES (NOCT)
+const adobeExpressMediaFiles = (Object.values(
+  import.meta.glob('./assets/projects/adobeexpress/*.{jpg,jpeg,png,webp,mp4}', {
+    eager: true,
+    import: 'default',
+  })
+) as string[]);
+
+const adobeExpressThumb = adobeExpressMediaFiles.find(
+  (file) => getBaseFilename(file) === 'cover image 1.png'
+) || '';
+
+const adobeExpressVideo = adobeExpressMediaFiles.find(
+  (file) => getBaseFilename(file) === 'ae animation.mp4'
+) || '';
+
+const adobeExpressImages = adobeExpressMediaFiles
+  .filter((file) => {
+    const filename = getBaseFilename(file);
+    return filename !== 'cover image 1.png' && filename !== 'ae animation.mp4';
+  })
+  .sort((a, b) => {
+    const matchA = getBaseFilename(a).match(/\((\d+)\)/);
+    const matchB = getBaseFilename(b).match(/\((\d+)\)/);
+    const numA = matchA ? parseInt(matchA[1], 10) : 0;
+    const numB = matchB ? parseInt(matchB[1], 10) : 0;
+    return numA - numB;
+  });
+
 const thumbnailProjectImages = (Object.values(
   import.meta.glob('./assets/projects/thumbnailproject/*.{jpg,jpeg,png,webp}', {
     eager: true,
@@ -220,6 +278,47 @@ const cryptoCarouselsAllMedia = cryptoCarouselsGroups.flatMap((g) => g.slides);
 const cryptoCarouselsThumb = cara1Files[0] || cryptoCarouselsAllMedia[0]?.url || '';
 
 const RAW_PROJECTS_DATA: Project[] = [
+  // ADOBE EXPRESS TEMPLATES (NOCT)
+  {
+    id: 'noct-adobe-express',
+    title: 'ADOBE EXPRESS TEMPLATES',
+    subtitle: 'SOCIAL MEDIA & DIGITAL DESIGN',
+    category: 'Template Design',
+    year: '2026',
+    client: 'NOCT',
+    role: 'Graphic Designer',
+    services: [
+      'Template Design',
+      'Social Media Design',
+      'Visual Communication',
+      'Layout Design'
+    ],
+    summary: 'A curated showcase of selected Adobe Express templates from a three-month project with NOCT, featuring highlights from a collection of 300+ templates created across diverse industries and content categories.',
+    about: 'A curated showcase of selected Adobe Express templates from a three-month project with NOCT, featuring highlights from a collection of 300+ templates created across diverse industries and content categories.',
+    thumbnailUrl: adobeExpressThumb,
+    aspectRatio: 'aspect-square',
+    media: [
+      ...(adobeExpressVideo
+        ? [
+            {
+              id: 'adobe-express-video',
+              type: 'video' as const,
+              url: adobeExpressVideo,
+              caption: '',
+              ...lookupDimensions('adobeexpress', adobeExpressVideo),
+            },
+          ]
+        : []),
+      ...adobeExpressImages.map((img, index) => ({
+        id: `adobe-express-${index + 1}`,
+        type: 'image' as const,
+        url: img,
+        caption: '',
+        ...lookupDimensions('adobeexpress', img),
+      })),
+    ],
+  },
+
   // ED CRYPTO CAROUSELS
   {
     id: 'crypto-carousels',
@@ -453,6 +552,46 @@ const RAW_PROJECTS_DATA: Project[] = [
       caption: '',
       ...lookupDimensions('wukongtshirt', img)
     }))
+  },
+
+  // CLOTHING ARCHIVE (Nosfera)
+  {
+    id: 'nosfera-clothing-archive',
+    title: 'CLOTHING ARCHIVE',
+    subtitle: 'STREETWEAR APPAREL DESIGN',
+    category: 'Clothing Design',
+    year: '2024',
+    client: 'Nosfera',
+    role: 'Graphic Designer',
+    services: [
+      'T-Shirt Design',
+      'Apparel Graphics',
+      'Streetwear Design'
+    ],
+    summary: 'An archive of early streetwear explorations featuring a range of graphic T-shirt designs and two pants designs, developed for Nosfera in 2024.',
+    about: 'An archive of early streetwear explorations featuring a range of graphic T-shirt designs and two pants designs, developed for Nosfera in 2024.',
+    thumbnailUrl: clothingArchiveThumb,
+    aspectRatio: 'aspect-square',
+    media: [
+      ...(clothingArchiveVideo
+        ? [
+            {
+              id: 'clothing-archive-video',
+              type: 'video' as const,
+              url: clothingArchiveVideo,
+              caption: '',
+              ...lookupDimensions('clothingarchive', clothingArchiveVideo),
+            },
+          ]
+        : []),
+      ...clothingArchiveImages.map((img, index) => ({
+        id: `clothing-archive-${index + 1}`,
+        type: 'image' as const,
+        url: img,
+        caption: '',
+        ...lookupDimensions('clothingarchive', img),
+      })),
+    ],
   }
 ];
 

@@ -555,7 +555,80 @@ export default function ProjectDetail({
             </div>
           )}
         </div>
-      ) : (project.id === 'music-cover-art' || project.id === '2tone-ep') ? (
+      ) : project.id === 'noct-adobe-express' ? (
+        /* PINTEREST-STYLE 3-COLUMN MASONRY GALLERY FOR ADOBE EXPRESS TEMPLATES */
+        <div className="w-full flex flex-col pt-2">
+          {/* HERO VIDEO: First gallery item (AE ANIMATION.mp4) */}
+          {project.media[0] && (
+            <div
+              onClick={() => setLightboxIndex(0)}
+              className="w-full overflow-hidden cursor-zoom-in relative mb-5 lg:mb-6"
+            >
+              {project.media[0].type === 'video' ? (
+                <LazyVideo
+                  url={project.media[0].url}
+                  aspectRatioNumber={project.media[0].aspectRatioNumber}
+                  className="transform hover:scale-[1.005] transition-transform duration-700"
+                  priority={true}
+                />
+              ) : (
+                <LazyMedia
+                  url={project.media[0].url}
+                  type="image"
+                  aspectRatioNumber={project.media[0].aspectRatioNumber}
+                  alt={project.title}
+                  className="transform hover:scale-[1.005] transition-transform duration-700"
+                  priority={true}
+                />
+              )}
+            </div>
+          )}
+
+          {/* 3-column desktop / 2-column tablet / 1-column mobile masonry preserving natural aspect ratios */}
+          <div
+            className="grid gap-5 lg:gap-6 items-start w-full"
+            style={{
+              gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`
+            }}
+          >
+            {Array.from({ length: columnCount }, (_, colIdx) => {
+              const colItems = project.media
+                .slice(1)
+                .map((item, idx) => ({ item, originalIdx: idx + 1 }))
+                .filter((_, idx) => idx % columnCount === colIdx);
+
+              return (
+                <div key={colIdx} className="flex flex-col gap-5 lg:gap-6">
+                  {colItems.map(({ item, originalIdx }) => (
+                    <div
+                      key={item.id}
+                      onClick={() => setLightboxIndex(originalIdx)}
+                      className="overflow-hidden relative cursor-zoom-in group"
+                    >
+                      {(item.type === 'image' || item.type === 'gif') && (
+                        <LazyMedia
+                          url={item.url}
+                          type={item.type}
+                          aspectRatioNumber={item.aspectRatioNumber}
+                          className="transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
+                        />
+                      )}
+
+                      {item.type === 'video' && (
+                        <LazyVideo
+                          url={item.url}
+                          aspectRatioNumber={item.aspectRatioNumber}
+                          className="transform group-hover:scale-[1.01] transition-transform duration-500 will-change-transform"
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (project.id === 'music-cover-art' || project.id === '2tone-ep' || project.id === 'nosfera-clothing-archive') ? (
         /* SPECIAL SEAMLESS BEHANCE-STYLE STACKED GALLERY FOR MUSIC COVER ART (excludes THUMB, renders all media continuously) */
         <div className="w-full flex flex-col pt-2 gap-0">
           {project.media.map((item, idx) => (
